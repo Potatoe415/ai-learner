@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Cap, Loop, Plug, Ward } from "./characters";
 import { Arrow, Check, Close, Star } from "./icons";
 import { ModuleBadge } from "./badges";
+import BadgeCelebration from "./BadgeCelebration";
 import { UNITS, getModule, getZone, type Zone } from "@/lib/curriculum";
 import { LESSONS, unitData, type ConceptQuiz, type LessonContent } from "@/lib/lessons";
 import { DeliverableStepView, LabStepView, PostMortemStep, ReadingStep } from "./LessonSteps";
@@ -133,7 +134,14 @@ export default function LessonView({ module, startUnit }: { module: number; star
   const show = (u: number) => router.replace(`${pathname}?unit=${u}`, { scroll: false });
   const go = (u: number) => { show(u); window.scrollTo(0, 0); };
   // Stay on the unit just completed (explanation, points earned) instead of jumping to the next open one.
-  const complete = (u: number) => { show(u); p.completeUnit(module, u); };
+  const [celebrate, setCelebrate] = useState(false);
+  const endCelebration = useCallback(() => setCelebrate(false), []);
+  const complete = (u: number) => {
+    show(u);
+    // Celebrate only the completion that earns the badge, not revisits of a finished module.
+    if (!p.isUnitDone(module, u) && UNITS.every((_, i) => i === u || p.isUnitDone(module, i))) setCelebrate(true);
+    p.completeUnit(module, u);
+  };
 
   const nav = (
     <div className="row" style={{ gap: 12 }}>
@@ -146,6 +154,7 @@ export default function LessonView({ module, startUnit }: { module: number; star
 
   return (
     <div className="page narrow">
+      {celebrate && <BadgeCelebration module={module} name={mod.badge.name} onClose={endCelebration} />}
       <header className="row" style={{ gap: 16 }}>
         <Link href="/" className="close" aria-label="Leave the module and go back to the trail"><Close /></Link>
         <div className="bar">

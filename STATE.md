@@ -2,13 +2,13 @@
 
 Replace on every update. Max 40 lines. History lives in git and `docs/decisions/`.
 
-Status: Trailhead model in place (task trailhead-model done 2026-11-11, decision 0006): trail "AI integration in organisations", 11 modules × 4 units, badges, points, six levels.
-Focus: User review of the side menu, the Nimbus mascot, the trail and profile pages, and rank names and thresholds.
+Status: Trailhead model in place (decision 0006): trail "AI integration in organisations", 11 modules × 4 units, badges, points, six levels. Badge celebration overlay added 2026-11-11 (badge, confetti, congratulation message, ~4.5 s).
+Focus: User review of the badge celebration, the side menu, the Nimbus mascot, the trail and profile pages, and rank names and thresholds.
 Level: L1
 
 Context:
 - Working_On: trail and profile review
-- Relevant_Files: `components/SideNav.tsx`, `lib/scoring.ts`, `lib/progress.tsx`, `lib/curriculum.ts`, `components/TrailView.tsx`, `components/ProfileView.tsx`, `components/badges.tsx`
+- Relevant_Files: `components/SideNav.tsx`, `lib/scoring.ts`, `lib/progress.tsx`, `lib/curriculum.ts`, `components/TrailView.tsx`, `components/ProfileView.tsx`, `components/badges.tsx`, `components/BadgeCelebration.tsx`
 - Do_Not_Touch: `RAW_content/` (read-only source); `lib/progress.tsx` storage key `agent-path:v2` and its v1 migration
 - Relevant_Decisions: 0003, 0004, 0005, 0006
 
