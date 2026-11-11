@@ -122,14 +122,12 @@ export default function LessonView({ module, startUnit }: { module: number; star
   // Every module 1-8 has content (lib/lessons.ts); a missing unit would be a content bug.
   const content = LESSONS[module] ?? {};
   const units = unitsOf(module);
-  const locked = p.ready && module > p.currentModule;
   const firstOpen = units.findIndex((_, i) => !p.isUnitDone(module, i));
   const router = useRouter();
   const pathname = usePathname();
   // The URL (`?unit=N`) is the single source of truth, so the side menu, the back button and
-  // in-lesson buttons always agree. A requested unit opens only if it is done or the next one to do.
-  const requested = startUnit !== null && p.ready && (firstOpen === -1 || startUnit <= firstOpen) ? startUnit : null;
-  const unit = requested ?? (firstOpen === -1 ? units.length - 1 : firstOpen);
+  // in-lesson buttons always agree. Every unit of every module is open.
+  const unit = startUnit ?? (firstOpen === -1 ? units.length - 1 : firstOpen);
   const kind = units[unit];
   const unitDone = p.isUnitDone(module, unit);
   const points = p.unitValue(module, unit);
@@ -149,7 +147,7 @@ export default function LessonView({ module, startUnit }: { module: number; star
   const nav = (
     <div className="row" style={{ gap: 12 }}>
       {unit > 0 && <button type="button" className="btn-ghost" onClick={() => go(unit - 1)}>← Previous unit</button>}
-      {unitDone && unit < units.length - 1 && (
+      {unit < units.length - 1 && (
         <button type="button" className="cta dark" onClick={() => go(unit + 1)}>Next: {units[unit + 1]} <Arrow color="#F7F3EA" /></button>
       )}
     </div>
@@ -168,7 +166,7 @@ export default function LessonView({ module, startUnit }: { module: number; star
           <div className="seg">{units.map((s, i) => <i key={s} style={i <= unit || p.isUnitDone(module, i) ? { background: color } : undefined} />)}</div>
           <div className="seg labels">{units.map((s, i) => <span key={s} style={i === unit ? { color: "var(--ink)", fontWeight: 700 } : undefined}>{s}</span>)}</div>
         </div>
-        {!locked && !unitDone && <span className="pill gold" style={{ fontWeight: 800 }}>+{points} points at stake</span>}
+        {!unitDone && <span className="pill gold" style={{ fontWeight: 800 }}>+{points} points at stake</span>}
       </header>
 
       {moduleDone && unit === units.length - 1 && (
@@ -184,13 +182,7 @@ export default function LessonView({ module, startUnit }: { module: number; star
       )}
 
       <main className="scene">
-        {locked ? (
-          <div className="soon" style={{ flex: 1 }}>
-            <span className="eyebrow">Locked</span>
-            <h1 className="display" style={{ fontSize: 30 }}>Finish module {p.currentModule} first</h1>
-            <Link className="cta dark" href={`/module/${p.currentModule}`} style={{ alignSelf: "flex-start" }}>Go to module {p.currentModule} <Arrow color="#F7F3EA" /></Link>
-          </div>
-        ) : kind === "Concept" && content.concept ? (
+        {kind === "Concept" && content.concept ? (
           <>
             {content.reading && (
               <div style={{ flex: "1 1 100%", minWidth: 0, display: "flex", flexDirection: "column", gap: 20 }}>

@@ -8,7 +8,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState, type ReactNode } from "react";
 import { Loop, Nimbus } from "./characters";
-import { Check, Chevron, Close, Lock, MapIcon, MenuIcon, Star, UserIcon } from "./icons";
+import { Check, Chevron, Close, MapIcon, MenuIcon, Star, UserIcon } from "./icons";
 import { ModuleBadge } from "./badges";
 import { MODULES, TRAIL, ZONES, getZone, unitsOf, type CourseModule } from "@/lib/curriculum";
 import { useProgress } from "@/lib/progress";
@@ -45,7 +45,6 @@ function NavLink({ href, active, icon, label, collapsed, onNavigate }: { href: s
 function ModuleItem({ mod, collapsed, active, onNavigate }: { mod: CourseModule; collapsed: boolean; active: Active; onNavigate: () => void }) {
   const p = useProgress();
   const done = p.isModuleDone(mod.n);
-  const locked = p.ready && !done && mod.n > p.currentModule;
   const isHere = active.module === mod.n;
   // Units show for the module being viewed, or for the current module when viewing something else.
   const showUnits = !collapsed && (isHere || (active.module === null && mod.n === p.currentModule && !done));
@@ -58,37 +57,27 @@ function ModuleItem({ mod, collapsed, active, onNavigate }: { mod: CourseModule;
       <span className="snav-ic"><ModuleBadge module={mod.n} earned={done} size={30} /></span>
       <span className="snav-txt">
         <span className="snav-mod">{mod.n}. {mod.title}</span>
-        {!done && !locked && mod.n === p.currentModule && <span className="snav-tag" style={{ color: colorOf(mod) }}>In progress</span>}
+        {!done && mod.n === p.currentModule && <span className="snav-tag" style={{ color: colorOf(mod) }}>In progress</span>}
       </span>
-      {locked && <span className="snav-end"><Lock size={14} color="#8A92A6" /></span>}
     </>
   );
 
   return (
     <li>
-      {locked ? (
-        <span className="snav-link locked" title={collapsed ? `${label} (locked)` : `Finish module ${p.currentModule} first`} aria-disabled="true">{head}</span>
-      ) : (
-        <Link href={`/module/${mod.n}`} className={`snav-link ${isHere ? "on" : ""}`} aria-current={isHere && active.unit === null ? "page" : undefined} title={collapsed ? label : undefined} onClick={onNavigate} style={isHere ? { boxShadow: `inset 4px 0 0 ${colorOf(mod)}` } : undefined}>
-          {head}
-        </Link>
-      )}
+      <Link href={`/module/${mod.n}`} className={`snav-link ${isHere ? "on" : ""}`} aria-current={isHere && active.unit === null ? "page" : undefined} title={collapsed ? label : undefined} onClick={onNavigate} style={isHere ? { boxShadow: `inset 4px 0 0 ${colorOf(mod)}` } : undefined}>
+        {head}
+      </Link>
       {showUnits && (
         <ol className="snav-units">
           {units.map((u, i) => {
             const unitDone = p.isUnitDone(mod.n, i);
-            const reachable = !locked && (unitDone || i === firstOpen);
             // Without `?unit=`, the lesson shows the first open unit (or the last one when all are done).
             const here = isHere && (active.unit ?? (firstOpen === -1 ? units.length - 1 : firstOpen)) === i;
             return (
               <li key={u}>
-                {reachable ? (
-                  <Link href={`/module/${mod.n}?unit=${i}`} className={`snav-unit ${here ? "on" : ""}`} aria-current={here ? "page" : undefined} onClick={onNavigate}>
-                    <span className={`snav-dot ${unitDone ? "done" : ""}`}>{unitDone && <Check size={10} color="#fff" w={4} />}</span>{u}
-                  </Link>
-                ) : (
-                  <span className="snav-unit off"><span className="snav-dot" />{u}</span>
-                )}
+                <Link href={`/module/${mod.n}?unit=${i}`} className={`snav-unit ${here ? "on" : ""}`} aria-current={here ? "page" : undefined} onClick={onNavigate}>
+                  <span className={`snav-dot ${unitDone ? "done" : ""}`}>{unitDone && <Check size={10} color="#fff" w={4} />}</span>{u}
+                </Link>
               </li>
             );
           })}
@@ -145,6 +134,19 @@ function NavBodyFromUrl(props: BodyProps) {
   return <NavBody {...props} unit={raw !== null && /^\d$/.test(raw) && Number(raw) < max ? Number(raw) : null} />;
 }
 
+/** Round profile button, top right of every page (inside the top bar on small screens). */
+function ProfileButton() {
+  const p = useProgress();
+  const on = usePathname() === "/profile";
+  const label = `Profile · Level ${p.rank.n} · ${p.rank.name}`;
+  return (
+    <Link href="/profile" className={`profile-btn ${on ? "on" : ""}`} aria-label={label} title={label} aria-current={on ? "page" : undefined}>
+      <UserIcon size={24} />
+      <span className="profile-lvl" style={{ background: p.rank.color }} aria-hidden="true">{p.rank.n}</span>
+    </Link>
+  );
+}
+
 /** Wraps every page with the side menu (desktop rail or mobile drawer). */
 export default function SideNav({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -185,6 +187,7 @@ export default function SideNav({ children }: { children: ReactNode }) {
       <div className="topbar">
         <button type="button" className="snav-btn" aria-label="Open the menu" aria-expanded={open} aria-controls="side-nav" onClick={() => setOpen(true)}><MenuIcon /></button>
         <Link href="/" className="brand small"><Loop size={36} />Agent Path</Link>
+        <ProfileButton />
       </div>
       <div className="snav-scrim" aria-hidden="true" onClick={() => setOpen(false)} />
 
@@ -201,7 +204,10 @@ export default function SideNav({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      <div className="shell-main">{children}</div>
+      <div className="shell-main">
+        <div className="shell-head"><ProfileButton /></div>
+        {children}
+      </div>
     </div>
   );
 }

@@ -128,11 +128,7 @@ export default function ProfileView() {
                   <span className="display" style={{ fontSize: 21, lineHeight: 1.15, letterSpacing: 0 }}>{d.title}</span>
                 </div>
                 <span style={{ fontSize: 15, lineHeight: 1.45, color: "var(--body)" }}>{d.desc}</span>
-                {open ? (
-                  <Link href={`/module/${d.module}?unit=3`} className="status" style={{ color: "#0A5E5D", marginTop: 0 }}><Check size={16} color="#0A5E5D" w={3.2} />Open the template (module {d.module})</Link>
-                ) : (
-                  <span className="status" style={{ color: "var(--muted)", marginTop: 0 }}><Lock />Unlocks with module {d.module}</span>
-                )}
+                <Link href={`/module/${d.module}?unit=3`} className="status" style={{ color: "#0A5E5D", marginTop: 0 }}>{open ? <Check size={16} color="#0A5E5D" w={3.2} /> : <Arrow size={16} color="#0A5E5D" />}Open the template (module {d.module})</Link>
               </article>
             );
           })}

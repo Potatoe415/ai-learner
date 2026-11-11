@@ -6,7 +6,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Cap, Loop, Nimbus, Plug, Ward } from "./characters";
-import { Arrow, Check, Flag, Lock, Star } from "./icons";
+import { Arrow, Check, Flag, Star } from "./icons";
 import { ModuleBadge, RankInsignia } from "./badges";
 import { MODULES, TRAIL, ZONES, getModule, modulesOfZone, unitsOf, type CourseModule, type Zone } from "@/lib/curriculum";
 import { unitMinutes, unitTitle } from "@/lib/lessons";
@@ -32,7 +32,6 @@ function ModuleCard({ mod, color }: { mod: CourseModule; color: string }) {
   const p = useProgress();
   const done = p.isModuleDone(mod.n);
   const isCurrent = mod.n === p.currentModule && !done;
-  const locked = p.ready && !done && !isCurrent;
   const [open, setOpen] = useState(false);
   const expanded = open || isCurrent;
   const date = p.badgeDate(mod.n);
@@ -41,7 +40,7 @@ function ModuleCard({ mod, color }: { mod: CourseModule; color: string }) {
   const firstOpen = units.findIndex((_, u) => !p.isUnitDone(mod.n, u));
 
   return (
-    <article className={`mcard ${locked ? "locked" : ""}`} style={{ borderTopColor: color }}>
+    <article className="mcard" style={{ borderTopColor: color }}>
       <div className="mhead">
         <ModuleBadge module={mod.n} earned={done} size={96} />
         <div className="grow">
@@ -49,17 +48,13 @@ function ModuleCard({ mod, color }: { mod: CourseModule; color: string }) {
             <span className="eyebrow">Module {mod.n}</span>
             <span className="ptag">{done ? `+${fmt(earned)}` : `+${fmt(moduleMaxPoints(mod.n))}`} points</span>
           </div>
-          {locked ? (
-            <h3 className="mtitle">{mod.title}</h3>
-          ) : (
-            <h3 className="mtitle"><Link href={`/module/${mod.n}`}>{mod.title}</Link></h3>
-          )}
+          <h3 className="mtitle"><Link href={`/module/${mod.n}`}>{mod.title}</Link></h3>
           <p className="msub">{mod.sub}. Badge: <b>{mod.badge.name}</b>.</p>
           <div className="row between" style={{ gap: 8 }}>
             {isCurrent ? (
               <Link href={`/module/${mod.n}`} className="cta gold small">{firstOpen > 0 ? "Resume" : "Start"} <Arrow size={16} /></Link>
-            ) : locked ? (
-              <span className="status" style={{ color: "var(--muted)", marginTop: 0 }}><Lock />Finish module {p.currentModule} first</span>
+            ) : !done ? (
+              <Link href={`/module/${mod.n}`} className="status" style={{ color: "var(--ink)", marginTop: 0 }}>{firstOpen > 0 ? "Resume" : "Start"} <Arrow size={16} /></Link>
             ) : <span />}
             <span className="mmeta">{done && date ? `Completed ${fmtDate(date)}` : fmtMinutes(moduleMinutes(mod.n))}</span>
           </div>
@@ -70,12 +65,11 @@ function ModuleCard({ mod, color }: { mod: CourseModule; color: string }) {
         <ol className="units">
           {units.map((u, i) => {
             const unitDone = p.isUnitDone(mod.n, i);
-            const reachable = !locked && (unitDone || i === firstOpen);
             const title = unitTitle(mod.n, i);
             return (
               <li key={u}>
                 <div className="grow">
-                  {reachable ? <Link href={`/module/${mod.n}?unit=${i}`} className="utitle">{title}</Link> : <span className="utitle off">{title}</span>}
+                  <Link href={`/module/${mod.n}?unit=${i}`} className="utitle">{title}</Link>
                   <span className="umeta">{u} · {fmtMinutes(unitMinutes(mod.n, i))}{unitDone ? ` · +${p.unitValue(mod.n, i)} points` : ""}</span>
                 </div>
                 {unitDone ? (
