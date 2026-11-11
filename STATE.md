@@ -13,7 +13,7 @@ Context:
 - Relevant_Decisions: 0001, 0002, 0003, 0004
 
 Next:
-- Initialize git and make a baseline commit (no repository yet, so no checkpoints).
+- Execute the approved plan in `docs/tasks/module-lessons.md` (deferred by the user; baseline commit 45b721c).
 - Add a single `check` script; until then run `npm run typecheck` and `npm run build`.
 - Add the first lessons from the user's content into `lib/lessons.ts`.
 
