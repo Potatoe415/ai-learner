@@ -5,7 +5,8 @@ import { useState } from "react";
 import { Cap, Loop, Plug, Ward } from "./characters";
 import { Arrow, Check, Close, Star } from "./icons";
 import { STEPS, getLevel, getZone, type Zone } from "@/lib/curriculum";
-import { LESSONS, type ConceptQuiz } from "@/lib/lessons";
+import { LESSONS, type ConceptQuiz, type LessonContent } from "@/lib/lessons";
+import { DeliverableStepView, LabStepView, PostMortemStep, ReadingStep } from "./LessonSteps";
 import { useProgress } from "@/lib/progress";
 
 function Concept({ quiz, level, onDone }: { quiz: ConceptQuiz; level: number; onDone: () => void }) {
@@ -69,6 +70,25 @@ function Concept({ quiz, level, onDone }: { quiz: ConceptQuiz; level: number; on
   );
 }
 
+/** Step index -> the content renderer for that step (0 Concept, 1 Post-mortem, 2 Lab, 3 Deliverable). */
+// When a level has both, the interactive `concept` quiz is what completes step 0 (the reading has no check).
+const stepData = (c: LessonContent, step: number) => [c.concept ?? c.reading, c.postMortem, c.lab, c.deliverable][step];
+
+const xpOf = (c: LessonContent, step: number) => stepData(c, step)?.xp ?? 0;
+const bubbleOf = (c: LessonContent, step: number) => {
+  const d = stepData(c, step);
+  return d && "bubble" in d ? d.bubble : "";
+};
+
+function StepBody({ content, step, done, onComplete }: { content: LessonContent; step: number; done: boolean; onComplete: (xp: number) => void }) {
+  const props = { done, onComplete };
+  if (step === 0 && content.reading) return <ReadingStep data={content.reading} {...props} />;
+  if (step === 1 && content.postMortem) return <PostMortemStep data={content.postMortem} {...props} />;
+  if (step === 2 && content.lab) return <LabStepView data={content.lab} {...props} />;
+  if (step === 3 && content.deliverable) return <DeliverableStepView data={content.deliverable} {...props} />;
+  return null;
+}
+
 const Mascot = ({ who }: { who: Zone["mascot"] | "Loop" }) =>
   who === "Plug" ? <Plug size={200} /> : who === "Ward" ? <Ward size={200} /> : who === "Cap" ? <Cap size={200} /> : <Loop size={200} />;
 
@@ -77,12 +97,25 @@ export default function LessonView({ level }: { level: number }) {
   const lv = getLevel(level)!;
   const zone = lv.zone === "base" ? null : getZone(lv.zone);
   const color = zone?.color ?? "#1A2233";
-  const content = LESSONS[level];
+  // Every level 0-10 has content (lib/lessons.ts); a missing step would be a content bug.
+  const content = LESSONS[level] ?? {};
   const locked = p.ready && level > p.currentLevel;
   const firstOpen = STEPS.findIndex((_, i) => !p.isStepDone(level, i));
   const [view, setView] = useState<number | null>(null);
   const step = view ?? (firstOpen === -1 ? STEPS.length - 1 : firstOpen);
-  const isDev = process.env.NODE_ENV !== "production";
+  const stakeXp = xpOf(content, step);
+
+  const nav = (
+    <div className="row" style={{ gap: 12 }}>
+      {step > 0 && <button type="button" className="btn-ghost" onClick={() => setView(step - 1)}>← Previous step</button>}
+      {p.isStepDone(level, step) && step < STEPS.length - 1 && (
+        <button type="button" className="cta dark" onClick={() => { setView(step + 1); window.scrollTo(0, 0); }}>Next: {STEPS[step + 1]} <Arrow color="#F7F3EA" /></button>
+      )}
+      {p.isLevelDone(level) && step === STEPS.length - 1 && (
+        <Link href="/" className="cta dark">Level complete · back to the path <Arrow color="#F7F3EA" /></Link>
+      )}
+    </div>
+  );
 
   return (
     <div className="page narrow">
@@ -96,7 +129,7 @@ export default function LessonView({ level }: { level: number }) {
           <div className="seg">{STEPS.map((s, i) => <i key={s} style={i <= step || p.isStepDone(level, i) ? { background: color } : undefined} />)}</div>
           <div className="seg labels">{STEPS.map((s, i) => <span key={s} style={i === step ? { color: "var(--ink)", fontWeight: 700 } : undefined}>{s}</span>)}</div>
         </div>
-        {step === 0 && content?.concept && !p.isStepDone(level, 0) && <span className="pill gold" style={{ fontWeight: 800 }}>+{content.concept.xp} XP at stake</span>}
+        {!locked && stakeXp > 0 && !p.isStepDone(level, step) && <span className="pill gold" style={{ fontWeight: 800 }}>+{stakeXp} XP at stake</span>}
       </header>
 
       <main className="scene">
@@ -107,35 +140,26 @@ export default function LessonView({ level }: { level: number }) {
             <Link className="cta dark" href={`/level/${p.currentLevel}`} style={{ alignSelf: "flex-start" }}>Go to level {p.currentLevel} <Arrow color="#F7F3EA" /></Link>
           </div>
         ) : step === 0 && content?.concept ? (
-          <Concept quiz={content.concept} level={level} onDone={() => setView(1)} />
-        ) : (
           <>
-            <div className="mascot" style={{ flex: "0 1 240px" }}>
-              <div className="bubble white">Content coming soon!</div>
-              <Mascot who={zone?.mascot ?? "Loop"} />
-            </div>
-            <div style={{ flex: "1 1 480px", minWidth: 0, display: "flex", flexDirection: "column", gap: 20 }}>
-              <section className="soon">
-                <span className="eyebrow">{STEPS[step]} · in preparation</span>
-                <h1 className="display" style={{ fontSize: 30, lineHeight: 1.1 }}>{lv.title}</h1>
-                <p style={{ fontSize: 16, color: "var(--body)" }}>This lesson will cover (MIT Applied Agentic AI, module {lv.mitModules.join(", ")}):</p>
-                <ul>{lv.topics.map((t) => <li key={t}>{t}</li>)}</ul>
-              </section>
-              <div className="row" style={{ gap: 12 }}>
-                {step > 0 && <button type="button" className="btn-ghost" onClick={() => setView(step - 1)}>← Previous step</button>}
-                {isDev && !p.isStepDone(level, step) && (
-                  <button type="button" className="btn-ghost" onClick={() => p.completeStep(level, step, 20)}>Dev: mark step done (+20 XP)</button>
-                )}
-                {p.isStepDone(level, step) && step < STEPS.length - 1 && (
-                  <button type="button" className="cta dark" onClick={() => setView(step + 1)}>Next step <Arrow color="#F7F3EA" /></button>
-                )}
-                {p.isLevelDone(level) && step === STEPS.length - 1 && (
-                  <Link href="/" className="cta dark">Level complete · back to the path <Arrow color="#F7F3EA" /></Link>
-                )}
+            {content.reading && (
+              <div style={{ flex: "1 1 100%", minWidth: 0, display: "flex", flexDirection: "column", gap: 20 }}>
+                <ReadingStep data={content.reading} done={p.isStepDone(level, 0)} onComplete={() => {}} />
               </div>
+            )}
+            <Concept quiz={content.concept} level={level} onDone={() => { setView(1); window.scrollTo(0, 0); }} />
+          </>
+        ) : stepData(content, step) ? (
+          <>
+            <div className="mascot sticky" style={{ flex: "0 1 240px" }}>
+              <div className="bubble white">{bubbleOf(content, step)}</div>
+              {zone ? <Mascot who={zone.mascot} /> : <Loop size={200} mood={p.isStepDone(level, step) ? "cheer" : "think"} />}
+            </div>
+            <div key={step} style={{ flex: "1 1 480px", minWidth: 0, display: "flex", flexDirection: "column", gap: 20 }}>
+              <StepBody content={content} step={step} done={p.isStepDone(level, step)} onComplete={(xp) => p.completeStep(level, step, xp)} />
+              {nav}
             </div>
           </>
-        )}
+        ) : null}
       </main>
     </div>
   );

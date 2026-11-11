@@ -34,11 +34,13 @@ Current structure, as-is (organised by layer, not yet by module):
 |---|---|---|---|
 | `app/` | Routes `/`, `/level/[n]` (levels 0–10, SSG), `/trophies`; root layout wraps `ProgressProvider` | none | `components/`, `lib/` |
 | `components/PathView.tsx` | Path page: hero, base camp, zones, summit | none | `characters`, `icons`, `lib/curriculum`, `lib/progress` |
-| `components/LessonView.tsx` | Lesson steps, concept quiz, placeholders | none | `characters`, `icons`, `lib/curriculum`, `lib/lessons`, `lib/progress` |
+| `components/LessonView.tsx` | Lesson shell, step navigation, level 4 quiz | none | `characters`, `icons`, `LessonSteps`, `lib/curriculum`, `lib/lessons`, `lib/progress` |
+| `components/LessonSteps.tsx` | Reading, Post-mortem, Lab and Deliverable step renderers | none | `icons`, `lib/lessons` |
 | `components/TrophiesView.tsx` | Profile, trophy cabinet, deliverables | none | `characters`, `icons`, `lib/curriculum`, `lib/progress` |
 | `components/characters.tsx`, `components/icons.tsx` | Presentational SVG | none | none |
 | `lib/curriculum.ts` | Zones, levels, trophies, deliverables | static course structure | none |
-| `lib/lessons.ts` | Lesson content per level | static lesson content | none |
+| `lib/lessons.ts` | Lesson content model (step types) and aggregation of levels | none | `lib/lessons/` |
+| `lib/lessons/level-N.ts` | Lesson content of level N (0 to 10) | static lesson content | `lib/lessons` (types only) |
 | `lib/progress.tsx` | Progress state and persistence | `localStorage` key `agent-path:v1` | `lib/curriculum` |
 | `app/globals.css` | All styles, global | none | none |
 

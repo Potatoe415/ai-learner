@@ -16,9 +16,9 @@ Learner only. No accounts (inferred — confirm; see decision 0003).
 ## Core features
 Observed in the code:
 - Learning path: base camp (level 0) and three zones (Workshop, Fortress, Field) covering levels 1 to 10, mapped to the 8 modules of `content/curriculum.md`.
-- Lessons of 4 steps each: Concept, Post-mortem, Lab, Deliverable. Only the level 4 Concept is playable so far.
+- Lessons of 4 steps each: Concept, Post-mortem, Lab, Deliverable. All 4 steps are playable for levels 0 to 10 (content source: `RAW_content/02_Modules/`, coverage in `content/coverage.md`).
 - Progress: XP, daily streak, 12 trophies (one per level plus a 7-day streak).
-- Executive templates (security memo, 4D KPI scorecard, capstone adoption plan) unlocked at levels 5, 9 and 10. Templates themselves not written yet.
+- Executive templates (security memo, 4D KPI scorecard, capstone adoption plan) unlocked at levels 5, 9 and 10. They are the deliverables of those levels, downloadable as Markdown.
 - Four characters (Loop, Plug, Ward, Cap) reacting to the learner.
 
 ## Out of scope
