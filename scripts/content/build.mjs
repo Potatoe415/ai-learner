@@ -5,7 +5,7 @@
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { ContentError, parseDoc } from "./lib/markdown.mjs";
-import { readConceptQuiz, readDeliverable, readLab, readModule, readPostMortem, readReading, readTrail, readZone } from "./lib/read-site.mjs";
+import { readConceptQuiz, readDeliverable, readLab, readModule, readCaseStudy, readReading, readTrail, readZone } from "./lib/read-site.mjs";
 import { STAGES, abs, readText } from "./lib/files.mjs";
 
 /** Unit file name -> key in LessonContent, its reader, and the unit kind it fills. */
@@ -13,7 +13,7 @@ const UNIT_FILES = {
   "history.md": { key: "history", read: readReading, unit: "History" },
   "concept.md": { key: "reading", read: readReading, unit: "Concept" },
   "concept-quiz.md": { key: "concept", read: readConceptQuiz, unit: "Concept" },
-  "post-mortem.md": { key: "postMortem", read: readPostMortem, unit: "Post-mortem" },
+  "case-study.md": { key: "caseStudy", read: readCaseStudy, unit: "Case study" },
   "lab.md": { key: "lab", read: readLab, unit: "Lab" },
   "deliverable.md": { key: "deliverable", read: readDeliverable, unit: "Deliverable" },
 };

@@ -1,8 +1,8 @@
 ---
-kind: post-mortem
+kind: case-study
 based_on: content/01-extracted/02_Modules/Module_5_Complete.md, content/01-extracted/02_Modules/Module_5_Complements.md
 based_on_hash: d88af238421e
-kicker: Post-mortem · Samsung, 2023
+kicker: Case study · Samsung, 2023
 title: Stage 1 in the headlines: confidential code in a public chatbot
 bubble: A big name, a stage 1 mistake. Let's learn from it.
 ---

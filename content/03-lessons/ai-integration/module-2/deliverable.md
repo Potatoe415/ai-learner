@@ -7,7 +7,7 @@ title: Choose the platform and architecture for your candidate workflow
 fileName: platform-architecture-choice.md
 bubble: Your architecture, one decision per line. Module 8 will thank you.
 ---
-Take the candidate workflow you picked in module 1 and turn it into explicit choices: what problem the agent solves, which steps code owns, how many agents, which platform, which model, where it runs and what the harness checks. Analyse trade-offs, not feature lists. This sheet becomes the technology section of your capstone adoption plan in module 8.
+Take the candidate workflow you picked in module 1 and turn it into explicit choices: what problem the agent solves, which steps code owns, how many agents, which platform, which model, where it runs and what the harness checks. Analyse trade-offs, not feature lists. This sheet becomes the technology section of the adoption plan of your personal project in module 8.
 
 ## Template
 

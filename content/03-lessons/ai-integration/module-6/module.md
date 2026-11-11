@@ -6,7 +6,8 @@ n: 6
 zone: field
 title: From pilot to practice
 sub: Pilot purgatory, Crawl-Walk-Run, 4D KPIs
-units: Concept, Post-mortem, Lab, Deliverable
+units: Concept, Case study, Lab, Deliverable
+optional: Lab
 badge.name: Out of purgatory
 badge.how: Plan a pilot's move through Crawl, Walk, Run.
 ---

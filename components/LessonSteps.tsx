@@ -1,12 +1,12 @@
 "use client";
 
-// Renderers for the content-driven lesson units: Reading (Concept), Post-mortem, Lab, Deliverable.
+// Renderers for the content-driven lesson units: Reading (Concept), Case study, Lab, Deliverable.
 // Each unit reports wrong answers through `onMiss` and completion through `onComplete`;
 // points and persistence stay in `lib/scoring.ts` and `lib/progress.tsx`.
 
 import { useState, type ReactNode } from "react";
 import { Check, Star } from "./icons";
-import type { DeliverableStep, Lab, PostMortem, Question, Reading, Section, Table } from "@/lib/lessons";
+import type { DeliverableStep, Lab, CaseStudy, Question, Reading, Section, Table } from "@/lib/lessons";
 
 interface StepProps<T> {
   data: T;
@@ -150,7 +150,7 @@ export function ReadingStep({ data, done, points, onComplete, onMiss }: StepProp
   );
 }
 
-export function PostMortemStep({ data, done, points, onComplete, onMiss }: StepProps<PostMortem>) {
+export function CaseStudyStep({ data, done, points, onComplete, onMiss }: StepProps<CaseStudy>) {
   return (
     <>
       <Head kicker={data.kicker} title={data.title}><p className="lead">{data.context}</p></Head>

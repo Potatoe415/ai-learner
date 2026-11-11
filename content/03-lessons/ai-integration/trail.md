@@ -12,4 +12,4 @@ zones: workshop, fortress, field, summit
 |---|---|---|---|
 | Security memo | A memo template that maps your agentic risks onto the NIST CSF 2.0 framework. | 4 | #E4E5F8 |
 | 4D KPI scorecard | Technical, operational, financial, adoption: the scorecard to present to your leadership. | 6 | #FAE6D2 |
-| Capstone adoption plan | Stack, costs, security, phased rollout, guardrails and KPIs: your complete file. | 8 | #F9E3AE |
+| Adoption plan (personal project) | Stack, costs, security, phased rollout, guardrails and KPIs: your complete file. | 8 | #F9E3AE |

@@ -7,7 +7,7 @@ title: The KPI scorecard you put in front of leadership
 fileName: kpi-scorecard.md
 bubble: This is the page leadership will read. Make every number earn its place.
 ---
-One to two pages for your candidate workflow, following the KPIs for AI assignment: the context, what the agent does, three to five headline KPIs covering the technical, operational, financial and adoption dimensions, and how they show whether the business goal is being met. Add the Crawl, Walk, Run milestones with dated, numeric exit criteria and a short change plan. This scorecard becomes the rollout and KPI sections of your capstone adoption plan in module 8.
+One to two pages for your candidate workflow, following the KPIs for AI assignment: the context, what the agent does, three to five headline KPIs covering the technical, operational, financial and adoption dimensions, and how they show whether the business goal is being met. Add the Crawl, Walk, Run milestones with dated, numeric exit criteria and a short change plan. This scorecard becomes the rollout and KPI sections of the adoption plan of your personal project in module 8.
 
 ## Template
 

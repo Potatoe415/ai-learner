@@ -1,8 +1,8 @@
 ---
-kind: post-mortem
+kind: case-study
 based_on: content/01-extracted/02_Modules/Module_3_Complete.md, content/01-extracted/02_Modules/Module_3_Complements.md
 based_on_hash: 81331eb54889
-kicker: Post-mortem · Knight Capital, 2012
+kicker: Case study · Knight Capital, 2012
 title: 45 minutes without a stop button
 bubble: Even the best plug needs a fuse. Here's why.
 ---

@@ -14,7 +14,7 @@ Real examples: `content/03-lessons/ai-integration/module-1/` and `module-3/conce
 
 ## Question (`:::check`)
 
-Used in readings (optional) and post-mortems (required).
+Used in readings (optional) and case studies (required).
 
 ```markdown
 :::check
@@ -56,7 +56,7 @@ One paragraph.
 (optional :::check)
 ```
 
-## kind: post-mortem (`post-mortem.md`)
+## kind: case-study (`case-study.md`)
 
 Front matter: `kicker`, `title`, `bubble`. Body: context paragraph, then the sections `## Numbers` (a table `| Value | Label |`), `## Timeline` (one `### Label` + one paragraph per event), `## Lessons` (list), a `:::check`, `## Sources` (list).
 
@@ -74,7 +74,7 @@ Interactive quiz that closes the Concept unit. Front matter: `kicker`, `next`, `
 
 ## kind: module (`module.md`)
 
-Front matter: `n`, `zone` (a zone key), `title`, `sub`, `units` (comma-separated, from History, Concept, Post-mortem, Lab, Deliverable, in display order), `badge.name`, `badge.how`. Body: `## Topics` (list).
+Front matter: `n`, `zone` (a zone key), `title`, `sub`, `units` (comma-separated, from History, Concept, Case study, Lab, Deliverable, in display order), `optional` (comma-separated subset of `units`, may be omitted: units that need code or coding knowledge; not needed for the badge, their points are a bonus, decision 0009), `badge.name`, `badge.how`. Body: `## Topics` (list).
 
 ## kind: zone (`zones/<key>.md`)
 

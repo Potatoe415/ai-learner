@@ -1,8 +1,8 @@
 ---
-kind: post-mortem
+kind: case-study
 based_on: content/01-extracted/02_Modules/Module_8_Complete.md, content/01-extracted/02_Modules/Module_8_Complements.md
 based_on_hash: 6fa4edd8c432
-kicker: Post-mortem · Amazon's hiring tool, 2018
+kicker: Case study · Amazon's hiring tool, 2018
 title: The recruiting model that learned to prefer men
 bubble: Good engineers, real data, unfair result. Let's see how it happened.
 ---

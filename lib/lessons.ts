@@ -1,6 +1,6 @@
 // Lesson content model. The content itself is Markdown in content/03-lessons/, turned into
 // lib/generated/content.ts by the content pipeline (decision 0008); this file holds the types and helpers.
-// A module counts as complete (badge earned) when all its units are done (Concept, Post-mortem, Lab, Deliverable;
+// A module counts as complete (badge earned) when all its units are done (Concept, Case study, Lab, Deliverable;
 // module 1 opens with a History unit, see `lib/curriculum.ts`).
 // Points are not part of the content: they come from `lib/scoring.ts`.
 
@@ -61,8 +61,8 @@ export interface Reading {
   bubble: string;
 }
 
-/** Post-mortem unit: a real case, what happened, and what to learn from it. */
-export interface PostMortem {
+/** Case study unit: a real case, what happened, and what to learn from it. */
+export interface CaseStudy {
   kicker: string;
   title: string;
   context: string;
@@ -111,7 +111,7 @@ export interface LessonContent {
   history?: Reading;
   reading?: Reading;
   concept?: ConceptQuiz;
-  postMortem?: PostMortem;
+  caseStudy?: CaseStudy;
   lab?: Lab;
   deliverable?: DeliverableStep;
 }
@@ -121,7 +121,7 @@ export function unitContent(c: LessonContent, kind: UnitKind) {
   switch (kind) {
     case "History": return c.history;
     case "Concept": return c.concept ?? c.reading;
-    case "Post-mortem": return c.postMortem;
+    case "Case study": return c.caseStudy;
     case "Lab": return c.lab;
     case "Deliverable": return c.deliverable;
   }
@@ -136,7 +136,7 @@ export function unitTitle(m: number, unit: number): string {
   switch (unitKind(m, unit)) {
     case "History": return c.history?.title ?? "";
     case "Concept": return c.reading?.title ?? c.concept?.question ?? "";
-    case "Post-mortem": return c.postMortem?.title ?? "";
+    case "Case study": return c.caseStudy?.title ?? "";
     case "Lab": return c.lab?.title ?? "";
     case "Deliverable": return c.deliverable?.title ?? "";
     default: return "";
@@ -165,9 +165,9 @@ export function unitMinutes(m: number, unit: number): number {
   switch (unitKind(m, unit)) {
     case "History": return toMinutes(countWords(readingText(c.history)));
     case "Concept": return toMinutes(countWords([...readingText(c.reading), c.concept?.question]));
-    case "Post-mortem": {
-      const pm = c.postMortem;
-      return toMinutes(countWords([pm?.context, ...(pm?.timeline.map((t) => t.text) ?? []), ...(pm?.lessons ?? []), ...questionText(pm?.question)]));
+    case "Case study": {
+      const cs = c.caseStudy;
+      return toMinutes(countWords([cs?.context, ...(cs?.timeline.map((t) => t.text) ?? []), ...(cs?.lessons ?? []), ...questionText(cs?.question)]));
     }
     case "Lab": return Number.parseInt(c.lab?.duration ?? "", 10) || DEFAULT_LAB_MINUTES;
     default: return DELIVERABLE_MINUTES;

@@ -6,7 +6,8 @@ n: 4
 zone: fortress
 title: Threats & NIST
 sub: Prompt injection, deepfakes, NIST CSF 2.0
-units: Concept, Post-mortem, Lab, Deliverable
+units: Concept, Case study, Lab, Deliverable
+optional: Lab
 badge.name: Injection hunter
 badge.how: Find the attacks hidden in a booby-trapped input.
 ---

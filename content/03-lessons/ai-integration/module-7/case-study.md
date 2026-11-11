@@ -1,8 +1,8 @@
 ---
-kind: post-mortem
+kind: case-study
 based_on: content/01-extracted/02_Modules/Module_7_Complete.md, content/01-extracted/02_Modules/Module_7_Complements.md
 based_on_hash: c3fe233eedc0
-kicker: Post-mortem · DoNotPay, 2024
+kicker: Case study · DoNotPay, 2024
 title: An “AI Lawyer” with no file behind the claim
 bubble: A bold claim and an empty file. Let's read the record.
 ---

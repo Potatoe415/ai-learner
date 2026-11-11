@@ -2,17 +2,17 @@
 kind: deliverable
 based_on: content/01-extracted/02_Modules/Module_8_Complete.md, content/01-extracted/02_Modules/Module_8_Complements.md
 based_on_hash: 6fa4edd8c432
-kicker: Deliverable · Capstone adoption plan
-title: Your capstone adoption plan
-fileName: capstone-adoption-plan.md
+kicker: Deliverable · Personal project
+title: Your personal project: the adoption plan
+fileName: personal-project-adoption-plan.md
 bubble: Everything you built, in one file. This is the one you take to your leadership.
 ---
-The final file: a two-to-five page executive plan for bringing an agent into one function of your organisation. It follows the eight sections of the capstone and assembles the deliverables of modules 1 to 7, plus this module's mailroom map. You are not writing from scratch: you are joining your pieces into one coherent story. Where you lack a figure, say how you will get it (internal data, an expert, more measurement).
+The final file: a two-to-five page executive plan for bringing an agent into one function of your organisation. It follows the eight sections of the personal project and assembles the deliverables of modules 1 to 7, plus this module's mailroom map. You are not writing from scratch: you are joining your pieces into one coherent story. Where you lack a figure, say how you will get it (internal data, an expert, more measurement).
 
 ## Template
 
 ```markdown
-# Capstone adoption plan
+# Adoption plan (personal project)
 
 Organisation (one sentence, reused word for word everywhere in this document):
 Author:

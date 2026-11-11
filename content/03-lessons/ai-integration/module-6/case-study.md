@@ -1,8 +1,8 @@
 ---
-kind: post-mortem
+kind: case-study
 based_on: content/01-extracted/02_Modules/Module_6_Complete.md, content/01-extracted/02_Modules/Module_6_Complements.md
 based_on_hash: bbde058d2b67
-kicker: Post-mortem · IBM Watson Health, 2021
+kicker: Case study · IBM Watson Health, 2021
 title: A revolution in cancer care that never got past the pilot
 bubble: A famous name, a bold promise, no deployment. Let's see what was missing.
 ---

@@ -6,7 +6,8 @@ n: 2
 zone: workshop
 title: Platforms & the harness
 sub: From vibe coding to engineering
-units: Concept, Post-mortem, Lab, Deliverable
+units: Concept, Case study, Lab, Deliverable
+optional: Lab
 badge.name: Harness on
 badge.how: Wrap a vibe-coded prototype in deterministic checks.
 ---

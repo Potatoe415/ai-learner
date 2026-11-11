@@ -7,10 +7,11 @@ import { Cap, Loop, Plug, Ward } from "./characters";
 import { Arrow, Check, Close, Star } from "./icons";
 import { ModuleBadge } from "./badges";
 import BadgeCelebration from "./BadgeCelebration";
-import { getModule, getZone, unitsOf, type UnitKind, type Zone } from "@/lib/curriculum";
+import { getModule, getZone, isOptionalUnit, requiredUnitsOf, unitsOf, type UnitKind, type Zone } from "@/lib/curriculum";
 import { LESSONS, unitContent, type ConceptQuiz, type LessonContent } from "@/lib/lessons";
-import { DeliverableStepView, LabStepView, PostMortemStep, ReadingStep } from "./LessonSteps";
+import { DeliverableStepView, LabStepView, CaseStudyStep, ReadingStep } from "./LessonSteps";
 import { useProgress } from "@/lib/progress";
+import { moduleMaxPoints } from "@/lib/scoring";
 
 /** Mascot size in the lesson view: small enough to leave the lesson text most of the width. */
 const LESSON_MASCOT = 140;
@@ -99,7 +100,7 @@ interface UnitProps {
 function UnitBody({ content, kind, ...props }: UnitProps) {
   if (kind === "History" && content.history) return <ReadingStep data={content.history} {...props} />;
   if (kind === "Concept" && content.reading) return <ReadingStep data={content.reading} {...props} />;
-  if (kind === "Post-mortem" && content.postMortem) return <PostMortemStep data={content.postMortem} {...props} />;
+  if (kind === "Case study" && content.caseStudy) return <CaseStudyStep data={content.caseStudy} {...props} />;
   if (kind === "Lab" && content.lab) return <LabStepView data={content.lab} {...props} />;
   if (kind === "Deliverable" && content.deliverable) return <DeliverableStepView data={content.deliverable} {...props} />;
   return null;
@@ -135,6 +136,11 @@ export default function LessonView({ module, startUnit }: { module: number; star
   const unitDone = p.isUnitDone(module, unit);
   const points = p.unitValue(module, unit);
   const moduleDone = p.isModuleDone(module);
+  const optional = isOptionalUnit(module, unit);
+  const doneValue = (optionalUnits: boolean) =>
+    units.reduce((sum, _, i) => sum + (isOptionalUnit(module, i) === optionalUnits && p.isUnitDone(module, i) ? p.unitValue(module, i) : 0), 0);
+  const requiredPoints = doneValue(false);
+  const bonusPoints = doneValue(true);
   const show = (u: number) => router.replace(`${pathname}?unit=${u}`, { scroll: false });
   const go = (u: number) => { show(u); window.scrollTo(0, 0); };
   // Stay on the unit just completed (explanation, points earned) instead of jumping to the next open one.
@@ -143,7 +149,8 @@ export default function LessonView({ module, startUnit }: { module: number; star
   const complete = (u: number) => {
     show(u);
     // Celebrate only the completion that earns the badge, not revisits of a finished module.
-    if (!p.isUnitDone(module, u) && units.every((_, i) => i === u || p.isUnitDone(module, i))) setCelebrate(true);
+    // Optional units are not needed for the badge (decision 0009).
+    if (!p.isUnitDone(module, u) && !moduleDone && requiredUnitsOf(module).every((i) => i === u || p.isUnitDone(module, i))) setCelebrate(true);
     p.completeUnit(module, u);
   };
 
@@ -151,7 +158,7 @@ export default function LessonView({ module, startUnit }: { module: number; star
     <div className="row" style={{ gap: 12 }}>
       {unit > 0 && <button type="button" className="btn-ghost" onClick={() => go(unit - 1)}>← Previous unit</button>}
       {unit < units.length - 1 && (
-        <button type="button" className="cta dark" onClick={() => go(unit + 1)}>Next: {units[unit + 1]} <Arrow color="#F7F3EA" /></button>
+        <button type="button" className="cta dark" onClick={() => go(unit + 1)}>Next: {units[unit + 1]}{isOptionalUnit(module, unit + 1) ? " (optional)" : ""} <Arrow color="#F7F3EA" /></button>
       )}
     </div>
   );
@@ -160,16 +167,19 @@ export default function LessonView({ module, startUnit }: { module: number; star
     <div className="page narrow">
       {celebrate && <BadgeCelebration module={module} name={mod.badge.name} onClose={endCelebration} />}
       <header className="row" style={{ gap: 16 }}>
-        <Link href="/trail" className="close" aria-label="Leave the module and go back to the trail"><Close /></Link>
         <div className="bar">
           <div className="row between" style={{ gap: 8, fontSize: 14, fontWeight: 700 }}>
-            <span style={{ color }}>Module {module} · {mod.title}</span>
+            <span style={{ color }}>
+              Module {module} · {mod.title}{" "}
+              <span className="mod-points">({requiredPoints.toLocaleString("en-US")} / {moduleMaxPoints(module).toLocaleString("en-US")} points{bonusPoints > 0 ? ` + ${bonusPoints} bonus` : ""})</span>
+            </span>
             <span style={{ color: "var(--muted)" }}>Unit {unit + 1} of {units.length}</span>
           </div>
           <div className="seg">{units.map((s, i) => <i key={s} style={i <= unit || p.isUnitDone(module, i) ? { background: color } : undefined} />)}</div>
-          <div className="seg labels">{units.map((s, i) => <span key={s} style={i === unit ? { color: "var(--ink)", fontWeight: 700 } : undefined}>{s}</span>)}</div>
+          <div className="seg labels">{units.map((s, i) => <span key={s} style={i === unit ? { color: "var(--ink)", fontWeight: 700 } : undefined}>{s}{isOptionalUnit(module, i) && <span className="optional-tag">Optional</span>}</span>)}</div>
         </div>
-        {!unitDone && <span className="pill gold" style={{ fontWeight: 800 }}>+{points} points at stake</span>}
+        {!unitDone && <span className="pill gold" style={{ fontWeight: 800 }}>+{points} {optional ? "bonus points" : "points at stake"}</span>}
+        <Link href="/trail" className="close" aria-label="Leave the module and go back to the trail"><Close /></Link>
       </header>
 
       {moduleDone && unit === units.length - 1 && (
@@ -201,6 +211,12 @@ export default function LessonView({ module, startUnit }: { module: number; star
               {zone.mascot === "Loop" ? <Loop size={LESSON_MASCOT} mood={unitDone ? "cheer" : "think"} /> : <Mascot who={zone.mascot} />}
             </div>
             <div key={unit} style={{ flex: "1 1 480px", minWidth: 0, display: "flex", flexDirection: "column", gap: 20 }}>
+              {optional && (
+                <p className="optional-note" role="note">
+                  <span className="optional-tag">Optional</span>
+                  This unit needs some code. You can skip it: the badge does not need it, and its points are a bonus.
+                </p>
+              )}
               <UnitBody
                 content={content}
                 kind={kind}

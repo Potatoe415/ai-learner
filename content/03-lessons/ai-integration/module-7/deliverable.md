@@ -7,7 +7,7 @@ title: The governance plan for your candidate workflow
 fileName: governance-plan.md
 bubble: Write down every wall and every logbook. I'll check the gates.
 ---
-One to three pages, in the shape of MIT Assignment 7.1, for the candidate workflow you picked in module 1: applicable regulations, key risks, a guardrail register, a testing and evaluation plan, the audit trail and your documentation practices. Reuse your deliverables from modules 1 to 6, in particular the security memo from module 4 (its threats feed the red-team cases) and the KPI scorecard from module 6 (its override and escalation rates show whether oversight works). This plan becomes the security, testing and governance sections of your capstone adoption plan in module 8. It is a working document, not legal advice: have it reviewed by legal or your DPO.
+One to three pages, in the shape of MIT Assignment 7.1, for the candidate workflow you picked in module 1: applicable regulations, key risks, a guardrail register, a testing and evaluation plan, the audit trail and your documentation practices. Reuse your deliverables from modules 1 to 6, in particular the security memo from module 4 (its threats feed the red-team cases) and the KPI scorecard from module 6 (its override and escalation rates show whether oversight works). This plan becomes the security, testing and governance sections of the adoption plan of your personal project in module 8. It is a working document, not legal advice: have it reviewed by legal or your DPO.
 
 ## Template
 

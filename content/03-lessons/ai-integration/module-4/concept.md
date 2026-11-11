@@ -17,7 +17,7 @@ The current era swaps the infected attachment for synthetic media and autonomous
 | Threat | How it reaches you | Examples from the course |
 |---|---|---|
 | Deepfake | Broadcast: fake video or audio of a known figure, aimed at a wide audience | Fake Elon Musk investment ads, one retiree lost more than $300,000 (AARP, January 2025); a cloned Joe Biden voice telling New Hampshire voters to skip the primary (January 2024) |
-| Impersonation | Targeted and interactive: a cloned voice, a chatbot or a scripted agent aimed at one person or a small team, in a private channel | A cloned German CEO voice got a British executive to wire $243,000 (energy sector, 2019); a deepfake video call led to transfers of about US$25.6 million (Hong Kong, 2024, see the post-mortem) |
+| Impersonation | Targeted and interactive: a cloned voice, a chatbot or a scripted agent aimed at one person or a small team, in a private channel | A cloned German CEO voice got a British executive to wire $243,000 (energy sector, 2019); a deepfake video call led to transfers of about US$25.6 million (Hong Kong, 2024, see the case study) |
 | Prompt injection | Hidden or hostile instructions inside the text an AI system reads; it attacks the model's decisions with language instead of code | A Stanford student got Microsoft's Bing chatbot (codename Sydney) to reveal its programming (February 2023); UC San Diego researchers' “Imprompter” made chatbots leak personal chat data to an attacker's domain about 80% of the time (2024) |
 
 :::callout The defender's dilemma

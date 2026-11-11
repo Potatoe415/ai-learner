@@ -6,7 +6,7 @@
 import Link from "next/link";
 import { Nimbus } from "./characters";
 import { Arrow, Star } from "./icons";
-import { MODULES, TRAIL } from "@/lib/curriculum";
+import { MODULES, TRAIL, requiredUnitsOf } from "@/lib/curriculum";
 import { TRAIL_MAX_POINTS } from "@/lib/scoring";
 import { useProgress } from "@/lib/progress";
 
@@ -14,8 +14,9 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 
 function TrailTile() {
   const p = useProgress();
-  const unitsDone = MODULES.reduce((n, m) => n + m.units.filter((_, u) => p.isUnitDone(m.n, u)).length, 0);
-  const unitsTotal = MODULES.reduce((n, m) => n + m.units.length, 0);
+  // Required units only: optional units (decision 0009) can be skipped.
+  const unitsDone = MODULES.reduce((n, m) => n + requiredUnitsOf(m.n).filter((u) => p.isUnitDone(m.n, u)).length, 0);
+  const unitsTotal = MODULES.reduce((n, m) => n + requiredUnitsOf(m.n).length, 0);
   const pct = Math.round((unitsDone / unitsTotal) * 100);
   const finished = p.completedModules.length === MODULES.length;
   const action = finished ? "Review" : unitsDone > 0 ? "Resume" : "Start";
@@ -60,9 +61,9 @@ export default function HomeView() {
   return (
     <div className="page">
       <header className="home-head">
-        <span className="eyebrow">Agent Path</span>
+        <span className="eyebrow">AI Academy</span>
         <h1 className="display">Pick a trail</h1>
-        <p>Each trail is a set of modules: short lessons, real post-mortems, hands-on labs and a deliverable for your own company.</p>
+        <p>Each trail is a set of modules: short lessons, real case studies, hands-on labs and a deliverable for your own company.</p>
       </header>
       <section className="tiles" aria-label="Trails">
         <TrailTile />

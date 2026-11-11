@@ -16,7 +16,7 @@ MIT’s Dr. Abel Sanchez offers a down-to-earth definition: an AI agent is a wor
 
 - Typical use cases: automating customer experiences, creating and posting campaign content, proactive sales intelligence (next step, upsell), security systems that monitor and act, supply-chain planning.
 - Customer service already shows the payoff: companies there report average productivity gains of 15% to 30% from generative AI.
-- Octopus Energy (UK) put a ChatGPT-based assistant on its customer channel: it handles 44% of inquiries, the work of about 250 people, with 80% satisfaction against 77% for human agents. Klarna, the post-mortem of this module, shows the same pattern at a larger scale.
+- Octopus Energy (UK) put a ChatGPT-based assistant on its customer channel: it handles 44% of inquiries, the work of about 250 people, with 80% satisfaction against 77% for human agents. Klarna, the case study of this module, shows the same pattern at a larger scale.
 - Amarra, a New Jersey gown distributor, used generative AI from 2020 for product descriptions (60% less writing time), inventory (40% less overstock) and a chatbot taking 70% of inquiries. Its lesson: the first bot sounded robotic, and tone had to be adapted country by country.
 
 | | Generative chatbot | Retrieval-augmented (RAG) | Agentic system |

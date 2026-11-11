@@ -91,7 +91,7 @@ Values in a mission statement change nothing; values built into operations, trai
 
 ## When one agent becomes several
 
-Your capstone may need more than one agent. In the closing webinar, Dr. John Williams described two ways to organise them once a single script is no longer enough. Both avoid long conversational chains between agents, which break as soon as one prompt changes (the “chain jam” from module 5).
+Your personal project may need more than one agent. In the closing webinar, Dr. John Williams described two ways to organise them once a single script is no longer enough. Both avoid long conversational chains between agents, which break as soon as one prompt changes (the “chain jam” from module 5).
 
 | Pattern | How it works | Why it helps |
 |---|---|---|

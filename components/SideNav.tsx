@@ -1,16 +1,16 @@
 "use client";
 
-// App-wide collapsible side menu: brand, the trail name (link to the trail page) and the trail's
-// modules grouped by zone with their units for the current one. The profile is the round button top right.
+// App shell: a light site header on every page (logo, site title, profile button) and a collapsible
+// side menu with the trail name (link to the trail page) and the trail's modules grouped by zone.
 // Desktop: expanded or collapsed to an icon rail (choice saved in localStorage). Mobile: a drawer.
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState, type ReactNode } from "react";
-import { Loop, Nimbus } from "./characters";
+import { Nimbus } from "./characters";
 import { Check, Chevron, Close, MapIcon, MenuIcon, UserIcon } from "./icons";
 import { ModuleBadge } from "./badges";
-import { MODULES, TRAIL, ZONES, getZone, unitsOf, type CourseModule } from "@/lib/curriculum";
+import { MODULES, TRAIL, ZONES, getZone, isOptionalUnit, unitsOf, type CourseModule } from "@/lib/curriculum";
 import { useProgress } from "@/lib/progress";
 
 const COLLAPSED_KEY = "agent-path:nav-collapsed";
@@ -75,7 +75,7 @@ function ModuleItem({ mod, collapsed, active, onNavigate }: { mod: CourseModule;
             return (
               <li key={u}>
                 <Link href={`/module/${mod.n}?unit=${i}`} className={`snav-unit ${here ? "on" : ""}`} aria-current={here ? "page" : undefined} onClick={onNavigate}>
-                  <span className={`snav-dot ${unitDone ? "done" : ""}`}>{unitDone && <Check size={10} color="#fff" w={4} />}</span>{u}
+                  <span className={`snav-dot ${unitDone ? "done" : ""}`}>{unitDone && <Check size={10} color="#fff" w={4} />}</span>{u}{isOptionalUnit(mod.n, i) && <span className="optional-tag">Optional</span>}
                 </Link>
               </li>
             );
@@ -117,7 +117,7 @@ function NavBodyFromUrl(props: BodyProps) {
   return <NavBody {...props} unit={raw !== null && /^\d$/.test(raw) && Number(raw) < max ? Number(raw) : null} />;
 }
 
-/** Round profile button, top right of every page (inside the top bar on small screens). */
+/** Round profile button, at the right of the site header. */
 function ProfileButton() {
   const p = useProgress();
   const on = usePathname() === "/profile";
@@ -130,7 +130,7 @@ function ProfileButton() {
   );
 }
 
-/** Wraps every page with the side menu (desktop rail or mobile drawer). */
+/** Wraps every page with the site header and the side menu (desktop rail or mobile drawer). */
 export default function SideNav({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [open, setOpen] = useState(false);
@@ -167,16 +167,15 @@ export default function SideNav({ children }: { children: ReactNode }) {
 
   return (
     <div className={`shell ${collapsed ? "collapsed" : ""} ${open ? "drawer-open" : ""}`}>
-      <div className="topbar">
-        <button type="button" className="snav-btn" aria-label="Open the menu" aria-expanded={open} aria-controls="side-nav" onClick={() => setOpen(true)}><MenuIcon /></button>
-        <Link href="/" className="brand small"><Loop size={36} />Agent Path</Link>
+      <header className="site-head">
+        <button type="button" className="snav-btn mob" aria-label="Open the menu" aria-expanded={open} aria-controls="side-nav" onClick={() => setOpen(true)}><MenuIcon /></button>
+        <Link href="/" className="site-brand"><Nimbus size={30} />AI Academy</Link>
         <ProfileButton />
-      </div>
+      </header>
       <div className="snav-scrim" aria-hidden="true" onClick={() => setOpen(false)} />
 
       <aside id="side-nav" className="snav" aria-label="Side menu">
         <div className="snav-top">
-          <Link href="/" className="brand small" title={collapsed ? "Agent Path" : undefined}><Nimbus size={40} /><span className="snav-txt">Agent Path</span></Link>
           <button type="button" className="snav-btn desk" aria-label={collapsed ? "Expand the menu" : "Collapse the menu"} aria-expanded={!collapsed} aria-controls="side-nav" onClick={toggle}><Chevron dir={collapsed ? "right" : "left"} /></button>
           <button type="button" className="snav-btn mob" aria-label="Close the menu" onClick={() => setOpen(false)}><Close /></button>
         </div>
@@ -188,7 +187,6 @@ export default function SideNav({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="shell-main">
-        <div className="shell-head"><ProfileButton /></div>
         {children}
       </div>
     </div>

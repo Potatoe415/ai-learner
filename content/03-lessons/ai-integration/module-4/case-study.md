@@ -1,8 +1,8 @@
 ---
-kind: post-mortem
+kind: case-study
 based_on: content/01-extracted/02_Modules/Module_4_Complete.md, content/01-extracted/02_Modules/Module_4_Complements.md
 based_on_hash: 7faacb162889
-kicker: Post-mortem · Hong Kong deepfake video call, 2024
+kicker: Case study · Hong Kong deepfake video call, 2024
 title: Everyone on the call was fake
 bubble: Every face on that call was fake. Let's see how it worked.
 ---

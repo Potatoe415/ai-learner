@@ -6,7 +6,8 @@ n: 5
 zone: field
 title: Agents at work
 sub: Maturity cycle, business functions, Minimum Viable Agent
-units: Concept, Post-mortem, Lab, Deliverable
+units: Concept, Case study, Lab, Deliverable
+optional: Lab
 badge.name: MVA scoped
 badge.how: Scope a minimum viable agent around one precise bottleneck.
 ---

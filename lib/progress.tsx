@@ -1,13 +1,13 @@
 "use client";
 
-// Learner progress, stored in localStorage (decisions 0003, 0006 and 0007).
+// Learner progress, stored in localStorage (decisions 0003, 0006, 0007 and 0009).
 // Records, per unit, the points earned and the completion date, plus wrong answers on quiz units.
 // v4 matches the 8-module trail where module 1 opens with a History unit. v3 (same trail, 4 units in
 // module 1) is migrated once by shifting module 1's units up by one. v1 and v2 used the former 0-10
 // numbering and other content: they are not migrated and are left untouched in storage.
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { MAX_MODULE, MODULES, unitsOf } from "./curriculum";
+import { MAX_MODULE, MODULES, requiredUnitsOf, unitsOf } from "./curriculum";
 import { maxUnitPoints, nextRankOf, rankOf, unitPoints, type Rank } from "./scoring";
 
 const KEY = "agent-path:v4";
@@ -88,7 +88,7 @@ function load(): Stored {
 interface Ctx {
   ready: boolean;
   points: number;
-  /** Module numbers whose badge is earned (all units done). */
+  /** Module numbers whose badge is earned (all required units done). */
   completedModules: number[];
   /** First module without its badge (MAX_MODULE once everything is done). */
   currentModule: number;
@@ -136,13 +136,14 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     (m: number, u: number) => data.units[m]?.[u]?.points ?? unitPoints(m, u, misses(m, u)),
     [data, misses]
   );
-  const isModuleDone = useCallback((m: number) => Object.keys(data.units[m] ?? {}).length >= unitsOf(m).length, [data]);
+  // Optional units (decision 0009) are not needed for the badge.
+  const isModuleDone = useCallback((m: number) => requiredUnitsOf(m).every((u) => !!data.units[m]?.[u]), [data]);
   const modulePoints = useCallback(
     (m: number) => Object.values(data.units[m] ?? {}).reduce((sum, r) => sum + r.points, 0),
     [data]
   );
   const badgeDate = useCallback(
-    (m: number) => (isModuleDone(m) ? Object.values(data.units[m]).map((r) => r.at).sort().at(-1) ?? null : null),
+    (m: number) => (isModuleDone(m) ? requiredUnitsOf(m).map((u) => data.units[m][u].at).sort().at(-1) ?? null : null),
     [data, isModuleDone]
   );
 

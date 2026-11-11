@@ -18,7 +18,7 @@ Most of the names below are open source: the code is public, so you can read it,
 |---|---|---|---|
 | LangChain | Harrison Chase, late 2022 | Open-source framework for LLM apps: prompt templates, chains, agents, memory, retrieval | Steep learning curve, frequent changes, uneven docs |
 | CrewAI | João Moura (ex-Clearbit), 2023 | Python framework for teams of agents, each with a role, tools and a goal, that delegate to each other | No visual builder; needs Python skills |
-| Ollama | Michael Chiang and Jeffrey Morgan, Y Combinator winter 2021 | Runs open models (Llama 2, Mistral, Gemma) on your own machine from the command line, on macOS, Linux and Windows | Self-hosting means self-patching (see the post-mortem) |
+| Ollama | Michael Chiang and Jeffrey Morgan, Y Combinator winter 2021 | Runs open models (Llama 2, Mistral, Gemma) on your own machine from the command line, on macOS, Linux and Windows | Self-hosting means self-patching (see the case study) |
 | Codex | OpenAI, 2021; agentic preview in ChatGPT in May 2025 | Reads a codebase, fixes bugs, runs tests and proposes changes in a sandbox, without step-by-step prompts | Generated code can carry vulnerabilities and breed false confidence |
 | n8n | Jan Oberhauser, 2019 | Self-hostable, open-source alternative to Zapier that snaps apps together as nodes | Logic-heavy set-up; big flows get hard to maintain visually |
 

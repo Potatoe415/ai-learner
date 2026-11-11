@@ -3,7 +3,7 @@ kind: concept-quiz
 based_on: content/01-extracted/02_Modules/Module_3_Complete.md, content/01-extracted/02_Modules/Module_3_Complements.md
 based_on_hash: 81331eb54889
 kicker: Concept · How many cables?
-next: Continue: Knight Capital post-mortem
+next: Continue: Knight Capital case study
 bubble.start: Mission: plug 4 agents into 6 tools.
 bubble.wrong: Hmm, recount the links!
 bubble.right: Plugged in! Nicely done.

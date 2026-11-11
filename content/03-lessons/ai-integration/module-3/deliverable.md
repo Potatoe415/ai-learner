@@ -5,9 +5,9 @@ based_on_hash: 81331eb54889
 kicker: Deliverable · Integration plan
 title: The integration plan for your candidate workflow
 fileName: integration-plan.md
-bubble: Every cable on one page. Your capstone will thank you!
+bubble: Every cable on one page. Your personal project will thank you!
 ---
-Show how an agent for the candidate workflow you picked in module 1 would plug into your real systems: where it lives, what it touches, with which rights, and what stops it when things go wrong. It follows the six questions of the MIT conceiving-agents assignment and ends with a short email to leadership. It builds on your platform choice from module 2 and becomes the technology, integration and scaling sections of your capstone adoption plan in module 8.
+Show how an agent for the candidate workflow you picked in module 1 would plug into your real systems: where it lives, what it touches, with which rights, and what stops it when things go wrong. It follows the six questions of the MIT conceiving-agents assignment and ends with a short email to leadership. It builds on your platform choice from module 2 and becomes the technology, integration and scaling sections of the adoption plan of your personal project in module 8.
 
 ## Template
 

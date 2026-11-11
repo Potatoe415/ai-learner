@@ -5,9 +5,9 @@ based_on_hash: d519e1e257a1
 kicker: Deliverable · Candidate workflow card
 title: Pick your candidate workflow and give it a first price
 fileName: candidate-workflow-card.md
-bubble: Keep this card close. It travels with you all the way to the capstone.
+bubble: Keep this card close. It travels with you all the way to your personal project.
 ---
-Choose one real workflow from your own organisation that you will carry through all eight modules, and give it a first, honest cost estimate. Section 6 doubles as your Assignment 1.1 write-up; the whole card later feeds the cost analysis (CapEx, OpEx, staffing) of the capstone adoption plan in module 8.
+Choose one real workflow from your own organisation that you will carry through all eight modules, and give it a first, honest cost estimate. Section 6 doubles as your Assignment 1.1 write-up; the whole card later feeds the cost analysis (CapEx, OpEx, staffing) of the adoption plan of your personal project in module 8.
 
 ## Template
 

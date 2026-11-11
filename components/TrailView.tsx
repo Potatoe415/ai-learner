@@ -8,9 +8,9 @@ import { useState } from "react";
 import { Cap, Loop, Nimbus, Plug, Ward } from "./characters";
 import { Arrow, Check, Flag, Star } from "./icons";
 import { ModuleBadge, RankInsignia } from "./badges";
-import { MODULES, TRAIL, ZONES, getModule, modulesOfZone, unitsOf, type CourseModule, type Zone } from "@/lib/curriculum";
+import { MODULES, TRAIL, ZONES, getModule, isOptionalUnit, modulesOfZone, requiredUnitsOf, unitsOf, type CourseModule, type Zone } from "@/lib/curriculum";
 import { unitMinutes, unitTitle } from "@/lib/lessons";
-import { RANKS, TRAIL_MAX_POINTS, moduleMaxPoints } from "@/lib/scoring";
+import { RANKS, TRAIL_BONUS_POINTS, TRAIL_MAX_POINTS, moduleBonusPoints, moduleMaxPoints } from "@/lib/scoring";
 import { useProgress } from "@/lib/progress";
 
 const Mascot = ({ who, size }: { who: Zone["mascot"]; size: number }) =>
@@ -26,7 +26,8 @@ const fmtMinutes = (m: number) => {
 
 const TOP = RANKS[RANKS.length - 1];
 
-const moduleMinutes = (m: number) => unitsOf(m).reduce((sum, _, u) => sum + unitMinutes(m, u), 0);
+// Time and % done count the required units only: optional units (decision 0009) can be skipped.
+const moduleMinutes = (m: number) => requiredUnitsOf(m).reduce((sum, u) => sum + unitMinutes(m, u), 0);
 
 function ModuleCard({ mod, color }: { mod: CourseModule; color: string }) {
   const p = useProgress();
@@ -46,7 +47,7 @@ function ModuleCard({ mod, color }: { mod: CourseModule; color: string }) {
         <div className="grow">
           <div className="row between" style={{ gap: 8, alignItems: "flex-start" }}>
             <span className="eyebrow">Module {mod.n}</span>
-            <span className="ptag">{done ? `+${fmt(earned)}` : `+${fmt(moduleMaxPoints(mod.n))}`} points</span>
+            <span className="ptag">{done ? `+${fmt(earned)}` : `+${fmt(moduleMaxPoints(mod.n))}`} points{!done && moduleBonusPoints(mod.n) > 0 ? ` + ${fmt(moduleBonusPoints(mod.n))} bonus` : ""}</span>
           </div>
           <h3 className="mtitle"><Link href={`/module/${mod.n}`}>{mod.title}</Link></h3>
           <p className="msub">{mod.sub}. Badge: <b>{mod.badge.name}</b>.</p>
@@ -70,7 +71,7 @@ function ModuleCard({ mod, color }: { mod: CourseModule; color: string }) {
               <li key={u}>
                 <div className="grow">
                   <Link href={`/module/${mod.n}?unit=${i}`} className="utitle">{title}</Link>
-                  <span className="umeta">{u} · {fmtMinutes(unitMinutes(mod.n, i))}{unitDone ? ` · +${p.unitValue(mod.n, i)} points` : ""}</span>
+                  <span className="umeta">{isOptionalUnit(mod.n, i) && <span className="optional-tag">Optional</span>}{u} · {fmtMinutes(unitMinutes(mod.n, i))}{unitDone ? ` · +${p.unitValue(mod.n, i)} points` : ""}</span>
                 </div>
                 {unitDone ? (
                   <span className="udone" aria-label="Done"><Check size={20} color="#fff" w={3.2} /></span>
@@ -95,10 +96,10 @@ export default function TrailView() {
   const p = useProgress();
   const current = getModule(p.currentModule)!;
   const doneCount = p.completedModules.length;
-  const unitsDone = MODULES.reduce((n, m) => n + m.units.filter((_, u) => p.isUnitDone(m.n, u)).length, 0);
-  const unitsTotal = MODULES.reduce((n, m) => n + m.units.length, 0);
+  const unitsDone = MODULES.reduce((n, m) => n + requiredUnitsOf(m.n).filter((u) => p.isUnitDone(m.n, u)).length, 0);
+  const unitsTotal = MODULES.reduce((n, m) => n + requiredUnitsOf(m.n).length, 0);
   const pct = Math.round((unitsDone / unitsTotal) * 100);
-  const minutesLeft = MODULES.reduce((sum, m) => sum + m.units.reduce((s, _, u) => s + (p.isUnitDone(m.n, u) ? 0 : unitMinutes(m.n, u)), 0), 0);
+  const minutesLeft = MODULES.reduce((sum, m) => sum + requiredUnitsOf(m.n).reduce((s, u) => s + (p.isUnitDone(m.n, u) ? 0 : unitMinutes(m.n, u)), 0), 0);
   const finished = doneCount === MODULES.length;
 
   return (
@@ -133,6 +134,7 @@ export default function TrailView() {
             <Nimbus size={170} />
           </div>
           <span className="ptag big">+{fmt(TRAIL_MAX_POINTS)} points</span>
+          {TRAIL_BONUS_POINTS > 0 && <span className="trailstats">+ {fmt(TRAIL_BONUS_POINTS)} bonus in optional units</span>}
           <span className="trailstats">{finished ? "Done" : `${fmtMinutes(minutesLeft)} left`} · {pct}%</span>
           <div className="meter dark" role="progressbar" aria-label="Trail progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct}><div style={{ width: `${pct}%` }} /></div>
           <span className="trailstats">{doneCount} / {MODULES.length} badges</span>

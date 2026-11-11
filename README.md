@@ -15,7 +15,7 @@ npm run build
 ## Structure
 
 Trailhead model (decisions 0006, 0007): one trail, **AI integration in organisations**, of 8 modules, one per MIT module (1 to 8). Each module has 4 units (module 1 opens with a fifth, History)
-(Concept, Post-mortem, Lab, Deliverable) and earns one badge. Points and badges give the learner's level (0 to 5).
+(Concept, Case study, Lab, Deliverable) and earns one badge. Points and badges give the learner's level (0 to 5).
 
 | Path | Role |
 | --- | --- |

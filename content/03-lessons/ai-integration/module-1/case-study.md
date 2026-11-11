@@ -1,8 +1,8 @@
 ---
-kind: post-mortem
+kind: case-study
 based_on: content/01-extracted/02_Modules/Module_1_Complete.md, content/01-extracted/02_Modules/Module_1_Complements.md
 based_on_hash: d519e1e257a1
-kicker: Post-mortem · Klarna, 2024
+kicker: Case study · Klarna, 2024
 title: 700 agents’ worth of work in a month, and the humans who stayed
 bubble: A real rollout, real numbers. Let's read them closely.
 ---

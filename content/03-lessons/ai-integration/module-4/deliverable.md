@@ -7,7 +7,7 @@ title: Map your agent's risks onto NIST CSF 2.0
 fileName: security-memo.md
 bubble: Write it down calmly now, so nobody has to improvise later.
 ---
-A short memo to leadership (250 to 500 words, plus the tables) on the security of your candidate workflow, the one you picked in module 1, using the tools and systems you mapped in module 3. Start with the NIST survey as a working sheet, then write the memo. It becomes the security section of your capstone adoption plan in module 8.
+A short memo to leadership (250 to 500 words, plus the tables) on the security of your candidate workflow, the one you picked in module 1, using the tools and systems you mapped in module 3. Start with the NIST survey as a working sheet, then write the memo. It becomes the security section of the adoption plan of your personal project in module 8.
 
 ## Template
 

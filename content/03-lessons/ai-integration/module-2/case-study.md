@@ -1,8 +1,8 @@
 ---
-kind: post-mortem
+kind: case-study
 based_on: content/01-extracted/02_Modules/Module_2_Complete.md, content/01-extracted/02_Modules/Module_2_Complements.md
 based_on_hash: 2a1176681b1b
-kicker: Post-mortem · Ollama CVE-2024-37032, 2024
+kicker: Case study · Ollama CVE-2024-37032, 2024
 title: The private model server that could run an attacker's code
 bubble: Local and private is a great start. Patched is the finish line.
 ---

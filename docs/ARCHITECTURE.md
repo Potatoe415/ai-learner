@@ -33,14 +33,14 @@ Current structure, as-is (organised by layer, not yet by module):
 | Area | Purpose | Owns data | Depends on |
 |---|---|---|---|
 | `app/` | Routes `/` (trail), `/module/[n]` (modules 0–10, SSG, `?unit=N`), `/profile`; root layout wraps `ProgressProvider` and `SideNav`. `next.config.mjs` redirects `/level/:n` and `/trophies` | none | `components/`, `lib/` |
-| `components/SideNav.tsx` | App-wide side menu: trail and profile links, level and points, modules by zone with units of the open module. Desktop rail (collapsed state in `localStorage` key `agent-path:nav-collapsed`), mobile drawer | none | `badges`, `characters`, `icons`, `lib/curriculum`, `lib/progress` |
+| `components/SideNav.tsx` | App shell: light site header on every page (logo, "AI Academy", profile button), then the side menu: trail link, modules by zone with units of the open module (optional units labelled). Desktop rail (collapsed state in `localStorage` key `agent-path:nav-collapsed`), mobile drawer | none | `badges`, `characters`, `icons`, `lib/curriculum`, `lib/progress` |
 | `components/TrailView.tsx` | Trail page: trail header (points, time left, %), zone bands, module cards with units | none | `badges`, `characters`, `icons`, `lib/curriculum`, `lib/lessons`, `lib/scoring`, `lib/progress` |
 | `components/LessonView.tsx` | Module shell, unit navigation (the open unit lives in `?unit=N`), module 4 quiz, badge-earned banner | none | `badges`, `characters`, `icons`, `LessonSteps`, `lib/curriculum`, `lib/lessons`, `lib/progress` |
-| `components/LessonSteps.tsx` | Reading, Post-mortem, Lab and Deliverable unit renderers | none | `icons`, `lib/lessons` |
+| `components/LessonSteps.tsx` | Reading, Case study, Lab and Deliverable unit renderers | none | `icons`, `lib/lessons` |
 | `components/ProfileView.tsx` | Profile: rank insignia, badges / points / trails, next rank, levels, badge cabinet, deliverables | none | `badges`, `characters`, `icons`, `lib/curriculum`, `lib/scoring`, `lib/progress` |
 | `components/badges.tsx`, `components/characters.tsx`, `components/icons.tsx` | Presentational SVG and images | none | none |
-| `lib/curriculum.ts` | Trail, units, zones, modules, badges, deliverables | static course structure | none |
-| `lib/scoring.ts` | Unit points and the six ranks | static scoring rules | `lib/curriculum` |
+| `lib/curriculum.ts` | Trail, units, optional units, zones, modules, badges, deliverables | static course structure | none |
+| `lib/scoring.ts` | Unit points, module and trail totals (required units) and bonus (optional units, decision 0009), the six ranks | static scoring rules | `lib/curriculum` |
 | `lib/lessons.ts` | Lesson content model (unit types), aggregation of modules, unit titles and time estimates | none | `lib/lessons/` |
 | `lib/lessons/module-N.ts` | Lesson content of module N (0 to 10) | static lesson content | `lib/lessons` (types only) |
 | `lib/progress.tsx` | Progress state, persistence, v1 migration | `localStorage` key `agent-path:v2` | `lib/curriculum`, `lib/scoring` |

@@ -6,7 +6,8 @@ n: 7
 zone: summit
 title: Guardrails, governance & evals
 sub: Privacy law, hard guardrails, RAGAS, audit
-units: Concept, Post-mortem, Lab, Deliverable
+units: Concept, Case study, Lab, Deliverable
+optional: Lab
 badge.name: Hard guardrail
 badge.how: Lock an agent's output and score it on a golden dataset (Labs 3 and 4).
 ---

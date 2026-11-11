@@ -6,7 +6,8 @@ n: 3
 zone: workshop
 title: The universal plug
 sub: Tools, MCP, legacy systems, circuit breakers
-units: Concept, Post-mortem, Lab, Deliverable
+units: Concept, Case study, Lab, Deliverable
+optional: Lab
 badge.name: Plugged in
 badge.how: Build your own MCP server (Lab 2).
 ---

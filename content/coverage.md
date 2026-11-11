@@ -1,7 +1,7 @@
 # Content coverage
 
 Maps every chapter of the course source (`RAW_content/02_Modules/`) to the unit that covers it.
-Units: H = History (module 1 only), C = Concept, PM = Post-mortem, L = Lab, D = Deliverable. Example: `3.L` = module 3, Lab. App module N covers MIT module N (decision 0007).
+Units: H = History (module 1 only), C = Concept, CS = Case study, L = Lab, D = Deliverable. Example: `3.L` = module 3, Lab. App module N covers MIT module N (decision 0007).
 Rebuilt 2026-11-11: every lesson rewritten from the source, module by module; facts, cases and figures not found in the module's source files were removed. Update this file when a lesson changes its scope.
 
 ## Excluded everywhere
@@ -10,7 +10,7 @@ Course administration and navigation (welcome, learning outcomes, activities, su
 
 ## Thread across modules
 
-One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D (capstone adoption plan) assembles them: 1 candidate workflow and cost estimate, 2 platform and architecture, 3 integration plan, 4 security memo (NIST CSF 2.0), 5 Minimum Viable Agent design plan, 6 4D KPI scorecard and Crawl-Walk-Run rollout, 7 governance plan, 8 mailroom map and adoption plan.
+One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D (personal project: adoption plan) assembles them: 1 candidate workflow and cost estimate, 2 platform and architecture, 3 integration plan, 4 security memo (NIST CSF 2.0), 5 Minimum Viable Agent design plan, 6 4D KPI scorecard and Crawl-Walk-Run rollout, 7 governance plan, 8 mailroom map and adoption plan.
 
 ## Module 1 · Foundations & the token meter
 
@@ -27,7 +27,7 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 | Complete | 2. Reasoning models, chain-of-thought, hallucination | 1.C (loop section) |
 | Complete | 2. Video 1.2 chain-of-thought demo (planner, writer, critic) | 1.C (loop section) |
 | Complete | 2. Agentic AI definition and use cases | 1.C |
-| Complete | 2. Strategic applications: Klarna, Octopus Energy | 1.PM (Klarna), 1.C (Octopus Energy) |
+| Complete | 2. Strategic applications: Klarna, Octopus Energy | 1.CS (Klarna), 1.C (Octopus Energy) |
 | Complete | 3. Cost-optimized models, minivan analogy | 1.C (minivan section) |
 | Complete | 3. What creates cost (compute, tokens, energy), worked example | 1.C (token meter), 1.C check |
 | Complete | 3. Performance trade-offs (accuracy, speed, context) | 1.C (minivan section) |
@@ -53,7 +53,7 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 | Complements | Arch 3. Reactive generation to agentic loops (state table) | 1.C (chatbot / RAG / agent table) |
 | Complements | Multimodal 1. Pipelines by industry | 1.C (sector table) |
 | Complements | Multimodal 2. Voice biometrics and recording consent | 1.C (compliance callout), 1.D |
-| Complements | Case studies: Klarna, Octopus Energy | 1.PM, 1.C |
+| Complements | Case studies: Klarna, Octopus Energy | 1.CS, 1.C |
 | Complements | Cost engineering 1. Hidden OpEx drivers | 1.C (hidden costs), 1.L (tool tax), 1.D |
 | Complements | Cost engineering 2. TCO: API vs open source vs fine-tune | 1.C (TCO table) |
 | Complements | Instructor perspectives | 1.C |
@@ -65,7 +65,7 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 | Source | Chapter | Covered by |
 |---|---|---|
 | Complete | Intro and Video 2.1 (platforms, vibe living, single vs multi, open source, cloud) | 2.C |
-| Complete | 1. Emerging agentic platforms (open vs closed; LangChain, CrewAI, Ollama, Codex, n8n; comparison) | 2.C, 2.PM (Ollama) |
+| Complete | 1. Emerging agentic platforms (open vs closed; LangChain, CrewAI, Ollama, Codex, n8n; comparison) | 2.C, 2.CS (Ollama) |
 | Complete | Video 2.2 Match the right agent to the problem | 2.C, 2.D §1 |
 | Complete | Optional Forum 2.1 AI Platforms | excluded: forum (its question is reused in 2.D) |
 | Complete | 2. Vibe coding and vibe living (Karpathy, YC 95 %, benefits, enterprise considerations, tools, future) | 2.C, 2.D §8 |
@@ -80,7 +80,7 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 | Complements | Commodity intelligence economics | 2.C |
 | Complements | Devibing imperative | 2.C, 2.L, 2.D §8 |
 | Complements | Harness engineering | 2.C, 2.L, 2.D §7 |
-| Complements | Three governing questions and platform matrix | 2.C, 2.PM lessons, 2.D §4 |
+| Complements | Three governing questions and platform matrix | 2.C, 2.CS lessons, 2.D §4 |
 | Complements | Instructor perspectives | 2.C |
 | Complements | Assignment 2.1 guidance (no feature lists, data sovereignty, failure modes) | 2.D |
 | Complements | Capstone connection | 2.D (generalised, points to module 8) |
@@ -93,8 +93,8 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 | Complete | 1. Playlist vs live band; what agents do for business | 3.C intro, 3.C §2 |
 | Complete | 1. Tools and meta-tools; Slack, Notion, Discord | 3.C §3, 3.D §1 |
 | Complete | 1. Automation tools (Zapier, n8n, LangChain, Python) | 3.C §3 (spectrum table) |
-| Complete | 1. Human in the loop; accidents (Knight Capital, hiring bias, Optus) | 3.PM (Knight Capital), 3.C §3 callout (Optus, résumé bias) |
-| Complete | 1. Strategies for safe deployment | 3.PM lessons, 3.D §4 |
+| Complete | 1. Human in the loop; accidents (Knight Capital, hiring bias, Optus) | 3.CS (Knight Capital), 3.C §3 callout (Optus, résumé bias) |
+| Complete | 1. Strategies for safe deployment | 3.CS lessons, 3.D §4 |
 | Complete | 2. Video 3.2 (Discord integration) | 3.C §3, 3.D §1 |
 | Complete | 2. Legacy constraints, API evolution, data compatibility, performance | 3.C §1, 3.C §4 (legacy table) |
 | Complete | 2. Organizational considerations, middleware, best practices (pilots, data prep, local vs cloud, mTLS, RBAC, logging) | 3.C §4, 3.D §3–4 |
@@ -113,7 +113,7 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 | Complements | MCP: N × M problem, host/client/server, intent (SKU-409), edge cases | 3.C §1, 3.C §7, concept quiz, 3.L, 3.D §3 |
 | Complements | Legacy: three monolith barriers, computer-use as last resort | 3.C §4, 3.D §3 |
 | Complements | Automation tool spectrum | 3.C §3 |
-| Complements | Knight Capital and mandatory safeguards | 3.PM, 3.L (ceiling, breaker, kill switch), 3.D §4 |
+| Complements | Knight Capital and mandatory safeguards | 3.CS, 3.L (ceiling, breaker, kill switch), 3.D §4 |
 | Complements | Instructor perspectives | 3.C intro, 3.C §4–5, 3.D §3 and checklist |
 | Complements | Assignment 3.1 guidance (middleware, failure paths, least privilege) | 3.D §3–4, 3.D checklist |
 | Complements | Capstone integration | 3.D purpose (feeds module 8) |
@@ -126,9 +126,9 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 | Complete | Videos 4.1, 4.2 (overview, disinformation) | 4.C (attack cost falls while defence cost rises; social engineering) |
 | Complete | 1. Classic era, Lisa Mendez case | 4.C |
 | Complete | 1. Deepfakes (Musk ads, Biden robocall), CEO deepfake scenario | 4.C |
-| Complete | 1. Impersonation (2019 voice clone, Hong Kong video call) | 4.C, 4.PM |
+| Complete | 1. Impersonation (2019 voice clone, Hong Kong video call) | 4.C, 4.CS |
 | Complete | 1. Prompt injection (Bing/Sydney, Imprompter) | 4.C, 4.L |
-| Complete | 2. Cyber Kill Chain, AI examples, Lisa mapping, defences per phase | 4.C, 4.PM |
+| Complete | 2. Cyber Kill Chain, AI examples, Lisa mapping, defences per phase | 4.C, 4.CS |
 | Complete | 2. NIST CSF functions and sub-categories (ID, PR, DE, RS, RC) | 4.C, 4.D |
 | Complete | Required Assignment 4.1 and NIST survey | 4.D |
 | Complete | 3. Power of perception, six perception limits | 4.C |
@@ -145,7 +145,7 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 | Complements | Executive summary, defender's dilemma, SOC latency | 4.C |
 | Complements | Prompt injection taxonomy, linguistic boundary dilemma | 4.C, 4.L |
 | Complements | Breach anatomy: Lisa Mendez | 4.C |
-| Complements | Breach anatomy: Hong Kong deepfake, UK voice clone | 4.PM |
+| Complements | Breach anatomy: Hong Kong deepfake, UK voice clone | 4.CS |
 | Complements | NIST CSF 2.0 mapping (Govern to Recover, dual prompt, least privilege, deterministic assertions, canary, circuit breaker, rollback) | 4.C, 4.L, 4.D |
 | Complements | Instructor perspectives | 4.C (one quote); other opinion quotes not covered |
 | Complements | Assignment 4.1 guidance (specific threats, CSF mapping, spending ceiling) | 4.D |
@@ -158,13 +158,13 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 |---|---|---|
 | Complete | Intro and Video 5.1 (agents by function, architecture, browsers, consultants) | 5.C |
 | Complete | 1. AI maturity cycle (Video 5.2, stages 1 to 5) | 5.C, 5.L |
-| Complete | 1. Shadow AI (CybSafe/NCA survey, mitigation by policy, technology, culture) | 5.C, 5.PM |
+| Complete | 1. Shadow AI (CybSafe/NCA survey, mitigation by policy, technology, culture) | 5.C, 5.CS |
 | Complete | 1. Crawl, walk, run | 5.C (introduced; developed in 6.C) |
 | Complete | 2. Product development lifecycle (phases; generative and agentic cases; advantages, impact, getting ready) | 5.C |
 | Complete | Required Assignment 5.1: AI and the design process | 5.L, 5.D |
 | Complete | 3. Agents by business function (HR, finance, IT, ROI figures) | 5.C |
 | Complete | 4. Health care (Video 5.3, decision support, imaging, personalised care, operations) | 5.C |
-| Complete | 5. Browsers (Edge, Arc, Brave, Chrome DevTools; leakage, misinformation, overreliance) | 5.C, 5.PM |
+| Complete | 5. Browsers (Edge, Arc, Brave, Chrome DevTools; leakage, misinformation, overreliance) | 5.C, 5.CS |
 | Complete | 6. Centralized vs embedded (AskNova, marketing team, comparison table, HIPAA, hybrid, maturity mapping) | 5.C, 5.L |
 | Complete | Optional Forum 5.1: centralized vs embedded | 5.L (architecture step) |
 | Complete | 7. Consultants and BPO (Video 5.4, market, legacy limits, cost drop, re-engineering) | 5.C |
@@ -185,12 +185,12 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 |---|---|---|
 | Complete | Introduction, Video 6.1 (last mile, voice agents, module outline) | 6.C |
 | Complete | 1. Voice agents: Video 6.2, definition, healthcare uses, clinic case, lessons learned | 6.C, 6.L |
-| Complete | 1. Beyond fiction: Cencora / Infinitus Eva | 6.C, 6.PM (counter-example) |
+| Complete | 1. Beyond fiction: Cencora / Infinitus Eva | 6.C, 6.CS (counter-example) |
 | Complete | 2. Last-mile integration: pilot purgatory, MLOps, data issues | 6.C |
 | Complete | 2. Why pilots succeed (narrow scope, sandbox, metrics, 6–12 weeks) | 6.C |
-| Complete | 2. Why deployments stall (integration, ROI clarity gap, gradual onboarding, compute cost) | 6.C, 6.PM |
-| Complete | 2. Examples: Amazon hiring tool | 6.C (developed in 8.PM) |
-| Complete | 2. Examples: IBM Watson Health | 6.PM |
+| Complete | 2. Why deployments stall (integration, ROI clarity gap, gradual onboarding, compute cost) | 6.C, 6.CS |
+| Complete | 2. Examples: Amazon hiring tool | 6.C (developed in 8.CS) |
+| Complete | 2. Examples: IBM Watson Health | 6.CS |
 | Complete | 2. Key strategies for last-mile integration, conclusion | 6.C |
 | Complete | 2. Quote, recommended videos | not covered: decorative / external media |
 | Complete | 3. Internal resistance (psychological, organisational, technical and governance barriers) | 6.C |
@@ -233,7 +233,7 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 | Complete | 4. Purpose of documentation, four core documentation types | 7.C (documentation section), 7.D §9 |
 | Complete | 4. Compliance readiness (gap analysis, mock audits, cross-functional reviews, version control) | 7.C, 7.D §9 |
 | Complete | 4. Balancing documentation with speed | 7.C (documentation section) |
-| Complete | 4. DoNotPay failure, FAIRLY AI success | 7.PM |
+| Complete | 4. DoNotPay failure, FAIRLY AI success | 7.CS |
 | Complete | Assignment 7.1: Governance Plan | 7.D |
 | Complete | Optional Forums 7.1, 7.2 | excluded: forums (quadrant classification reused in 7.D §4) |
 | Complements | Executive summary and module delta | 7.C intro |
@@ -247,7 +247,7 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 | Complements | Key synthesis checklist (incl. DPA and zero-retention vendor terms) | 7.D checklist, 7.C callout |
 | Master curriculum | EU AI Act risk tiers, NeMo Guardrails | 7.C (kept short) |
 
-## Module 8 · Ethics & capstone
+## Module 8 · Ethics & personal project
 
 | Source | Chapter | Covered by |
 |---|---|---|
@@ -255,10 +255,10 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 | Complete | 1. Why ethics comes last, why AI ethics differs | 8.C |
 | Complete | 1. Core ethical principles (fairness, transparency, accountability, privacy) | 8.C |
 | Complete | 1. Workforce disruption (ATMs, spreadsheets, Commonwealth Bank, Hungry Jack's, hybrid reality, reskilling) | 8.C, 8.L |
-| Complete | 1. Business risks: biased hiring (Amazon) | 8.PM |
+| Complete | 1. Business risks: biased hiring (Amazon) | 8.CS |
 | Complete | 1. Business risks: deepfakes, healthcare liability | 8.C |
 | Complete | 1. Decision frameworks (do no harm, stakeholder impact, front-page test) | 8.C, 8.L, 8.D |
-| Complete | 1. Model card | 8.C, 8.PM, 8.D |
+| Complete | 1. Model card | 8.C, 8.CS, 8.D |
 | Complete | 1. Ethics and corporate leadership (Partnership on AI) | 8.C |
 | Complete | 1. Global and cultural perspectives | 8.C |
 | Complete | 1. Recommended video | not covered: title only, no content |

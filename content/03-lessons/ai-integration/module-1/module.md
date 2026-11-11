@@ -6,7 +6,8 @@ n: 1
 zone: workshop
 title: Foundations & the token meter
 sub: The history of AI, the agent loop, models and what they cost
-units: History, Concept, Post-mortem, Lab, Deliverable
+units: History, Concept, Case study, Lab, Deliverable
+optional: Lab
 badge.name: Token accountant
 badge.how: Route prompts between a small model and a frontier model (Lab 1).
 ---

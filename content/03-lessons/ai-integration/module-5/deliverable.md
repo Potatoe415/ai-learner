@@ -7,7 +7,7 @@ title: One page to get your first agent approved
 fileName: mva-design-plan.md
 bubble: One page, one bottleneck, one number. Ship it.
 ---
-A one-page plan for the Minimum Viable Agent you scoped in the lab, built on the structure of MIT assignment 5.1 (context, current workflow, AI integration). It reuses your candidate workflow and costs (module 1), platform choice (module 2), integrations (module 3) and security memo (module 4). In the module 8 capstone it feeds the context and functional domain, change management and scaling architecture sections.
+A one-page plan for the Minimum Viable Agent you scoped in the lab, built on the structure of MIT assignment 5.1 (context, current workflow, AI integration). It reuses your candidate workflow and costs (module 1), platform choice (module 2), integrations (module 3) and security memo (module 4). In the module 8 personal project it feeds the context and functional domain, change management and scaling architecture sections.
 
 ## Template
 

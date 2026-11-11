@@ -161,8 +161,8 @@ export function readReading(doc) {
   return reading;
 }
 
-export function readPostMortem(doc) {
-  checkKeys(doc, "post-mortem", ["kicker", "title", "bubble"]);
+export function readCaseStudy(doc) {
+  checkKeys(doc, "case-study", ["kicker", "title", "bubble"]);
   const { found, rest } = takeContainers(doc, doc.blocks, ["check"]);
   const { head, groups } = byH2(rest);
   const s = namedGroups(doc, groups, ["Numbers", "Timeline", "Lessons", "Sources"]);
@@ -256,13 +256,17 @@ export function readConceptQuiz(doc) {
   };
 }
 
-export const UNIT_KINDS = ["History", "Concept", "Post-mortem", "Lab", "Deliverable"];
+export const UNIT_KINDS = ["History", "Concept", "Case study", "Lab", "Deliverable"];
 
 export function readModule(doc) {
-  checkKeys(doc, "module", ["n", "zone", "title", "sub", "units", "badge.name", "badge.how"]);
+  checkKeys(doc, "module", ["n", "zone", "title", "sub", "units", "optional", "badge.name", "badge.how"]);
   const units = fmGet(doc, "units").split(",").map((u) => u.trim());
   for (const u of units) if (!UNIT_KINDS.includes(u)) fail(doc, doc.fm.units, `unknown unit "${u}" (allowed: ${UNIT_KINDS.join(", ")})`);
   if (new Set(units).size !== units.length) fail(doc, doc.fm.units, "a unit kind appears twice");
+  // Optional units (decision 0009): not needed for the badge, their points are a bonus.
+  const optional = (fmGet(doc, "optional", { optional: true }) ?? "").split(",").map((u) => u.trim()).filter(Boolean);
+  for (const u of optional) if (!units.includes(u)) fail(doc, doc.fm.optional, `optional unit "${u}" is not in "units"`);
+  if (optional.length >= units.length) fail(doc, doc.fm.optional, "at least one unit must be required");
   const { head, groups } = byH2(doc.blocks);
   if (head.length) fail(doc, head[0], 'module files hold only front matter and "## Topics"');
   const s = namedGroups(doc, groups, ["Topics"]);
@@ -272,6 +276,7 @@ export function readModule(doc) {
     title: fmGet(doc, "title"),
     sub: fmGet(doc, "sub"),
     units,
+    optional,
     topics: onlyList(doc, s.Topics.blocks, "## Topics", s.Topics.heading.line),
     badge: { name: fmGet(doc, "badge.name"), how: fmGet(doc, "badge.how") },
   };
