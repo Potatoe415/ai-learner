@@ -5,7 +5,7 @@
 
 import Link from "next/link";
 import { Loop } from "./characters";
-import { Arrow, Back, Check, DocIcon, Lock } from "./icons";
+import { Arrow, Check, DocIcon, Lock } from "./icons";
 import { ModuleBadge, RankInsignia } from "./badges";
 import { DELIVERABLES, MODULES } from "@/lib/curriculum";
 import { RANKS } from "@/lib/scoring";
@@ -32,11 +32,6 @@ export default function ProfileView() {
 
   return (
     <div className="page" style={{ gap: 32 }}>
-      <header className="row between" style={{ gap: 16 }}>
-        <Link href="/" className="pill" style={{ minHeight: 48, padding: "0 20px 0 14px", borderRadius: 24, fontSize: 16 }}><Back />Back to the trail</Link>
-        <span className="brand">Agent Path</span>
-      </header>
-
       <div className="profile-grid">
         <section className="profile">
           <div className="avatar"><Loop size={140} /></div>

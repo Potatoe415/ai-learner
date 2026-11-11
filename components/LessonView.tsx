@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Cap, Loop, Plug, Ward } from "./characters";
 import { Arrow, Check, Close, Star } from "./icons";
@@ -121,16 +121,19 @@ export default function LessonView({ module, startUnit }: { module: number; star
   const content = LESSONS[module] ?? {};
   const locked = p.ready && module > p.currentModule;
   const firstOpen = UNITS.findIndex((_, i) => !p.isUnitDone(module, i));
-  const [view, setView] = useState<number | null>(null);
-  // A requested unit opens only if it is done or the next one to do.
+  const router = useRouter();
+  const pathname = usePathname();
+  // The URL (`?unit=N`) is the single source of truth, so the side menu, the back button and
+  // in-lesson buttons always agree. A requested unit opens only if it is done or the next one to do.
   const requested = startUnit !== null && p.ready && (firstOpen === -1 || startUnit <= firstOpen) ? startUnit : null;
-  const unit = view ?? requested ?? (firstOpen === -1 ? UNITS.length - 1 : firstOpen);
+  const unit = requested ?? (firstOpen === -1 ? UNITS.length - 1 : firstOpen);
   const unitDone = p.isUnitDone(module, unit);
   const points = p.unitValue(module, unit);
   const moduleDone = p.isModuleDone(module);
-  const go = (u: number) => { setView(u); window.scrollTo(0, 0); };
+  const show = (u: number) => router.replace(`${pathname}?unit=${u}`, { scroll: false });
+  const go = (u: number) => { show(u); window.scrollTo(0, 0); };
   // Stay on the unit just completed (explanation, points earned) instead of jumping to the next open one.
-  const complete = (u: number) => { setView(u); p.completeUnit(module, u); };
+  const complete = (u: number) => { show(u); p.completeUnit(module, u); };
 
   const nav = (
     <div className="row" style={{ gap: 12 }}>

@@ -1,5 +1,5 @@
-// Mascots are illustrations in public/characters/ (cut from the generated character sheet).
-// Loop = light bulb, Plug = beaver, Ward = owl, Cap = fox.
+// Mascots are illustrations in public/characters/ (cut from tmp-genereated-img/, the generated character sheet).
+// Loop = light bulb, Plug = beaver, Ward = owl, Cap = fox, Nimbus = cloud with a lantern (main trail mascot).
 
 export type LoopMood = "happy" | "think" | "oops" | "cheer";
 
@@ -40,4 +40,8 @@ export function Ward({ size = 120 }: { size?: number }) {
 
 export function Cap({ size = 120 }: { size?: number }) {
   return <Character id="character-cap" src="/characters/cap.png" alt="Cap, the Field pilot" size={size} />;
+}
+
+export function Nimbus({ size = 120 }: { size?: number }) {
+  return <Character id="character-nimbus" src="/characters/nimbus.png" alt="Nimbus, the cloud who lights the trail" size={size} />;
 }

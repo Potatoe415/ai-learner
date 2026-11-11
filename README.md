@@ -14,12 +14,12 @@ npm run build
 
 ## Structure
 
-Trailhead model (decision 0006): one trail, **PAF**, of 11 modules (0 to 10). Each module has 4 units
+Trailhead model (decision 0006): one trail, **AI integration in organisations**, of 11 modules (0 to 10). Each module has 4 units
 (Concept, Post-mortem, Lab, Deliverable) and earns one badge. Points and badges give the learner's level (0 to 5).
 
 | Path | Role |
 | --- | --- |
-| `app/page.tsx` | The PAF trail: points, time left, % done, module cards and their units |
+| `app/page.tsx` | The trail: points, time left, % done, module cards and their units |
 | `app/module/[n]` | A module: 4 units (`?unit=N` opens a unit that is done or next) |
 | `app/profile` | Level insignia, badges / points / trails, next level, badge cabinet, executive templates |
 | `components/characters.tsx` | Loop, Plug, Ward, Cap (images in `public/characters/`) |

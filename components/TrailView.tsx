@@ -5,7 +5,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Cap, Loop, Plug, Ward } from "./characters";
+import { Cap, Loop, Nimbus, Plug, Ward } from "./characters";
 import { Arrow, Check, Flag, Lock, Star } from "./icons";
 import { ModuleBadge, RankInsignia } from "./badges";
 import { MODULES, TRAIL, UNITS, ZONES, getModule, modulesOfZone, type CourseModule, type Zone } from "@/lib/curriculum";
@@ -109,7 +109,7 @@ export default function TrailView() {
   return (
     <div className="page">
       <header className="row between" style={{ gap: 16 }}>
-        <Link href="/" className="brand"><Loop size={52} />Agent Path</Link>
+        <span className="eyebrow">Your trail</span>
         <div className="row">
           <span className="pill gold"><Star fill="#fff" />{fmt(p.points)} points</span>
           <Link href="/profile" className="pill">Level {p.rank.n} · {p.rank.name}</Link>
@@ -133,6 +133,10 @@ export default function TrailView() {
           </div>
         </div>
         <div className="side">
+          <div className="trailmascot">
+            <div className="bubble">{finished ? "You lit the whole trail!" : p.points > 0 ? "I'll light the way." : "Follow my lantern!"}</div>
+            <Nimbus size={170} />
+          </div>
           <span className="ptag big">+{fmt(TRAIL_MAX_POINTS)} points</span>
           <span className="trailstats">{finished ? "Done" : `${fmtMinutes(minutesLeft)} left`} · {pct}%</span>
           <div className="meter dark" role="progressbar" aria-label="Trail progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct}><div style={{ width: `${pct}%` }} /></div>

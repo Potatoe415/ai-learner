@@ -15,7 +15,7 @@ Learner only. No accounts (inferred — confirm; see decision 0003).
 
 ## Core features
 Observed in the code:
-- Trailhead model (decision 0006): one trail, **PAF**, of 11 modules (0 to 10). Module 0 is the base camp; modules 1 to 10 sit in three visual zones (Workshop, Fortress, Field), mapped to the 8 MIT modules of `content/curriculum.md`.
+- Trailhead model (decision 0006): one trail, **AI integration in organisations**, of 11 modules (0 to 10). Module 0 is the base camp; modules 1 to 10 sit in three visual zones (Workshop, Fortress, Field), mapped to the 8 MIT modules of `content/curriculum.md`.
 - Each module has 4 units: Concept, Post-mortem, Lab, Deliverable (content source: `RAW_content/02_Modules/`, coverage in `content/coverage.md`).
 - Points: quiz units pay 100 / 50 / 25 by attempt, Lab and Deliverable 200 each; 600 per module, 6,600 for the trail. Each module earns one badge.
 - Learner level: six ranks, 0 Curious, 1 Operator, 2 Builder, 3 Integrator, 4 Guardian, 5 Agentic Architect. Each needs a badge count and a point total; finishing the trail always reaches level 5.

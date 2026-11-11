@@ -12,3 +12,5 @@ Rationale:
 - Zones stay as visual grouping. The XP field in lesson content, the 7-day streak and its trophy are removed.
 Consequences: Routes become `/module/[n]` (with `?unit=N`) and `/profile`; `/level/:n` and `/trophies` redirect permanently. Point values live only in `lib/scoring.ts`, not in lesson content. With a single trail, badges drive the rank; points will matter more once optional content exists.
 Alternatives_Rejected: Points-only ranks (lets someone rank up without finishing modules); keeping per-step XP in content files (values duplicated across 11 files); keeping the streak (not part of Trailhead, user agreed to drop it).
+
+Note 2026-11-11: the trail name "PAF" was a typo; the trail is named "AI integration in organisations".

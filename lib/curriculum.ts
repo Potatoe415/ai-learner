@@ -1,5 +1,5 @@
 // Course structure for Agent Path, on the Trailhead model (decision 0006):
-// one trail (PAF) -> modules -> units. Each module earns one badge; points and badges give the learner's rank.
+// one trail (AI integration in organisations) -> modules -> units. Each module earns one badge; points and badges give the learner's rank.
 // Derived from the MIT Applied Agentic AI curriculum. UI strings are English first (decision 0004).
 
 export type ZoneKey = "workshop" | "fortress" | "field";
@@ -30,7 +30,7 @@ export interface CourseModule {
 }
 
 export const TRAIL = {
-  name: "PAF",
+  name: "AI integration in organisations",
   desc: "Learn applied agentic AI step by step, from the agent loop to your own adoption plan.",
 };
 

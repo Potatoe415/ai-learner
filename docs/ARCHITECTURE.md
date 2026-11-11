@@ -32,9 +32,10 @@ Current structure, as-is (organised by layer, not yet by module):
 
 | Area | Purpose | Owns data | Depends on |
 |---|---|---|---|
-| `app/` | Routes `/` (trail), `/module/[n]` (modules 0–10, SSG, `?unit=N`), `/profile`; root layout wraps `ProgressProvider`. `next.config.mjs` redirects `/level/:n` and `/trophies` | none | `components/`, `lib/` |
-| `components/TrailView.tsx` | Trail page: PAF header (points, time left, %), zone bands, module cards with units | none | `badges`, `characters`, `icons`, `lib/curriculum`, `lib/lessons`, `lib/scoring`, `lib/progress` |
-| `components/LessonView.tsx` | Module shell, unit navigation, module 4 quiz, badge-earned banner | none | `badges`, `characters`, `icons`, `LessonSteps`, `lib/curriculum`, `lib/lessons`, `lib/progress` |
+| `app/` | Routes `/` (trail), `/module/[n]` (modules 0–10, SSG, `?unit=N`), `/profile`; root layout wraps `ProgressProvider` and `SideNav`. `next.config.mjs` redirects `/level/:n` and `/trophies` | none | `components/`, `lib/` |
+| `components/SideNav.tsx` | App-wide side menu: trail and profile links, level and points, modules by zone with units of the open module. Desktop rail (collapsed state in `localStorage` key `agent-path:nav-collapsed`), mobile drawer | none | `badges`, `characters`, `icons`, `lib/curriculum`, `lib/progress` |
+| `components/TrailView.tsx` | Trail page: trail header (points, time left, %), zone bands, module cards with units | none | `badges`, `characters`, `icons`, `lib/curriculum`, `lib/lessons`, `lib/scoring`, `lib/progress` |
+| `components/LessonView.tsx` | Module shell, unit navigation (the open unit lives in `?unit=N`), module 4 quiz, badge-earned banner | none | `badges`, `characters`, `icons`, `LessonSteps`, `lib/curriculum`, `lib/lessons`, `lib/progress` |
 | `components/LessonSteps.tsx` | Reading, Post-mortem, Lab and Deliverable unit renderers | none | `icons`, `lib/lessons` |
 | `components/ProfileView.tsx` | Profile: rank insignia, badges / points / trails, next rank, levels, badge cabinet, deliverables | none | `badges`, `characters`, `icons`, `lib/curriculum`, `lib/scoring`, `lib/progress` |
 | `components/badges.tsx`, `components/characters.tsx`, `components/icons.tsx` | Presentational SVG and images | none | none |
