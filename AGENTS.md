@@ -33,6 +33,7 @@ Start with `STATE.md`. Load only what the task needs. Never scan the whole repos
 | Bug, error, logging, tests | `docs/DEBUGGING.md` |
 | Setup, deploy, migrate, rollback | `docs/RUNBOOK.md` |
 | Planning | `docs/BACKLOG.md` |
+| Graphical / UX improvements requested by the user | `BACKLOG-UI.md` (rules inside; tick items as you implement them) |
 | A past decision | `docs/decisions/INDEX.md`, then only the relevant decision |
 | Creating a doc, module, task, or decision | its template in `docs/_templates/` |
 
