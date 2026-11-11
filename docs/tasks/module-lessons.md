@@ -6,8 +6,8 @@ Goal: Turn the 8 MIT modules and their Complements into the 4-step lessons (Conc
 Scope: `lib/lessons.ts`, new `lib/lessons/level-N.ts`, `components/LessonView.tsx`, `docs/tasks/module-lessons.md` (coverage matrix), `STATE.md`, `docs/DATA_MODEL.md`, `docs/BACKLOG.md`, `docs/decisions/`.
 Do_Not_Touch: `lib/progress.tsx` (storage key `agent-path:v1`), `lib/curriculum.ts` level structure, `app/globals.css` beyond what new step renderers strictly need.
 
-Source (outside the repo, read-only):
-`M:\Users\admin\myDrive\09_llm-vault-remi\llm-vault-studies\MIT\02_Modules`
+Source (in the repo, read-only; the user's permanent base for all course creation, copied from the vault on 2026-11-11):
+`RAW_content/02_Modules/`
 - `Module_N_Complete.md` and `Module_N_Complements.md`, N = 1..8
 - `MIT_Agentic_AI_Master_Curriculum.md` (same as `content/curriculum.md`)
 - `02_Modules1-5.zip`: older copy of modules 1 to 5, excluded.
