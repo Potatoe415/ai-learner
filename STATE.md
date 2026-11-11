@@ -2,7 +2,7 @@
 
 Replace on every update. Max 40 lines. History lives in git and `docs/decisions/`.
 
-Status: All site content comes from Markdown through a 4-stage pipeline (decision 0008, `content/pipeline/`). Trail: 8 modules, 4 zones, all units open; home `/` (trail tiles + ghost tile), `/trail`, `/module/[n]`, `/profile`. BACKLOG-UI fully processed: "Case study" unit (was Post-mortem, code names too), module 8 "Personal project" (was Capstone), light site header "AI Academy" (logo + title + profile button only), module view close cross top right with "(earned / total points)", optional Lab units (decision 0009).
+Status: All site content comes from Markdown through a 4-stage pipeline (decision 0008, `content/pipeline/`). Trail: 8 modules, 4 zones, all units open; home `/` (trail tiles + ghost tile), `/trail`, `/module/[n]`, `/profile`. BACKLOG-UI fully processed: "Case study" unit (was Post-mortem, code names too), module 8 "Personal project" (was Capstone), light site header "AI Academy" (logo + title + profile button only), side menu only inside a trail (`/trail`, `/module/*`), module view close cross top right with "(earned / total points)", optional Lab units (decision 0009).
 Focus: User review of the UI changes and of the optional-unit scoring.
 Level: L2 (decision 0009 logged)
 

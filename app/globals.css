@@ -136,6 +136,7 @@ a.snav-unit:hover { background: var(--cream); }
 @media (min-width: 961px) {
   .shell-main { margin-left: var(--nav-w); }
   .shell.collapsed .shell-main { margin-left: var(--nav-w-collapsed); }
+  .shell.no-nav .shell-main { margin-left: 0; }
   .shell.collapsed .snav { width: var(--nav-w-collapsed); }
   .shell.collapsed .snav-top { flex-direction: column; padding: 14px 8px 12px; }
   .shell.collapsed .snav-txt, .shell.collapsed .snav-end { display: none; }

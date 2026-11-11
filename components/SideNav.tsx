@@ -1,7 +1,7 @@
 "use client";
 
-// App shell: a light site header on every page (logo, site title, profile button) and a collapsible
-// side menu with the trail name (link to the trail page) and the trail's modules grouped by zone.
+// App shell: a light site header on every page (logo, site title, profile button) and, inside a trail
+// only (/trail and /module/*), a collapsible side menu with the trail name and its modules grouped by zone.
 // Desktop: expanded or collapsed to an icon rail (choice saved in localStorage). Mobile: a drawer.
 
 import Link from "next/link";
@@ -165,13 +165,17 @@ export default function SideNav({ children }: { children: ReactNode }) {
     }
   };
 
+  // The side menu belongs to a trail: it shows only on the trail page and its modules.
+  const inTrail = path === "/trail" || path.startsWith("/module/");
+
   return (
-    <div className={`shell ${collapsed ? "collapsed" : ""} ${open ? "drawer-open" : ""}`}>
+    <div className={`shell ${!inTrail ? "no-nav" : ""} ${collapsed ? "collapsed" : ""} ${open ? "drawer-open" : ""}`}>
       <header className="site-head">
-        <button type="button" className="snav-btn mob" aria-label="Open the menu" aria-expanded={open} aria-controls="side-nav" onClick={() => setOpen(true)}><MenuIcon /></button>
+        {inTrail && <button type="button" className="snav-btn mob" aria-label="Open the menu" aria-expanded={open} aria-controls="side-nav" onClick={() => setOpen(true)}><MenuIcon /></button>}
         <Link href="/" className="site-brand"><Nimbus size={30} />AI Academy</Link>
         <ProfileButton />
       </header>
+      {inTrail && <>
       <div className="snav-scrim" aria-hidden="true" onClick={() => setOpen(false)} />
 
       <aside id="side-nav" className="snav" aria-label="Side menu">
@@ -185,6 +189,7 @@ export default function SideNav({ children }: { children: ReactNode }) {
           </Suspense>
         </div>
       </aside>
+      </>}
 
       <div className="shell-main">
         {children}

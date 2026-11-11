@@ -33,7 +33,7 @@ Current structure, as-is (organised by layer, not yet by module):
 | Area | Purpose | Owns data | Depends on |
 |---|---|---|---|
 | `app/` | Routes `/` (trail), `/module/[n]` (modules 0–10, SSG, `?unit=N`), `/profile`; root layout wraps `ProgressProvider` and `SideNav`. `next.config.mjs` redirects `/level/:n` and `/trophies` | none | `components/`, `lib/` |
-| `components/SideNav.tsx` | App shell: light site header on every page (logo, "AI Academy", profile button), then the side menu: trail link, modules by zone with units of the open module (optional units labelled). Desktop rail (collapsed state in `localStorage` key `agent-path:nav-collapsed`), mobile drawer | none | `badges`, `characters`, `icons`, `lib/curriculum`, `lib/progress` |
+| `components/SideNav.tsx` | App shell: light site header on every page (logo, "AI Academy", profile button); inside a trail only (`/trail`, `/module/*`) the side menu: trail link, modules by zone with units of the open module (optional units labelled). Desktop rail (collapsed state in `localStorage` key `agent-path:nav-collapsed`), mobile drawer | none | `badges`, `characters`, `icons`, `lib/curriculum`, `lib/progress` |
 | `components/TrailView.tsx` | Trail page: trail header (points, time left, %), zone bands, module cards with units | none | `badges`, `characters`, `icons`, `lib/curriculum`, `lib/lessons`, `lib/scoring`, `lib/progress` |
 | `components/LessonView.tsx` | Module shell, unit navigation (the open unit lives in `?unit=N`), module 4 quiz, badge-earned banner | none | `badges`, `characters`, `icons`, `LessonSteps`, `lib/curriculum`, `lib/lessons`, `lib/progress` |
 | `components/LessonSteps.tsx` | Reading, Case study, Lab and Deliverable unit renderers | none | `icons`, `lib/lessons` |
