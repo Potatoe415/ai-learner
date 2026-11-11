@@ -1,20 +1,66 @@
 import type { LessonContent } from "../lessons";
 
-// Module 1 · Foundations & the token meter. Source: MIT module 1 (sections 1 to 5, Videos 1.2 and 1.3,
+// Module 1 · Foundations & the token meter. Opens with a History unit (brief history of AI, chatbot generations).
+// Source: MIT module 1 (sections 1 to 5, Videos 1.2 and 1.3,
 // Assignment 1.1) and its complements (minivan problem, hallucination paradox, agentic loops,
 // multimodal pipelines, Klarna and Octopus Energy benchmarks, hidden OpEx, TCO).
 // Content file: long by nature (prose, code and templates), no logic.
 
-const reading: LessonContent["reading"] = {
-  kicker: "Concept · From chatbot to agent, and what it costs",
-  title: "A chatbot answers. An agent gets things done, and sends a bill.",
+const history: LessonContent["history"] = {
+  kicker: "History · From Turing to LangChain",
+  title: "From “Can machines think?” to agents that act",
   intro:
-    "Since ChatGPT 3.5 arrived in 2022, anyone can talk to a language model in plain words. The agentic wave goes further: a goal, a plan, tools, and a habit of checking its own work. This reading walks you from the model under the hood to the loop that turns it into an agent, then to the meter that runs every time it thinks. It is a long one, so take it section by section.",
+    "Agents did not appear out of nowhere. They sit on seventy years of ideas, each one solving a limit of the last: a question asked in 1950, a name given in 1956, a first chatbot in 1966, then machines that beat world champions, learned to see, learned to create, and finally learned to talk to anyone. Knowing that path helps you tell what is genuinely new about agents, and what is not.",
   sections: [
     {
-      heading: "From chatbot to agent",
+      heading: "1950: a question that started a field",
       body: [
-        "Conversational AI did not appear overnight. Each generation fixed the main limit of the one before.",
+        "The story usually starts with Alan Turing, the British mathematician often called the father of computer science. In 1950 he asked a simple question: can machines think?",
+        "To make it testable, he proposed what became the Turing test: if a person holding a conversation cannot tell the machine from a human, the machine shows human-like intelligence. Modern variations of the test are still used in AI research and development today.",
+        "Turing was also strikingly confident. In his view, early machines were only a foretaste of what was coming, and he saw no reason why machines should not, in time, enter every field of human intellect and compete on equal terms.",
+      ],
+    },
+    {
+      heading: "The milestones, at a glance",
+      body: [
+        "From that question to today’s agents, a handful of dates mark the turns. Read the table as a relay: each step hands something to the next.",
+      ],
+      table: {
+        head: ["Year", "Milestone", "Why it matters"],
+        rows: [
+          ["1950", "Alan Turing asks “Can machines think?” and proposes the Turing test", "Gives the field its question and a first way to measure progress"],
+          ["1956", "John McCarthy coins the term “artificial intelligence” for the Dartmouth Summer Research Project", "AI becomes a named research field"],
+          ["1966", "MIT professor Joseph Weizenbaum creates ELIZA, which simulates a psychotherapist", "The first chatbot: keyword rules and scripted replies"],
+          ["1997", "IBM’s Deep Blue beats world chess champion Garry Kasparov", "A machine outplays the best human at a game of strategy"],
+          ["2012", "AlexNet wins the ImageNet image-classification challenge (ILSVRC)", "Proves that deep learning is the way forward"],
+          ["2014", "Ian Goodfellow and colleagues at the University of Montreal develop the GAN", "Machines start to generate realistic new content"],
+          ["2016", "DeepMind’s AlphaGo defeats Go world champion Lee Sedol", "Shows what reinforcement learning and deep neural networks can master"],
+          ["2017", "Google researchers publish the transformer in “Attention Is All You Need”", "Self-attention makes large-scale language modelling practical"],
+          ["2018 to today", "OpenAI’s GPT models open the era of large language models", "Each version adds capability, up to multimodal and real-time interaction"],
+          ["2022", "ChatGPT 3.5 launches", "Millions of people use advanced AI in a browser, in plain language, with no specialist skills"],
+          ["2023", "LangChain is released as an open-source framework for LLM applications", "Building chatbots and AI agents becomes easier for enterprises and enthusiasts alike"],
+        ],
+      },
+    },
+    {
+      heading: "Three threads that meet in today’s agents",
+      body: [
+        "Look at the table again and three threads appear. Together they explain why agents became possible only recently.",
+      ],
+      bullets: [
+        "Learning from data. AlexNet (2012) and AlphaGo (2016) showed what deep neural networks and reinforcement learning can master when they learn from data. That is what makes today’s models adaptable.",
+        "Creating, not only recognising. Classic machine learning spots a cat in a picture. With GANs (2014) and then transformers (2017), machines started producing new text and images. The transformer is the engine you will open up in the Concept unit.",
+        "Access. Before ChatGPT, using an AI model often required specialist knowledge. In 2022 a browser and plain words were enough, and in 2023 frameworks such as LangChain made agent building easier for ordinary teams.",
+      ],
+      callout: {
+        label: "Why it matters for your project",
+        text: "Turing himself said we need some experience with the machine before we really know its capabilities. That is the spirit of this trail: try agents on one real workflow, measure, then scale.",
+      },
+    },
+    {
+      heading: "Chatbots: four generations in sixty years",
+      body: [
+        "The chatbot thread runs through the whole story. Each generation fixed the main limit of the one before, and the latest one sets the stage for agents.",
       ],
       table: {
         head: ["Generation", "How it works", "Examples", "Main limit"],
@@ -26,6 +72,48 @@ const reading: LessonContent["reading"] = {
         ],
       },
     },
+    {
+      heading: "What comes next: from generating to acting",
+      body: [
+        "Generative AI’s journey, from rule-based experiments to transformer-powered models, taught machines to learn patterns, create content and hold a conversation almost as fluently as people.",
+        "Agentic AI builds on those foundations and adds autonomy: systems that do not just generate an output but set goals, make decisions and act on them with minimal guidance. That is the subject of the rest of this module, and of the whole trail.",
+      ],
+    },
+  ],
+  takeaways: [
+    "1950: Turing asks whether machines can think. 1956: McCarthy names the field “artificial intelligence”.",
+    "ELIZA (1966) was the first chatbot. Chatbots then moved from rules to machine learning, to generative models, to reasoning models.",
+    "Deep learning (AlexNet, 2012), generation (GAN, 2014) and the transformer (2017) are the technical roots of today’s LLMs.",
+    "ChatGPT 3.5 (2022) made AI usable by anyone; LangChain (2023) made building agents easier.",
+    "Agents add one thing to that history: the autonomy to set goals, decide and act.",
+  ],
+  check: {
+    prompt:
+      "Which milestone introduced self-attention, the mechanism behind large-scale language models such as GPT?",
+    options: [
+      { id: "a", text: "AlexNet winning the ImageNet challenge (2012)" },
+      { id: "b", text: "The transformer, in “Attention Is All You Need” (2017)" },
+      { id: "c", text: "IBM’s Deep Blue beating Garry Kasparov (1997)" },
+      { id: "d", text: "ELIZA, Joseph Weizenbaum’s chatbot (1966)" },
+    ],
+    correct: "b",
+    hints: {
+      a: "AlexNet proved deep learning works, but for classifying images. Self-attention for language came five years later.",
+      c: "Deep Blue was a chess supercomputer. It had nothing to do with language models.",
+      d: "ELIZA matched keywords to scripted replies. It had no learning and no attention mechanism at all.",
+    },
+    explanation:
+      "Right: Google researchers introduced the transformer in 2017. Its self-attention lets the model weigh every part of the input against every other part, which revolutionised large-scale language modelling and paved the way for the GPT models from 2018 on.",
+  },
+  bubble: "Before we build agents, a short trip back to 1950.",
+};
+
+const reading: LessonContent["reading"] = {
+  kicker: "Concept · From chatbot to agent, and what it costs",
+  title: "A chatbot answers. An agent gets things done, and sends a bill.",
+  intro:
+    "You have seen how we got here. Since ChatGPT 3.5 arrived in 2022, anyone can talk to a language model in plain words. The agentic wave goes further: a goal, a plan, tools, and a habit of checking its own work. This reading walks you from the model under the hood to the loop that turns it into an agent, then to the meter that runs every time it thinks. It is a long one, so take it section by section.",
+  sections: [
     {
       heading: "What changes with an agent",
       body: [
@@ -487,4 +575,4 @@ Costs not on the calculator (rough guess is fine for now):
   bubble: "Keep this card close. It travels with you all the way to the capstone.",
 };
 
-export const MODULE_1: LessonContent = { reading, postMortem, lab, deliverable };
+export const MODULE_1: LessonContent = { history, reading, postMortem, lab, deliverable };

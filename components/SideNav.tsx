@@ -10,7 +10,7 @@ import { Suspense, useEffect, useState, type ReactNode } from "react";
 import { Loop, Nimbus } from "./characters";
 import { Check, Chevron, Close, Lock, MapIcon, MenuIcon, Star, UserIcon } from "./icons";
 import { ModuleBadge } from "./badges";
-import { MODULES, TRAIL, UNITS, ZONES, getZone, type CourseModule } from "@/lib/curriculum";
+import { MODULES, TRAIL, ZONES, getZone, unitsOf, type CourseModule } from "@/lib/curriculum";
 import { useProgress } from "@/lib/progress";
 
 const COLLAPSED_KEY = "agent-path:nav-collapsed";
@@ -49,7 +49,8 @@ function ModuleItem({ mod, collapsed, active, onNavigate }: { mod: CourseModule;
   const isHere = active.module === mod.n;
   // Units show for the module being viewed, or for the current module when viewing something else.
   const showUnits = !collapsed && (isHere || (active.module === null && mod.n === p.currentModule && !done));
-  const firstOpen = UNITS.findIndex((_, u) => !p.isUnitDone(mod.n, u));
+  const units = mod.units;
+  const firstOpen = units.findIndex((_, u) => !p.isUnitDone(mod.n, u));
   const label = `Module ${mod.n} · ${mod.title}`;
 
   const head = (
@@ -74,11 +75,11 @@ function ModuleItem({ mod, collapsed, active, onNavigate }: { mod: CourseModule;
       )}
       {showUnits && (
         <ol className="snav-units">
-          {UNITS.map((u, i) => {
+          {units.map((u, i) => {
             const unitDone = p.isUnitDone(mod.n, i);
             const reachable = !locked && (unitDone || i === firstOpen);
             // Without `?unit=`, the lesson shows the first open unit (or the last one when all are done).
-            const here = isHere && (active.unit ?? (firstOpen === -1 ? UNITS.length - 1 : firstOpen)) === i;
+            const here = isHere && (active.unit ?? (firstOpen === -1 ? units.length - 1 : firstOpen)) === i;
             return (
               <li key={u}>
                 {reachable ? (
@@ -139,7 +140,9 @@ function NavBody({ collapsed, onNavigate, unit }: BodyProps & { unit: number | n
 /** Reads `?unit=` to highlight the open unit. Isolated so only this part needs a Suspense boundary on static pages. */
 function NavBodyFromUrl(props: BodyProps) {
   const raw = useSearchParams().get("unit");
-  return <NavBody {...props} unit={raw !== null && /^\d$/.test(raw) && Number(raw) < UNITS.length ? Number(raw) : null} />;
+  const match = /^\/module\/(\d+)/.exec(usePathname());
+  const max = match ? unitsOf(Number(match[1])).length : 0;
+  return <NavBody {...props} unit={raw !== null && /^\d$/.test(raw) && Number(raw) < max ? Number(raw) : null} />;
 }
 
 /** Wraps every page with the side menu (desktop rail or mobile drawer). */

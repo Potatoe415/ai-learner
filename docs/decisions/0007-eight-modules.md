@@ -10,4 +10,6 @@ Rationale:
 - Ranks keep their names, with badge steps 0 / 1 / 3 / 5 / 7 / 8 and point thresholds 0 / 400 / 1,300 / 2,200 / 3,100 / 3,550, still under the worst case (450 per module), so finishing reaches every rank. Trail: 4,800 points.
 - v1 and v2 progress is not migrated: module numbers and unit content changed, so no mapping is meaningful. Old keys are left in storage, untouched.
 Consequences: Learners restart from zero. `/module/0`, `/module/9` and `/module/10` no longer exist (404). Module 7 combines Labs 3 and 4 in one lab.
+
+Note 2026-11-11: module 1 opens with a History unit (brief history of AI, from the source's "A Brief History of AI" and the chatbot generations), at the user's request. Units are now listed per module (`CourseModule.units`); points depend on the unit kind (History pays like a quiz). Module 1 is worth 700 points, the trail 4,900; rank thresholds are unchanged and still reachable in the worst case. Progress key `agent-path:v4`; v3 is migrated by shifting module 1's units up by one.
 Alternatives_Rejected: A variable number of units per module to keep every former unit (needs a new unit model, scoring and storage). Track order 1, 2, 3, 4, 7, 5, 6, 8 (numbers out of order on screen).

@@ -162,7 +162,7 @@ a.snav-unit:hover { background: var(--cream); }
 /* Lesson */
 .close { flex: none; width: 48px; height: 48px; border-radius: 50%; background: #fff; border: 2px solid var(--ink); display: flex; align-items: center; justify-content: center; }
 .bar { flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
-.seg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; }
 .seg i { height: 10px; border-radius: 5px; background: #d9d3c4; }
 .seg.labels { font-size: 13px; font-weight: 600; color: var(--muted); }
 .scene { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }

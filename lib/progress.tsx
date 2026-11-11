@@ -2,14 +2,16 @@
 
 // Learner progress, stored in localStorage (decisions 0003, 0006 and 0007).
 // Records, per unit, the points earned and the completion date, plus wrong answers on quiz units.
-// v3 matches the 8-module trail. v1 and v2 used the former 0-10 numbering and other content: they are
-// not migrated (no meaningful mapping) and are left untouched in storage.
+// v4 matches the 8-module trail where module 1 opens with a History unit. v3 (same trail, 4 units in
+// module 1) is migrated once by shifting module 1's units up by one. v1 and v2 used the former 0-10
+// numbering and other content: they are not migrated and are left untouched in storage.
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { MAX_MODULE, MODULES, UNITS } from "./curriculum";
+import { MAX_MODULE, MODULES, unitsOf } from "./curriculum";
 import { maxUnitPoints, nextRankOf, rankOf, unitPoints, type Rank } from "./scoring";
 
-const KEY = "agent-path:v3";
+const KEY = "agent-path:v4";
+const V3_KEY = "agent-path:v3";
 
 interface UnitRecord {
   points: number;
@@ -41,9 +43,9 @@ function sanitize(raw: unknown): Stored {
     for (const [m, unitsOfM] of Object.entries(raw.units)) {
       if (!isModule(m) || !isObj(unitsOfM)) continue;
       for (const [u, rec] of Object.entries(unitsOfM)) {
-        if (!isIndex(u, UNITS.length - 1) || !isObj(rec)) continue;
+        if (!isIndex(u, unitsOf(Number(m)).length - 1) || !isObj(rec)) continue;
         const { points, at } = rec;
-        if (typeof points !== "number" || !Number.isFinite(points) || points < 0 || points > maxUnitPoints(Number(u))) continue;
+        if (typeof points !== "number" || !Number.isFinite(points) || points < 0 || points > maxUnitPoints(Number(m), Number(u))) continue;
         if (typeof at !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(at)) continue;
         (out.units[Number(m)] ??= {})[Number(u)] = { points, at };
       }
@@ -53,7 +55,7 @@ function sanitize(raw: unknown): Stored {
     for (const [m, missOfM] of Object.entries(raw.misses)) {
       if (!isModule(m) || !isObj(missOfM)) continue;
       for (const [u, n] of Object.entries(missOfM)) {
-        if (!isIndex(u, UNITS.length - 1) || typeof n !== "number" || !Number.isInteger(n) || n < 0) continue;
+        if (!isIndex(u, unitsOf(Number(m)).length - 1) || typeof n !== "number" || !Number.isInteger(n) || n < 0) continue;
         (out.misses[Number(m)] ??= {})[Number(u)] = Math.min(n, 99);
       }
     }
@@ -61,9 +63,26 @@ function sanitize(raw: unknown): Stored {
   return out;
 }
 
+/** v3 had no History unit: module 1's units 0-3 become 1-4. Other modules are unchanged. */
+function migrateV3(raw: unknown): unknown {
+  if (!isObj(raw)) return raw;
+  const shift = (byModule: unknown) => {
+    if (!isObj(byModule) || !isObj(byModule["1"])) return byModule;
+    const m1 = Object.fromEntries(Object.entries(byModule["1"]).map(([u, v]) => [/^\d+$/.test(u) ? String(Number(u) + 1) : u, v]));
+    return { ...byModule, 1: m1 };
+  };
+  return { ...raw, units: shift(raw.units), misses: shift(raw.misses) };
+}
+
 function load(): Stored {
   const raw = localStorage.getItem(KEY);
-  return raw ? sanitize(JSON.parse(raw)) : EMPTY;
+  if (raw) return sanitize(JSON.parse(raw));
+  const v3 = localStorage.getItem(V3_KEY);
+  if (!v3) return EMPTY;
+  const migrated = sanitize(migrateV3(JSON.parse(v3)));
+  localStorage.setItem(KEY, JSON.stringify(migrated));
+  localStorage.removeItem(V3_KEY);
+  return migrated;
 }
 
 interface Ctx {
@@ -114,10 +133,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   const isUnitDone = useCallback((m: number, u: number) => !!data.units[m]?.[u], [data]);
   const misses = useCallback((m: number, u: number) => data.misses[m]?.[u] ?? 0, [data]);
   const unitValue = useCallback(
-    (m: number, u: number) => data.units[m]?.[u]?.points ?? unitPoints(u, misses(m, u)),
+    (m: number, u: number) => data.units[m]?.[u]?.points ?? unitPoints(m, u, misses(m, u)),
     [data, misses]
   );
-  const isModuleDone = useCallback((m: number) => Object.keys(data.units[m] ?? {}).length >= UNITS.length, [data]);
+  const isModuleDone = useCallback((m: number) => Object.keys(data.units[m] ?? {}).length >= unitsOf(m).length, [data]);
   const modulePoints = useCallback(
     (m: number) => Object.values(data.units[m] ?? {}).reduce((sum, r) => sum + r.points, 0),
     [data]
@@ -138,7 +157,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   const completeUnit = useCallback(
     (m: number, u: number) => {
       if (data.units[m]?.[u]) return;
-      const record = { points: unitPoints(u, misses(m, u)), at: dayKey() };
+      const record = { points: unitPoints(m, u, misses(m, u)), at: dayKey() };
       persist({ ...data, units: { ...data.units, [m]: { ...data.units[m], [u]: record } } });
     },
     [data, misses, persist]

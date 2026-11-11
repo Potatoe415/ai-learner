@@ -1,7 +1,7 @@
 # Content coverage
 
 Maps every chapter of the course source (`RAW_content/02_Modules/`) to the unit that covers it.
-Units: C = Concept, PM = Post-mortem, L = Lab, D = Deliverable. Example: `3.L` = module 3, Lab. App module N covers MIT module N (decision 0007).
+Units: H = History (module 1 only), C = Concept, PM = Post-mortem, L = Lab, D = Deliverable. Example: `3.L` = module 3, Lab. App module N covers MIT module N (decision 0007).
 Rebuilt 2026-11-11: every lesson rewritten from the source, module by module; facts, cases and figures not found in the module's source files were removed. Update this file when a lesson changes its scope.
 
 ## Excluded everywhere
@@ -22,8 +22,8 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 | Complete | 1. LLMs, transformers, training stages | 1.C (under the hood) |
 | Complete | 1. How an LLM works (vectors, intent) | 1.C |
 | Complete | 1. Prompt engineering | 1.C (callout) |
-| Complete | 1. Brief history of AI (Turing to LangChain) | 1.C (ELIZA, 2014 GAN, 2017 transformer); rest not covered: background only |
-| Complete | 2. Evolution of chatbots | 1.C (generations table) |
+| Complete | 1. Brief history of AI (Turing to LangChain) | 1.H (Turing quote and test, full timeline 1956 to 2023) |
+| Complete | 2. Evolution of chatbots | 1.H (generations table) |
 | Complete | 2. Reasoning models, chain-of-thought, hallucination | 1.C (loop section) |
 | Complete | 2. Video 1.2 chain-of-thought demo (planner, writer, critic) | 1.C (loop section) |
 | Complete | 2. Agentic AI definition and use cases | 1.C |
@@ -46,6 +46,7 @@ One candidate workflow, chosen in 1.D, is carried through every deliverable; 8.D
 | Complete | 5. Tool landscape | not covered: product catalogue; examples used in 1.C |
 | Complete | 5. Case study: Amarra | 1.C (bullet) |
 | Complete | 5. The coming wave of agentic AI | 1.C intro |
+| Complete | 1. Conclusion (from generative to agentic) | 1.H (closing section) |
 | Complements | Executive summary and module delta | 1.C |
 | Complements | Arch 1. Minivan problem, tiered routing | 1.C (tier table), 1.L |
 | Complements | Arch 2. Hallucination paradox, validation gates, selective HITL | 1.C (callout), 1.L (Reflect check) |

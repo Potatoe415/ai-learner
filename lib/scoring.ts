@@ -2,22 +2,27 @@
 // Quiz units pay less after each wrong answer; hands-on units (Lab, Deliverable) pay a fixed amount.
 // A rank needs BOTH its badge count and its point total.
 
-import { MODULES, UNITS } from "./curriculum";
+import { MODULES, unitsOf, type UnitKind } from "./curriculum";
 
-/** Units whose points depend on the number of wrong answers (Concept, Post-mortem). */
-export const QUIZ_UNITS: readonly number[] = [0, 1];
+/** Units whose points depend on the number of wrong answers (reading and case units, closed by a question). */
+export const QUIZ_KINDS: readonly UnitKind[] = ["History", "Concept", "Post-mortem"];
 
 const QUIZ_POINTS = [100, 50, 25] as const;
 const HANDS_ON_POINTS = 200;
 
-/** Points a unit pays if completed now, after `misses` wrong answers. */
-export const unitPoints = (unit: number, misses = 0) =>
-  QUIZ_UNITS.includes(unit) ? QUIZ_POINTS[Math.min(misses, QUIZ_POINTS.length - 1)] : HANDS_ON_POINTS;
+const kindOf = (m: number, u: number) => unitsOf(m)[u];
+
+/** Points unit `u` of module `m` pays if completed now, after `misses` wrong answers. */
+export const unitPoints = (m: number, u: number, misses = 0) => {
+  const kind = kindOf(m, u);
+  if (!kind) return 0;
+  return QUIZ_KINDS.includes(kind) ? QUIZ_POINTS[Math.min(misses, QUIZ_POINTS.length - 1)] : HANDS_ON_POINTS;
+};
 
 /** Highest value a unit can pay. */
-export const maxUnitPoints = (unit: number) => unitPoints(unit, 0);
-export const MODULE_MAX_POINTS = UNITS.reduce((sum, _, u) => sum + maxUnitPoints(u), 0);
-export const TRAIL_MAX_POINTS = MODULE_MAX_POINTS * MODULES.length;
+export const maxUnitPoints = (m: number, u: number) => unitPoints(m, u, 0);
+export const moduleMaxPoints = (m: number) => unitsOf(m).reduce((sum, _, u) => sum + maxUnitPoints(m, u), 0);
+export const TRAIL_MAX_POINTS = MODULES.reduce((sum, m) => sum + moduleMaxPoints(m.n), 0);
 
 export interface Rank {
   n: number;

@@ -7,14 +7,14 @@ import { Cap, Loop, Plug, Ward } from "./characters";
 import { Arrow, Check, Close, Star } from "./icons";
 import { ModuleBadge } from "./badges";
 import BadgeCelebration from "./BadgeCelebration";
-import { UNITS, getModule, getZone, type Zone } from "@/lib/curriculum";
-import { LESSONS, unitData, type ConceptQuiz, type LessonContent } from "@/lib/lessons";
+import { getModule, getZone, unitsOf, type UnitKind, type Zone } from "@/lib/curriculum";
+import { LESSONS, unitContent, type ConceptQuiz, type LessonContent } from "@/lib/lessons";
 import { DeliverableStepView, LabStepView, PostMortemStep, ReadingStep } from "./LessonSteps";
 import { useProgress } from "@/lib/progress";
 
-function Concept({ quiz, module, onSolved, onDone }: { quiz: ConceptQuiz; module: number; onSolved: () => void; onDone: () => void }) {
+function Concept({ quiz, module, unit, onSolved, onDone }: { quiz: ConceptQuiz; module: number; unit: number; onSolved: () => void; onDone: () => void }) {
   const p = useProgress();
-  const already = p.isUnitDone(module, 0);
+  const already = p.isUnitDone(module, unit);
   const [picked, setPicked] = useState<string | null>(null);
   const [tried, setTried] = useState<string[]>([]);
   const solved = already || picked === quiz.correct;
@@ -29,7 +29,7 @@ function Concept({ quiz, module, onSolved, onDone }: { quiz: ConceptQuiz; module
     // Each wrong option costs points once, however many times it is clicked.
     if (!tried.includes(id)) {
       setTried((t) => [...t, id]);
-      p.recordMiss(module, 0);
+      p.recordMiss(module, unit);
     }
   };
 
@@ -69,7 +69,7 @@ function Concept({ quiz, module, onSolved, onDone }: { quiz: ConceptQuiz; module
               <div style={{ background: "#DCEFEE" }}><span className="eyebrow" style={{ color: "var(--ink)" }}>{quiz.solved.with.label}</span><strong>{quiz.solved.with.title}</strong><span className="t">{quiz.solved.with.text}</span></div>
             </div>
             <div className="row between" style={{ gap: 16 }}>
-              <span className="pill gold" style={{ minHeight: 48, fontSize: 17, fontWeight: 800 }}><Star fill="#fff" size={20} />+{p.unitValue(module, 0)} points</span>
+              <span className="pill gold" style={{ minHeight: 48, fontSize: 17, fontWeight: 800 }}><Star fill="#fff" size={20} />+{p.unitValue(module, unit)} points</span>
               <button type="button" className="cta dark" onClick={onDone}>{quiz.next} <Arrow color="#F7F3EA" /></button>
             </div>
           </section>
@@ -79,25 +79,26 @@ function Concept({ quiz, module, onSolved, onDone }: { quiz: ConceptQuiz; module
   );
 }
 
-const bubbleOf = (c: LessonContent, unit: number) => {
-  const d = unitData(c, unit);
+const bubbleOf = (c: LessonContent, kind: UnitKind) => {
+  const d = unitContent(c, kind);
   return d && "bubble" in d ? d.bubble : "";
 };
 
 interface UnitProps {
   content: LessonContent;
-  unit: number;
+  kind: UnitKind;
   done: boolean;
   points: number;
   onComplete: () => void;
   onMiss: () => void;
 }
 
-function UnitBody({ content, unit, ...props }: UnitProps) {
-  if (unit === 0 && content.reading) return <ReadingStep data={content.reading} {...props} />;
-  if (unit === 1 && content.postMortem) return <PostMortemStep data={content.postMortem} {...props} />;
-  if (unit === 2 && content.lab) return <LabStepView data={content.lab} {...props} />;
-  if (unit === 3 && content.deliverable) return <DeliverableStepView data={content.deliverable} {...props} />;
+function UnitBody({ content, kind, ...props }: UnitProps) {
+  if (kind === "History" && content.history) return <ReadingStep data={content.history} {...props} />;
+  if (kind === "Concept" && content.reading) return <ReadingStep data={content.reading} {...props} />;
+  if (kind === "Post-mortem" && content.postMortem) return <PostMortemStep data={content.postMortem} {...props} />;
+  if (kind === "Lab" && content.lab) return <LabStepView data={content.lab} {...props} />;
+  if (kind === "Deliverable" && content.deliverable) return <DeliverableStepView data={content.deliverable} {...props} />;
   return null;
 }
 
@@ -110,7 +111,7 @@ const noop = () => {};
 export function LessonFromUrl({ module }: { module: number }) {
   const raw = useSearchParams().get("unit");
   const n = raw !== null && /^\d$/.test(raw) ? Number(raw) : null;
-  return <LessonView module={module} startUnit={n !== null && n < UNITS.length ? n : null} />;
+  return <LessonView module={module} startUnit={n !== null && n < unitsOf(module).length ? n : null} />;
 }
 
 export default function LessonView({ module, startUnit }: { module: number; startUnit: number | null }) {
@@ -120,14 +121,16 @@ export default function LessonView({ module, startUnit }: { module: number; star
   const color = zone.color;
   // Every module 1-8 has content (lib/lessons.ts); a missing unit would be a content bug.
   const content = LESSONS[module] ?? {};
+  const units = unitsOf(module);
   const locked = p.ready && module > p.currentModule;
-  const firstOpen = UNITS.findIndex((_, i) => !p.isUnitDone(module, i));
+  const firstOpen = units.findIndex((_, i) => !p.isUnitDone(module, i));
   const router = useRouter();
   const pathname = usePathname();
   // The URL (`?unit=N`) is the single source of truth, so the side menu, the back button and
   // in-lesson buttons always agree. A requested unit opens only if it is done or the next one to do.
   const requested = startUnit !== null && p.ready && (firstOpen === -1 || startUnit <= firstOpen) ? startUnit : null;
-  const unit = requested ?? (firstOpen === -1 ? UNITS.length - 1 : firstOpen);
+  const unit = requested ?? (firstOpen === -1 ? units.length - 1 : firstOpen);
+  const kind = units[unit];
   const unitDone = p.isUnitDone(module, unit);
   const points = p.unitValue(module, unit);
   const moduleDone = p.isModuleDone(module);
@@ -139,15 +142,15 @@ export default function LessonView({ module, startUnit }: { module: number; star
   const complete = (u: number) => {
     show(u);
     // Celebrate only the completion that earns the badge, not revisits of a finished module.
-    if (!p.isUnitDone(module, u) && UNITS.every((_, i) => i === u || p.isUnitDone(module, i))) setCelebrate(true);
+    if (!p.isUnitDone(module, u) && units.every((_, i) => i === u || p.isUnitDone(module, i))) setCelebrate(true);
     p.completeUnit(module, u);
   };
 
   const nav = (
     <div className="row" style={{ gap: 12 }}>
       {unit > 0 && <button type="button" className="btn-ghost" onClick={() => go(unit - 1)}>← Previous unit</button>}
-      {unitDone && unit < UNITS.length - 1 && (
-        <button type="button" className="cta dark" onClick={() => go(unit + 1)}>Next: {UNITS[unit + 1]} <Arrow color="#F7F3EA" /></button>
+      {unitDone && unit < units.length - 1 && (
+        <button type="button" className="cta dark" onClick={() => go(unit + 1)}>Next: {units[unit + 1]} <Arrow color="#F7F3EA" /></button>
       )}
     </div>
   );
@@ -160,15 +163,15 @@ export default function LessonView({ module, startUnit }: { module: number; star
         <div className="bar">
           <div className="row between" style={{ gap: 8, fontSize: 14, fontWeight: 700 }}>
             <span style={{ color }}>Module {module} · {mod.title}</span>
-            <span style={{ color: "var(--muted)" }}>Unit {unit + 1} of {UNITS.length}</span>
+            <span style={{ color: "var(--muted)" }}>Unit {unit + 1} of {units.length}</span>
           </div>
-          <div className="seg">{UNITS.map((s, i) => <i key={s} style={i <= unit || p.isUnitDone(module, i) ? { background: color } : undefined} />)}</div>
-          <div className="seg labels">{UNITS.map((s, i) => <span key={s} style={i === unit ? { color: "var(--ink)", fontWeight: 700 } : undefined}>{s}</span>)}</div>
+          <div className="seg">{units.map((s, i) => <i key={s} style={i <= unit || p.isUnitDone(module, i) ? { background: color } : undefined} />)}</div>
+          <div className="seg labels">{units.map((s, i) => <span key={s} style={i === unit ? { color: "var(--ink)", fontWeight: 700 } : undefined}>{s}</span>)}</div>
         </div>
         {!locked && !unitDone && <span className="pill gold" style={{ fontWeight: 800 }}>+{points} points at stake</span>}
       </header>
 
-      {moduleDone && unit === UNITS.length - 1 && (
+      {moduleDone && unit === units.length - 1 && (
         <section className="earned" role="status">
           <ModuleBadge module={module} earned size={84} />
           <div className="grow">
@@ -187,25 +190,25 @@ export default function LessonView({ module, startUnit }: { module: number; star
             <h1 className="display" style={{ fontSize: 30 }}>Finish module {p.currentModule} first</h1>
             <Link className="cta dark" href={`/module/${p.currentModule}`} style={{ alignSelf: "flex-start" }}>Go to module {p.currentModule} <Arrow color="#F7F3EA" /></Link>
           </div>
-        ) : unit === 0 && content.concept ? (
+        ) : kind === "Concept" && content.concept ? (
           <>
             {content.reading && (
               <div style={{ flex: "1 1 100%", minWidth: 0, display: "flex", flexDirection: "column", gap: 20 }}>
                 <ReadingStep data={content.reading} done={unitDone} points={points} onComplete={noop} onMiss={noop} />
               </div>
             )}
-            <Concept quiz={content.concept} module={module} onSolved={() => complete(0)} onDone={() => go(1)} />
+            <Concept quiz={content.concept} module={module} unit={unit} onSolved={() => complete(unit)} onDone={() => go(unit + 1)} />
           </>
-        ) : unitData(content, unit) ? (
+        ) : unitContent(content, kind) ? (
           <>
             <div className="mascot sticky" style={{ flex: "0 1 240px" }}>
-              <div className="bubble white">{bubbleOf(content, unit)}</div>
+              <div className="bubble white">{bubbleOf(content, kind)}</div>
               {zone.mascot === "Loop" ? <Loop size={200} mood={unitDone ? "cheer" : "think"} /> : <Mascot who={zone.mascot} />}
             </div>
             <div key={unit} style={{ flex: "1 1 480px", minWidth: 0, display: "flex", flexDirection: "column", gap: 20 }}>
               <UnitBody
                 content={content}
-                unit={unit}
+                kind={kind}
                 done={unitDone}
                 points={points}
                 onComplete={() => complete(unit)}

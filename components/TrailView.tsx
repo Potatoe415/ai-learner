@@ -8,9 +8,9 @@ import { useState } from "react";
 import { Cap, Loop, Nimbus, Plug, Ward } from "./characters";
 import { Arrow, Check, Flag, Lock, Star } from "./icons";
 import { ModuleBadge, RankInsignia } from "./badges";
-import { MODULES, TRAIL, UNITS, ZONES, getModule, modulesOfZone, type CourseModule, type Zone } from "@/lib/curriculum";
+import { MODULES, TRAIL, ZONES, getModule, modulesOfZone, unitsOf, type CourseModule, type Zone } from "@/lib/curriculum";
 import { unitMinutes, unitTitle } from "@/lib/lessons";
-import { MODULE_MAX_POINTS, RANKS, TRAIL_MAX_POINTS } from "@/lib/scoring";
+import { RANKS, TRAIL_MAX_POINTS, moduleMaxPoints } from "@/lib/scoring";
 import { useProgress } from "@/lib/progress";
 
 const Mascot = ({ who, size }: { who: Zone["mascot"]; size: number }) =>
@@ -26,7 +26,7 @@ const fmtMinutes = (m: number) => {
 
 const TOP = RANKS[RANKS.length - 1];
 
-const moduleMinutes = (m: number) => UNITS.reduce((sum, _, u) => sum + unitMinutes(m, u), 0);
+const moduleMinutes = (m: number) => unitsOf(m).reduce((sum, _, u) => sum + unitMinutes(m, u), 0);
 
 function ModuleCard({ mod, color }: { mod: CourseModule; color: string }) {
   const p = useProgress();
@@ -37,7 +37,8 @@ function ModuleCard({ mod, color }: { mod: CourseModule; color: string }) {
   const expanded = open || isCurrent;
   const date = p.badgeDate(mod.n);
   const earned = p.modulePoints(mod.n);
-  const firstOpen = UNITS.findIndex((_, u) => !p.isUnitDone(mod.n, u));
+  const units = mod.units;
+  const firstOpen = units.findIndex((_, u) => !p.isUnitDone(mod.n, u));
 
   return (
     <article className={`mcard ${locked ? "locked" : ""}`} style={{ borderTopColor: color }}>
@@ -46,7 +47,7 @@ function ModuleCard({ mod, color }: { mod: CourseModule; color: string }) {
         <div className="grow">
           <div className="row between" style={{ gap: 8, alignItems: "flex-start" }}>
             <span className="eyebrow">Module {mod.n}</span>
-            <span className="ptag">{done ? `+${fmt(earned)}` : `+${fmt(MODULE_MAX_POINTS)}`} points</span>
+            <span className="ptag">{done ? `+${fmt(earned)}` : `+${fmt(moduleMaxPoints(mod.n))}`} points</span>
           </div>
           {locked ? (
             <h3 className="mtitle">{mod.title}</h3>
@@ -67,7 +68,7 @@ function ModuleCard({ mod, color }: { mod: CourseModule; color: string }) {
 
       {expanded && (
         <ol className="units">
-          {UNITS.map((u, i) => {
+          {units.map((u, i) => {
             const unitDone = p.isUnitDone(mod.n, i);
             const reachable = !locked && (unitDone || i === firstOpen);
             const title = unitTitle(mod.n, i);
@@ -89,7 +90,7 @@ function ModuleCard({ mod, color }: { mod: CourseModule; color: string }) {
       )}
       {!isCurrent && (
         <button type="button" className="toggle" aria-expanded={expanded} onClick={() => setOpen((o) => !o)}>
-          {expanded ? "⌃ Hide" : "⌄ Show"} {UNITS.length} units
+          {expanded ? "⌃ Hide" : "⌄ Show"} {units.length} units
         </button>
       )}
     </article>
@@ -100,9 +101,10 @@ export default function TrailView() {
   const p = useProgress();
   const current = getModule(p.currentModule)!;
   const doneCount = p.completedModules.length;
-  const unitsDone = MODULES.reduce((n, m) => n + UNITS.filter((_, u) => p.isUnitDone(m.n, u)).length, 0);
-  const pct = Math.round((unitsDone / (MODULES.length * UNITS.length)) * 100);
-  const minutesLeft = MODULES.reduce((sum, m) => sum + UNITS.reduce((s, _, u) => s + (p.isUnitDone(m.n, u) ? 0 : unitMinutes(m.n, u)), 0), 0);
+  const unitsDone = MODULES.reduce((n, m) => n + m.units.filter((_, u) => p.isUnitDone(m.n, u)).length, 0);
+  const unitsTotal = MODULES.reduce((n, m) => n + m.units.length, 0);
+  const pct = Math.round((unitsDone / unitsTotal) * 100);
+  const minutesLeft = MODULES.reduce((sum, m) => sum + m.units.reduce((s, _, u) => s + (p.isUnitDone(m.n, u) ? 0 : unitMinutes(m.n, u)), 0), 0);
   const finished = doneCount === MODULES.length;
 
   return (
