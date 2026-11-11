@@ -1,13 +1,13 @@
 import type { LessonContent } from "../lessons";
 
-// Level 9 · From pilot to practice. Source: MIT module 6 (sections 1 to 4, assignment 6.1) and its complements.
+// Module 9 · From pilot to practice. Source: MIT module 6 (sections 1 to 4, assignment 6.1) and its complements.
 // Content file: long by nature (prose, code and templates), no logic.
-export const LEVEL_9: LessonContent = {
+export const MODULE_9: LessonContent = {
   reading: {
     kicker: "Concept · The last mile",
     title: "A pilot that works is not a deployment",
     intro:
-      "Most AI pilots look good. Most never reach daily use. The gap between the two is called the last mile: real users, real data, real systems, and people who have to change how they work. This level shows why pilots stall, how to widen autonomy in stages, and how to prove it works with numbers.",
+      "Most AI pilots look good. Most never reach daily use. The gap between the two is called the last mile: real users, real data, real systems, and people who have to change how they work. This module shows why pilots stall, how to widen autonomy in stages, and how to prove it works with numbers.",
     sections: [
       {
         heading: "Pilot purgatory",
@@ -165,7 +165,6 @@ export const LEVEL_9: LessonContent = {
         "Right. Crawl puts the agent in front of real data and real users at low risk, builds the baseline telemetry and the golden set, and earns staff trust. Leadership gets a dated path to Walk with numbers, not a vague “later”.",
     },
     bubble: "Cap here. Any pilot can fly in a sandbox. Let's get yours out of purgatory.",
-    xp: 20,
   },
 
   postMortem: {
@@ -215,7 +214,6 @@ export const LEVEL_9: LessonContent = {
       "IBM press release, “Francisco Partners to acquire IBM's healthcare data and analytics assets”, 21 January 2022.",
     ],
     bubble: "A giant name, a great demo, no deployment. Let's see what went missing.",
-    xp: 20,
   },
 
   lab: {
@@ -225,8 +223,8 @@ export const LEVEL_9: LessonContent = {
     duration: "30 minutes",
     prerequisites: [
       "Python 3.10 or later, no extra package, no API key",
-      "Your cost estimate (level 2) for the human baseline",
-      "Your eval plan (level 7) for the accuracy target",
+      "Your cost estimate (module 2) for the human baseline",
+      "Your eval plan (module 7) for the accuracy target",
     ],
     steps: [
       {
@@ -362,7 +360,7 @@ s30,3,1,1,2600,0.04,20,0,0,0,5,0`,
       {
         title: "Make the gates yours",
         body: [
-          "Replace HUMAN_COST with the per-case cost from your level 2 estimate, and the accuracy thresholds with the targets from your level 7 eval plan. Set the session minimums to the volume your workflow sees in two weeks.",
+          "Replace HUMAN_COST with the per-case cost from your module 2 estimate, and the accuracy thresholds with the targets from your module 7 eval plan. Set the session minimums to the volume your workflow sees in two weeks.",
           "For every KPI that blocks a gate, write one line: the likely cause, the fix, the owner. For each step of your workflow, note whether it is stable enough to become plain code instead of a model call.",
         ],
       },
@@ -381,7 +379,6 @@ s30,3,1,1,2600,0.04,20,0,0,0,5,0`,
       "Each blocker has a cause, a fix and an owner",
     ],
     bubble: "Numbers decide the next stage, not enthusiasm. Run the gate.",
-    xp: 30,
   },
 
   deliverable: {
@@ -400,7 +397,7 @@ Date:
 - Sector, type of organisation, department:
 - What the agent does, in one or two sentences (from the MVA one-pager):
 - Business goal it serves (one number leadership already tracks):
-- Inputs reused: cost estimate (L2), guardrails (L6), eval plan (L7), integration map (L4)
+- Inputs reused: cost estimate (M2), guardrails (M6), eval plan (M7), integration map (M4)
 
 ## 2. Scorecard
 Each KPI: definition = formula from log fields. Baseline = today, without the agent.
@@ -465,6 +462,5 @@ Each KPI: definition = formula from log fields. Baseline = today, without the ag
       "The scorecard links to the business goal leadership already tracks",
     ],
     bubble: "This is the page you put in front of leadership. Make every number earn its place.",
-    xp: 30,
   },
 };

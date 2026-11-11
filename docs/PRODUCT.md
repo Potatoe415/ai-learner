@@ -15,10 +15,12 @@ Learner only. No accounts (inferred — confirm; see decision 0003).
 
 ## Core features
 Observed in the code:
-- Learning path: base camp (level 0) and three zones (Workshop, Fortress, Field) covering levels 1 to 10, mapped to the 8 modules of `content/curriculum.md`.
-- Lessons of 4 steps each: Concept, Post-mortem, Lab, Deliverable. All 4 steps are playable for levels 0 to 10 (content source: `RAW_content/02_Modules/`, coverage in `content/coverage.md`).
-- Progress: XP, daily streak, 12 trophies (one per level plus a 7-day streak).
-- Executive templates (security memo, 4D KPI scorecard, capstone adoption plan) unlocked at levels 5, 9 and 10. They are the deliverables of those levels, downloadable as Markdown.
+- Trailhead model (decision 0006): one trail, **PAF**, of 11 modules (0 to 10). Module 0 is the base camp; modules 1 to 10 sit in three visual zones (Workshop, Fortress, Field), mapped to the 8 MIT modules of `content/curriculum.md`.
+- Each module has 4 units: Concept, Post-mortem, Lab, Deliverable (content source: `RAW_content/02_Modules/`, coverage in `content/coverage.md`).
+- Points: quiz units pay 100 / 50 / 25 by attempt, Lab and Deliverable 200 each; 600 per module, 6,600 for the trail. Each module earns one badge.
+- Learner level: six ranks, 0 Curious, 1 Operator, 2 Builder, 3 Integrator, 4 Guardian, 5 Agentic Architect. Each needs a badge count and a point total; finishing the trail always reaches level 5.
+- Trail page shows points, time left, % done, module cards with units, badges and completion dates. Profile shows the rank insignia, badges / points / trails and what is missing for the next level.
+- Executive templates (security memo, 4D KPI scorecard, capstone adoption plan) are the deliverables of modules 5, 9 and 10, downloadable as Markdown.
 - Four characters (Loop, Plug, Ward, Cap) reacting to the learner.
 
 ## Out of scope

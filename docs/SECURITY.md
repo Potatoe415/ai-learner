@@ -48,5 +48,5 @@ The baseline is stack-agnostic. Stack-specific rules go in the last section once
 
 ## Stack-specific rules
 Current exposure (observed): static site, no server endpoints, no authentication, no environment variables. Fonts are fetched from Google Fonts at build time.
-- `localStorage` (`agent-path:v1`) holds only progress (XP, steps, streak, last active day). Never store personal data there (inferred — confirm).
+- `localStorage` (`agent-path:v2`) holds only progress (points, completion date and wrong-answer count per unit). It is sanitised on read. Never store personal data there (inferred — confirm).
 - Stored progress is parsed with `JSON.parse` and merged without schema validation; treat it as untrusted input (see backlog).

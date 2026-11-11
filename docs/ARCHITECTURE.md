@@ -9,7 +9,7 @@ Every stack choice also gets a decision in `docs/decisions/`.
 |---|---|
 | Frontend | Next.js 15 (App Router), React 19, TypeScript 5 strict (decision 0002) |
 | Backend | None. All routes are statically generated. |
-| Database | None. Learner progress in browser `localStorage`, key `agent-path:v1` (decision 0003) |
+| Database | None. Learner progress in browser `localStorage`, key `agent-path:v2` (decisions 0003, 0006) |
 | Runtime | Node.js (version not pinned) |
 | Package manager | npm (no lockfile committed yet) |
 | Hosting | Not decided |
@@ -32,26 +32,25 @@ Current structure, as-is (organised by layer, not yet by module):
 
 | Area | Purpose | Owns data | Depends on |
 |---|---|---|---|
-| `app/` | Routes `/`, `/level/[n]` (levels 0–10, SSG), `/trophies`; root layout wraps `ProgressProvider` | none | `components/`, `lib/` |
-| `components/PathView.tsx` | Path page: hero, base camp, zones, summit | none | `characters`, `icons`, `lib/curriculum`, `lib/progress` |
-| `components/LessonView.tsx` | Lesson shell, step navigation, level 4 quiz | none | `characters`, `icons`, `LessonSteps`, `lib/curriculum`, `lib/lessons`, `lib/progress` |
-| `components/LessonSteps.tsx` | Reading, Post-mortem, Lab and Deliverable step renderers | none | `icons`, `lib/lessons` |
-| `components/TrophiesView.tsx` | Profile, trophy cabinet, deliverables | none | `characters`, `icons`, `lib/curriculum`, `lib/progress` |
-| `components/characters.tsx`, `components/icons.tsx` | Presentational SVG | none | none |
-| `lib/curriculum.ts` | Zones, levels, trophies, deliverables | static course structure | none |
-| `lib/lessons.ts` | Lesson content model (step types) and aggregation of levels | none | `lib/lessons/` |
-| `lib/lessons/level-N.ts` | Lesson content of level N (0 to 10) | static lesson content | `lib/lessons` (types only) |
-| `lib/progress.tsx` | Progress state and persistence | `localStorage` key `agent-path:v1` | `lib/curriculum` |
+| `app/` | Routes `/` (trail), `/module/[n]` (modules 0–10, SSG, `?unit=N`), `/profile`; root layout wraps `ProgressProvider`. `next.config.mjs` redirects `/level/:n` and `/trophies` | none | `components/`, `lib/` |
+| `components/TrailView.tsx` | Trail page: PAF header (points, time left, %), zone bands, module cards with units | none | `badges`, `characters`, `icons`, `lib/curriculum`, `lib/lessons`, `lib/scoring`, `lib/progress` |
+| `components/LessonView.tsx` | Module shell, unit navigation, module 4 quiz, badge-earned banner | none | `badges`, `characters`, `icons`, `LessonSteps`, `lib/curriculum`, `lib/lessons`, `lib/progress` |
+| `components/LessonSteps.tsx` | Reading, Post-mortem, Lab and Deliverable unit renderers | none | `icons`, `lib/lessons` |
+| `components/ProfileView.tsx` | Profile: rank insignia, badges / points / trails, next rank, levels, badge cabinet, deliverables | none | `badges`, `characters`, `icons`, `lib/curriculum`, `lib/scoring`, `lib/progress` |
+| `components/badges.tsx`, `components/characters.tsx`, `components/icons.tsx` | Presentational SVG and images | none | none |
+| `lib/curriculum.ts` | Trail, units, zones, modules, badges, deliverables | static course structure | none |
+| `lib/scoring.ts` | Unit points and the six ranks | static scoring rules | `lib/curriculum` |
+| `lib/lessons.ts` | Lesson content model (unit types), aggregation of modules, unit titles and time estimates | none | `lib/lessons/` |
+| `lib/lessons/module-N.ts` | Lesson content of module N (0 to 10) | static lesson content | `lib/lessons` (types only) |
+| `lib/progress.tsx` | Progress state, persistence, v1 migration | `localStorage` key `agent-path:v2` | `lib/curriculum`, `lib/scoring` |
 | `app/globals.css` | All styles, global | none | none |
 
-Proposed target modules (inferred — confirm): `curriculum`, `lessons`, `progress`, `path`, `lesson`, `trophies`; `src/shared/ui/` for characters and icons.
+Proposed target modules (inferred — confirm): `curriculum`, `lessons`, `scoring`, `progress`, `trail`, `lesson`, `profile`; `src/shared/ui/` for characters, icons and badges.
 
 Boundary problems observed (sampling, not a full scan):
 - No `src/modules/`; feature code is split across `components/` and `lib/`.
-- Trophy ids (`level-N`, `streak-7`) are built in `lib/progress.tsx` and matched by string in `TrophiesView.tsx` glyphs.
-- Zone colours repeated in `lib/curriculum.ts`, `TrophiesView.tsx` glyphs and `app/globals.css`.
-- Mascot selector duplicated in `PathView.tsx` and `LessonView.tsx`.
-- Placeholder lesson steps and a dev-only "mark step done" button in `LessonView.tsx`, not marked `TEMP:`.
+- Zone colours repeated in `lib/curriculum.ts`, `components/badges.tsx` glyphs, `lib/scoring.ts` rank colours and `app/globals.css`.
+- Mascot selector duplicated in `TrailView.tsx` and `LessonView.tsx`; date and minute formatters duplicated in `TrailView.tsx` and `ProfileView.tsx`.
 - One global stylesheet for every page.
 
 Rules:
@@ -64,4 +63,4 @@ Rules:
 - Naming: PascalCase for components and their files, camelCase for functions, UPPER_CASE for static data constants (observed).
 - Formatting and linting: Not defined yet (no linter or formatter configured).
 - Tests: colocated inside each module. None exist yet.
-- Configuration: read from the environment once at startup, validated, exposed as one typed object. No direct environment access elsewhere. Currently no environment variables; `process.env.NODE_ENV` is read directly in `LessonView.tsx`.
+- Configuration: read from the environment once at startup, validated, exposed as one typed object. No direct environment access elsewhere. Currently no environment variables.

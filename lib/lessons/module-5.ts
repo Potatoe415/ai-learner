@@ -1,13 +1,13 @@
 import type { LessonContent } from "../lessons";
 
-// Level 5 · Threats & NIST. Source: MIT module 4 (sections 1 to 4, assignment 4.1) and its complements.
+// Module 5 · Threats & NIST. Source: MIT module 4 (sections 1 to 4, assignment 4.1) and its complements.
 // Content file: long by nature (prose, code and templates), no logic.
-export const LEVEL_5: LessonContent = {
+export const MODULE_5: LessonContent = {
   reading: {
     kicker: "Concept · Attacks that speak our language",
     title: "Your agent reads everything. So does the attacker.",
     intro:
-      "A chatbot that gets fooled writes a bad answer. An agent that gets fooled sends the file, pays the invoice or changes the record. This level walks through the threats that come with agents, the frameworks that organise a defence, the errors an agent makes on its own, and how to keep a record of its actions that nobody can rewrite.",
+      "A chatbot that gets fooled writes a bad answer. An agent that gets fooled sends the file, pays the invoice or changes the record. This module walks through the threats that come with agents, the frameworks that organise a defence, the errors an agent makes on its own, and how to keep a record of its actions that nobody can rewrite.",
     sections: [
       {
         heading: "From one bad click to synthetic people",
@@ -152,7 +152,6 @@ export const LEVEL_5: LessonContent = {
         "Right. If the summarising step cannot send email, the injection has nothing to pull. Least privilege and human approval for outward actions hold whatever the model believes.",
     },
     bubble: "I'm Ward. Let's walk the walls and look for gaps.",
-    xp: 20,
   },
 
   postMortem: {
@@ -202,7 +201,6 @@ export const LEVEL_5: LessonContent = {
       "Damiani, J. (2019, September 3). A voice deepfake was used to scam a CEO out of $243,000. Forbes.",
     ],
     bubble: "Every face on that call was fake. Let's see how it worked.",
-    xp: 20,
   },
 
   lab: {
@@ -421,7 +419,6 @@ if __name__ == "__main__":
       "The audit trail check fails after I edit an entry",
     ],
     bubble: "Something in this email is talking to your agent. Find it.",
-    xp: 30,
   },
 
   deliverable: {
@@ -498,6 +495,5 @@ Built on: loop map, cost estimate, architecture choices, integration map
       "A named incident owner and kill switch holder are on the memo",
     ],
     bubble: "Write it down calmly now, so nobody has to improvise later.",
-    xp: 30,
   },
 };

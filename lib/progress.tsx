@@ -1,49 +1,110 @@
 "use client";
 
+// Learner progress, stored in localStorage (decisions 0003 and 0006).
+// v2 records, per unit, the points earned and the completion date, plus wrong answers on quiz units.
+// v1 progress (steps only) is migrated once, with full points per completed step.
+
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { LEVELS, MAX_LEVEL, STEPS } from "./curriculum";
+import { MAX_MODULE, MODULES, UNITS } from "./curriculum";
+import { maxUnitPoints, nextRankOf, rankOf, unitPoints, type Rank } from "./scoring";
 
-const KEY = "agent-path:v1";
+const KEY = "agent-path:v2";
+const LEGACY_KEY = "agent-path:v1";
 
-interface Stored {
-  xp: number;
-  /** level number -> indexes of completed steps (0..3) */
-  steps: Record<number, number[]>;
-  streak: number;
-  lastDay: string | null; // YYYY-MM-DD (local)
+interface UnitRecord {
+  points: number;
+  /** Completion date, YYYY-MM-DD (local). */
+  at: string;
 }
 
-const EMPTY: Stored = { xp: 0, steps: {}, streak: 0, lastDay: null };
+interface Stored {
+  /** module -> unit -> record */
+  units: Record<number, Record<number, UnitRecord>>;
+  /** module -> unit -> wrong answers given before completion */
+  misses: Record<number, Record<number, number>>;
+}
+
+const EMPTY: Stored = { units: {}, misses: {} };
 
 const dayKey = (d = new Date()) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-const yesterdayKey = () => {
-  const d = new Date();
-  d.setDate(d.getDate() - 1);
-  return dayKey(d);
-};
 
-export interface TrophyState {
-  id: string;
-  tag: string;
-  name: string;
-  how: string;
-  level: number | null;
-  unlocked: boolean;
+const isIndex = (k: string, max: number) => /^\d+$/.test(k) && Number(k) <= max;
+const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
+
+/** Keeps only well-formed entries; anything else in storage is dropped. */
+function sanitize(raw: unknown): Stored {
+  const out: Stored = { units: {}, misses: {} };
+  if (!isObj(raw)) return out;
+  if (isObj(raw.units)) {
+    for (const [m, unitsOfM] of Object.entries(raw.units)) {
+      if (!isIndex(m, MAX_MODULE) || !isObj(unitsOfM)) continue;
+      for (const [u, rec] of Object.entries(unitsOfM)) {
+        if (!isIndex(u, UNITS.length - 1) || !isObj(rec)) continue;
+        const { points, at } = rec;
+        if (typeof points !== "number" || !Number.isFinite(points) || points < 0 || points > maxUnitPoints(Number(u))) continue;
+        if (typeof at !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(at)) continue;
+        (out.units[Number(m)] ??= {})[Number(u)] = { points, at };
+      }
+    }
+  }
+  if (isObj(raw.misses)) {
+    for (const [m, missOfM] of Object.entries(raw.misses)) {
+      if (!isIndex(m, MAX_MODULE) || !isObj(missOfM)) continue;
+      for (const [u, n] of Object.entries(missOfM)) {
+        if (!isIndex(u, UNITS.length - 1) || typeof n !== "number" || !Number.isInteger(n) || n < 0) continue;
+        (out.misses[Number(m)] ??= {})[Number(u)] = Math.min(n, 99);
+      }
+    }
+  }
+  return out;
+}
+
+/** v1 stored `steps: { [level]: number[] }` and `lastDay`; levels became modules with the same numbers. */
+function migrateV1(raw: unknown): Stored {
+  const out: Stored = { units: {}, misses: {} };
+  if (!isObj(raw) || !isObj(raw.steps)) return out;
+  // v1 kept no completion dates: the last active day is the best available approximation.
+  const at = typeof raw.lastDay === "string" && /^\d{4}-\d{2}-\d{2}$/.test(raw.lastDay) ? raw.lastDay : dayKey();
+  for (const [m, steps] of Object.entries(raw.steps)) {
+    if (!isIndex(m, MAX_MODULE) || !Array.isArray(steps)) continue;
+    for (const u of steps) {
+      if (typeof u !== "number" || !Number.isInteger(u) || u < 0 || u >= UNITS.length) continue;
+      (out.units[Number(m)] ??= {})[u] = { points: maxUnitPoints(u), at };
+    }
+  }
+  return out;
+}
+
+function load(): Stored {
+  const raw = localStorage.getItem(KEY);
+  if (raw) return sanitize(JSON.parse(raw));
+  const legacy = localStorage.getItem(LEGACY_KEY);
+  if (!legacy) return EMPTY;
+  const migrated = migrateV1(JSON.parse(legacy));
+  localStorage.setItem(KEY, JSON.stringify(migrated));
+  localStorage.removeItem(LEGACY_KEY);
+  return migrated;
 }
 
 interface Ctx {
   ready: boolean;
-  xp: number;
-  streak: number;
-  completedLevels: number[];
-  currentLevel: number;
-  trophies: TrophyState[];
-  unlockedCount: number;
-  nextLevelXp: number;
-  isStepDone: (level: number, step: number) => boolean;
-  isLevelDone: (level: number) => boolean;
-  completeStep: (level: number, step: number, xp?: number) => void;
+  points: number;
+  /** Module numbers whose badge is earned (all units done). */
+  completedModules: number[];
+  /** First module without its badge (MAX_MODULE once everything is done). */
+  currentModule: number;
+  rank: Rank;
+  nextRank: Rank | null;
+  isUnitDone: (m: number, u: number) => boolean;
+  /** Points earned on a unit, or the points it would pay if completed now. */
+  unitValue: (m: number, u: number) => number;
+  modulePoints: (m: number) => number;
+  /** Date the badge was earned (YYYY-MM-DD), or null. */
+  badgeDate: (m: number) => string | null;
+  isModuleDone: (m: number) => boolean;
+  recordMiss: (m: number, u: number) => void;
+  completeUnit: (m: number, u: number) => void;
   reset: () => void;
 }
 
@@ -55,10 +116,9 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setData({ ...EMPTY, ...JSON.parse(raw) });
+      setData(load());
     } catch {
-      /* ignore corrupted or unavailable storage */
+      /* corrupted or unavailable storage: start empty */
     }
     setReady(true);
   }, []);
@@ -72,69 +132,63 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const isStepDone = useCallback((l: number, s: number) => !!data.steps[l]?.includes(s), [data]);
-  const isLevelDone = useCallback((l: number) => (data.steps[l]?.length ?? 0) >= STEPS.length, [data]);
+  const isUnitDone = useCallback((m: number, u: number) => !!data.units[m]?.[u], [data]);
+  const misses = useCallback((m: number, u: number) => data.misses[m]?.[u] ?? 0, [data]);
+  const unitValue = useCallback(
+    (m: number, u: number) => data.units[m]?.[u]?.points ?? unitPoints(u, misses(m, u)),
+    [data, misses]
+  );
+  const isModuleDone = useCallback((m: number) => Object.keys(data.units[m] ?? {}).length >= UNITS.length, [data]);
+  const modulePoints = useCallback(
+    (m: number) => Object.values(data.units[m] ?? {}).reduce((sum, r) => sum + r.points, 0),
+    [data]
+  );
+  const badgeDate = useCallback(
+    (m: number) => (isModuleDone(m) ? Object.values(data.units[m]).map((r) => r.at).sort().at(-1) ?? null : null),
+    [data, isModuleDone]
+  );
 
-  const completeStep = useCallback(
-    (level: number, step: number, xp = 0) => {
-      if (data.steps[level]?.includes(step)) return;
-      const today = dayKey();
-      let streak = data.streak;
-      if (data.lastDay !== today) streak = data.lastDay === yesterdayKey() ? streak + 1 : 1;
-      persist({
-        xp: data.xp + xp,
-        steps: { ...data.steps, [level]: [...(data.steps[level] ?? []), step] },
-        streak,
-        lastDay: today,
-      });
+  const recordMiss = useCallback(
+    (m: number, u: number) => {
+      if (data.units[m]?.[u]) return;
+      persist({ ...data, misses: { ...data.misses, [m]: { ...data.misses[m], [u]: misses(m, u) + 1 } } });
     },
-    [data, persist]
+    [data, misses, persist]
+  );
+
+  const completeUnit = useCallback(
+    (m: number, u: number) => {
+      if (data.units[m]?.[u]) return;
+      const record = { points: unitPoints(u, misses(m, u)), at: dayKey() };
+      persist({ ...data, units: { ...data.units, [m]: { ...data.units[m], [u]: record } } });
+    },
+    [data, misses, persist]
   );
 
   const reset = useCallback(() => persist(EMPTY), [persist]);
 
   const value = useMemo<Ctx>(() => {
-    const completedLevels = LEVELS.filter((l) => (data.steps[l.n]?.length ?? 0) >= STEPS.length).map((l) => l.n);
-    const first = LEVELS.find((l) => !completedLevels.includes(l.n));
-    const currentLevel = first ? first.n : MAX_LEVEL;
-    // The streak only counts while it is still alive (active today or yesterday).
-    const alive = data.lastDay === dayKey() || data.lastDay === yesterdayKey();
-    const streak = alive ? data.streak : 0;
-
-    const trophies: TrophyState[] = [
-      ...LEVELS.map((l) => ({
-        id: `level-${l.n}`,
-        tag: `Level ${l.n}`,
-        name: l.trophy.name,
-        how: l.trophy.how,
-        level: l.n,
-        unlocked: completedLevels.includes(l.n),
-      })),
-      {
-        id: "streak-7",
-        tag: "Consistency",
-        name: "7-day streak",
-        how: "Learn seven days in a row.",
-        level: null,
-        unlocked: streak >= 7,
-      },
-    ];
-
+    const completedModules = MODULES.filter((m) => isModuleDone(m.n)).map((m) => m.n);
+    const first = MODULES.find((m) => !completedModules.includes(m.n));
+    const points = MODULES.reduce((sum, m) => sum + modulePoints(m.n), 0);
+    const rank = rankOf(completedModules.length, points);
     return {
       ready,
-      xp: data.xp,
-      streak,
-      completedLevels,
-      currentLevel,
-      trophies,
-      unlockedCount: trophies.filter((t) => t.unlocked).length,
-      nextLevelXp: 400 * Math.max(1, currentLevel),
-      isStepDone,
-      isLevelDone,
-      completeStep,
+      points,
+      completedModules,
+      currentModule: first ? first.n : MAX_MODULE,
+      rank,
+      nextRank: nextRankOf(rank),
+      isUnitDone,
+      unitValue,
+      modulePoints,
+      badgeDate,
+      isModuleDone,
+      recordMiss,
+      completeUnit,
       reset,
     };
-  }, [data, ready, isStepDone, isLevelDone, completeStep, reset]);
+  }, [ready, isUnitDone, unitValue, modulePoints, badgeDate, isModuleDone, recordMiss, completeUnit, reset]);
 
   return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>;
 }

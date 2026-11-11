@@ -2,7 +2,7 @@
 
 Learn applied agentic AI step by step, from the agent loop to your own enterprise adoption plan.
 Course structure based on the MIT *Applied Agentic AI* curriculum (`content/curriculum.md`).
-UI based on the Claude Design canvas "Agent Path: from level 0 to level 10".
+UI based on the Claude Design canvas "Agent Path: from level 0 to level 10", restructured on the Salesforce Trailhead model.
 
 ## Run
 
@@ -14,23 +14,26 @@ npm run build
 
 ## Structure
 
+Trailhead model (decision 0006): one trail, **PAF**, of 11 modules (0 to 10). Each module has 4 units
+(Concept, Post-mortem, Lab, Deliverable) and earns one badge. Points and badges give the learner's level (0 to 5).
+
 | Path | Role |
 | --- | --- |
-| `app/page.tsx` | The path (zones, levels, resume button) |
-| `app/level/[n]` | A lesson: 4 steps (Concept, Post-mortem, Lab, Deliverable) |
-| `app/trophies` | Profile, trophy cabinet, executive templates |
-| `components/characters.tsx` | Loop, Plug, Ward, Cap (SVG, ported from the design) |
-| `lib/curriculum.ts` | Zones, levels 0 to 10, trophies, deliverables |
-| `lib/lessons.ts` | Lesson content per level (level 4 concept is playable) |
-| `lib/progress.tsx` | XP, streak, steps, trophies, saved in `localStorage` |
+| `app/page.tsx` | The PAF trail: points, time left, % done, module cards and their units |
+| `app/module/[n]` | A module: 4 units (`?unit=N` opens a unit that is done or next) |
+| `app/profile` | Level insignia, badges / points / trails, next level, badge cabinet, executive templates |
+| `components/characters.tsx` | Loop, Plug, Ward, Cap (images in `public/characters/`) |
+| `components/badges.tsx` | Module badges and level insignia (SVG) |
+| `lib/curriculum.ts` | Trail, units, zones, modules 0 to 10, badges, deliverables |
+| `lib/scoring.ts` | Unit points (100 / 50 / 25 for quizzes, 200 for Lab and Deliverable) and the six levels |
+| `lib/lessons.ts`, `lib/lessons/module-N.ts` | Lesson content, one file per module |
+| `lib/progress.tsx` | Points, completion dates and wrong answers per unit, saved in `localStorage` (`agent-path:v2`) |
 
-## Adding a course
+## Adding content
 
-1. Open `lib/lessons.ts` and add an entry for the level number.
-2. Fill `concept` (interactive question). Post-mortem, Lab and Deliverable steps are
-   placeholders for now; the next step is to add them to `LessonContent`.
-3. A level is complete when its 4 steps are done. In dev mode, a "mark step done" button
-   lets you move through levels that have no content yet.
+1. Edit `lib/lessons/module-N.ts`. Each unit is a typed object (see `lib/lessons.ts`, decision 0005).
+2. Points are not set in content: they come from `lib/scoring.ts`.
+3. A module is complete, and its badge earned, when its 4 units are done.
 
 ## Next steps
 

@@ -1,13 +1,13 @@
 import type { LessonContent } from "../lessons";
 
-// Level 3 · The harness. Source: MIT module 2 (sections 1 to 5, assignment 2.1) and its complements.
+// Module 3 · The harness. Source: MIT module 2 (sections 1 to 5, assignment 2.1) and its complements.
 // Content file: long by nature (prose, code and templates), no logic.
-export const LEVEL_3: LessonContent = {
+export const MODULE_3: LessonContent = {
   reading: {
     kicker: "Concept · From vibe coding to engineering",
     title: "The model is the wizard. Your code is the harness.",
     intro:
-      "Anyone can now get working code, or a working agent, by asking for it in plain words. Getting it to behave the same way on the ten-thousandth request is another job. This level separates what the model does from what your code must guarantee, then walks through the big architecture choices: one agent or several, visual tool or SDK, open or closed model, cloud or edge.",
+      "Anyone can now get working code, or a working agent, by asking for it in plain words. Getting it to behave the same way on the ten-thousandth request is another job. This module separates what the model does from what your code must guarantee, then walks through the big architecture choices: one agent or several, visual tool or SDK, open or closed model, cloud or edge.",
     sections: [
       {
         heading: "The wizard and the robot",
@@ -174,7 +174,6 @@ export const LEVEL_3: LessonContent = {
         "Right. Deterministic checks reject what breaks the rules, the bench proves it on cases you chose, and the hand-over keeps a person on what the harness cannot settle. That is devibing in practice.",
     },
     bubble: "Vibes are fun. Let's plug in a harness.",
-    xp: 20,
   },
 
   postMortem: {
@@ -222,7 +221,6 @@ export const LEVEL_3: LessonContent = {
       "Masad, A. [@amasad]. (2025, July). Public apology and announced safeguards for the Replit agent. X.",
     ],
     bubble: "Nine days of vibes, one bad afternoon. Let's see why.",
-    xp: 20,
   },
 
   lab: {
@@ -329,7 +327,7 @@ if __name__ == "__main__":
         title: "Run the bench",
         body: [
           "Run it. The raw model is valid about two times in three. With the harness, roughly 95 % of tickets pass after one to three attempts and the rest are escalated.",
-          "The key line is not the pass rate: it is that nothing invalid gets through, and you know exactly how much work reaches a person. Retries also cost tokens, so check the average attempts against your cost estimate from level 2.",
+          "The key line is not the pass rate: it is that nothing invalid gets through, and you know exactly how much work reaches a person. Retries also cost tokens, so check the average attempts against your cost estimate from module 2.",
         ],
         code: { lang: "shell", text: "python harness.py" },
       },
@@ -401,14 +399,13 @@ if __name__ == "__main__":
       "Calls that still fail after the retries are escalated, never passed through",
     ],
     bubble: "Plug the model into the harness. Watch the bad answers bounce.",
-    xp: 30,
   },
 
   deliverable: {
     kicker: "Deliverable · Architecture choice sheet",
     title: "Choose the architecture of your candidate workflow",
     purpose:
-      "Turn your agent candidate card (level 0), loop map (level 1) and cost estimate (level 2) into explicit architecture choices: who decides what, how many agents, which platform, which model, where it runs and what the harness checks. It becomes the technology section of your capstone adoption plan.",
+      "Turn your agent candidate card (module 0), loop map (module 1) and cost estimate (module 2) into explicit architecture choices: who decides what, how many agents, which platform, which model, where it runs and what the harness checks. It becomes the technology section of your capstone adoption plan.",
     fileName: "architecture-choice.md",
     template: `# Architecture choice sheet
 
@@ -469,6 +466,5 @@ The order of steps lives in code. The model only works inside a step.
       "At least three invariants and one failure mode are written down",
     ],
     bubble: "Your architecture, one decision per line. Plug it into the capstone.",
-    xp: 30,
   },
 };

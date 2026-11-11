@@ -1,16 +1,16 @@
 # Content coverage
 
 Maps every chapter of the course source (`RAW_content/02_Modules/`) to the lesson step that covers it.
-Steps: C = Concept, PM = Post-mortem, L = Lab, D = Deliverable. Example: `4.C` = level 4, Concept.
+Units: C = Concept, PM = Post-mortem, L = Lab, D = Deliverable. Example: `4.C` = module 4, Concept. App modules 0 to 10 are numbered separately from the MIT source modules 1 to 8 (decision 0006).
 Built 2026-11-11 (task module-lessons, decision 0005). Update this file when a lesson changes its scope.
 
 ## Excluded everywhere
 
 Course administration and navigation (welcome, learning outcomes, activities, support, navigation guide), videos as such (their ideas are used where relevant), optional forums, knowledge-check quizzes, feedback and final surveys, Captain's Log, Q&A boards, reference lists, glossaries (terms are used), wrap-ups with no new content, assignment submission and grading rules, examples tied to one specific learner's capstone. `02_Modules1-5.zip` is an older copy of modules 1 to 5.
 
-## Level to module
+## App module to MIT module
 
-| Levels | Module |
+| App modules | MIT module |
 |---|---|
 | 0, 1, 2 | 1 |
 | 3 | 2 |

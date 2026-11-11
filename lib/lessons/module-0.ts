@@ -1,13 +1,13 @@
 import type { LessonContent } from "../lessons";
 
-// Level 0 · Awakening: what is an agent? Source: MIT module 1 (sections 1 and 2) and its complements.
+// Module 0 · Awakening: what is an agent? Source: MIT module 1 (sections 1 and 2) and its complements.
 // Content file: long by nature (prose and templates), no logic.
-export const LEVEL_0: LessonContent = {
+export const MODULE_0: LessonContent = {
   reading: {
     kicker: "Concept · From chatbot to agent",
     title: "A chatbot answers. An agent gets things done.",
     intro:
-      "Since 2022, anyone can talk to a language model in plain words. That was the generative wave. The agentic wave adds something else: a goal, a plan, tools, and the habit of checking its own work. This level shows where agents come from and what really changes.",
+      "Since 2022, anyone can talk to a language model in plain words. That was the generative wave. The agentic wave adds something else: a goal, a plan, tools, and the habit of checking its own work. This module shows where agents come from and what really changes.",
     sections: [
       {
         heading: "What a language model actually does",
@@ -58,7 +58,7 @@ export const LEVEL_0: LessonContent = {
         },
         callout: {
           label: "Meet Loop",
-          text: "Perceive → Reason → Act → Reflect is the heartbeat of every agent. Loop, your guide, is named after it. Level 1 takes the cycle apart piece by piece.",
+          text: "Perceive → Reason → Act → Reflect is the heartbeat of every agent. Loop, your guide, is named after it. Module 1 takes the cycle apart piece by piece.",
         },
       },
       {
@@ -99,7 +99,6 @@ export const LEVEL_0: LessonContent = {
         "Exactly. Looking up the order is a tool call, spotting the delay is reasoning over the result, the voucher is an action, and checking it worked is reflection. That is the move from chatbot to agent.",
     },
     bubble: "Hi, I'm Loop. Let's see what an agent really is.",
-    xp: 20,
   },
 
   postMortem: {
@@ -148,7 +147,6 @@ export const LEVEL_0: LessonContent = {
       "Press coverage of Klarna's decision to recruit human agents again, e.g. Bloomberg, May 2025.",
     ],
     bubble: "A real case. Let's open the file.",
-    xp: 20,
   },
 
   lab: {
@@ -203,14 +201,13 @@ previous step). The critic must check tone, facts and length.`,
       "I mapped each step to Perceive, Reason, Act or Reflect",
     ],
     bubble: "Your turn. No code needed yet.",
-    xp: 30,
   },
 
   deliverable: {
     kicker: "Deliverable · Agent candidate card",
     title: "Pick the workflow you will work on",
     purpose:
-      "One page that names one workflow from your own work where an agent could help, and why. You will reuse it at every level, up to the capstone.",
+      "One page that names one workflow from your own work where an agent could help, and why. You will reuse it at every module, up to the capstone.",
     fileName: "agent-candidate-card.md",
     template: `# Agent candidate card
 
@@ -253,6 +250,5 @@ Verdict (chatbot / RAG / agent):
       "A quality signal is named, not only speed or volume",
     ],
     bubble: "Keep this card. It grows with you up to the capstone.",
-    xp: 30,
   },
 };

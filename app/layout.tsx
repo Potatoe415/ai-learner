@@ -7,7 +7,7 @@ const display = Bricolage_Grotesque({ subsets: ["latin"], weight: ["600", "700",
 const body = Figtree({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-figtree" });
 
 export const metadata: Metadata = {
-  title: "Agent Path: from level 0 to level 10",
+  title: "Agent Path · the PAF trail",
   description: "Learn applied agentic AI step by step, from the agent loop to your own enterprise adoption plan.",
 };
 

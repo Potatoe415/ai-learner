@@ -1,20 +1,21 @@
-// Lesson content model. One file per level in `lib/lessons/level-N.ts`, aggregated here.
-// A level counts as complete when all 4 steps (Concept, Post-mortem, Lab, Deliverable) are done.
+// Lesson content model. One file per module in `lib/lessons/module-N.ts`, aggregated here.
+// A module counts as complete (badge earned) when all 4 units (Concept, Post-mortem, Lab, Deliverable) are done.
+// Points are not part of the content: they come from `lib/scoring.ts`.
 // Source material: `RAW_content/02_Modules/` (rewritten in our own words, see decision 0005).
 
-import { LEVEL_0 } from "./lessons/level-0";
-import { LEVEL_1 } from "./lessons/level-1";
-import { LEVEL_2 } from "./lessons/level-2";
-import { LEVEL_3 } from "./lessons/level-3";
-import { LEVEL_4 } from "./lessons/level-4";
-import { LEVEL_5 } from "./lessons/level-5";
-import { LEVEL_6 } from "./lessons/level-6";
-import { LEVEL_7 } from "./lessons/level-7";
-import { LEVEL_8 } from "./lessons/level-8";
-import { LEVEL_9 } from "./lessons/level-9";
-import { LEVEL_10 } from "./lessons/level-10";
+import { MODULE_0 } from "./lessons/module-0";
+import { MODULE_1 } from "./lessons/module-1";
+import { MODULE_2 } from "./lessons/module-2";
+import { MODULE_3 } from "./lessons/module-3";
+import { MODULE_4 } from "./lessons/module-4";
+import { MODULE_5 } from "./lessons/module-5";
+import { MODULE_6 } from "./lessons/module-6";
+import { MODULE_7 } from "./lessons/module-7";
+import { MODULE_8 } from "./lessons/module-8";
+import { MODULE_9 } from "./lessons/module-9";
+import { MODULE_10 } from "./lessons/module-10";
 
-/** Interactive "pick the right number" quiz (level 4 style). */
+/** Interactive "pick the right number" quiz (module 4 style). */
 export interface ConceptQuiz {
   kicker: string;
   question: string;
@@ -27,7 +28,6 @@ export interface ConceptQuiz {
   };
   bubbles: { start: string; wrong: string; right: string };
   next: string;
-  xp: number;
 }
 
 /** A single multiple-choice question with feedback per wrong option. */
@@ -55,21 +55,19 @@ export interface Section {
   callout?: { label: string; text: string };
 }
 
-/** Concept step: a short reading closed by a check question. */
+/** Concept unit: a short reading closed by a check question. */
 export interface Reading {
   kicker: string;
   title: string;
   intro: string;
   sections: Section[];
   takeaways: string[];
-  /** Omitted when the level's interactive `concept` quiz already plays the check role (level 4). */
+  /** Omitted when the module's interactive `concept` quiz already plays the check role (module 4). */
   check?: Question;
   bubble: string;
-  /** Awarded by the check question. Unused when `check` is omitted (the quiz awards its own XP). */
-  xp: number;
 }
 
-/** Post-mortem step: a real case, what happened, and what to learn from it. */
+/** Post-mortem unit: a real case, what happened, and what to learn from it. */
 export interface PostMortem {
   kicker: string;
   title: string;
@@ -81,7 +79,6 @@ export interface PostMortem {
   /** Plain-text citations. Every real case is sourced. */
   sources: string[];
   bubble: string;
-  xp: number;
 }
 
 export interface LabStep {
@@ -90,7 +87,7 @@ export interface LabStep {
   code?: { lang: string; text: string };
 }
 
-/** Lab step: guided steps done outside the app, completed by self-declaration. */
+/** Lab unit: guided steps done outside the app, completed by self-declaration. */
 export interface Lab {
   kicker: string;
   title: string;
@@ -101,10 +98,9 @@ export interface Lab {
   /** Every item must be ticked before the lab can be marked done. */
   checklist: string[];
   bubble: string;
-  xp: number;
 }
 
-/** Deliverable step: a template to copy or download and fill in. */
+/** Deliverable unit: a template to copy or download and fill in. */
 export interface DeliverableStep {
   kicker: string;
   title: string;
@@ -114,7 +110,6 @@ export interface DeliverableStep {
   template: string;
   checklist: string[];
   bubble: string;
-  xp: number;
 }
 
 export interface LessonContent {
@@ -126,15 +121,50 @@ export interface LessonContent {
 }
 
 export const LESSONS: Record<number, LessonContent> = {
-  0: LEVEL_0,
-  1: LEVEL_1,
-  2: LEVEL_2,
-  3: LEVEL_3,
-  4: LEVEL_4,
-  5: LEVEL_5,
-  6: LEVEL_6,
-  7: LEVEL_7,
-  8: LEVEL_8,
-  9: LEVEL_9,
-  10: LEVEL_10,
+  0: MODULE_0,
+  1: MODULE_1,
+  2: MODULE_2,
+  3: MODULE_3,
+  4: MODULE_4,
+  5: MODULE_5,
+  6: MODULE_6,
+  7: MODULE_7,
+  8: MODULE_8,
+  9: MODULE_9,
+  10: MODULE_10,
 };
+
+/** Content of a unit (0 Concept, 1 Post-mortem, 2 Lab, 3 Deliverable). The interactive quiz completes unit 0 when present. */
+export const unitData = (c: LessonContent, unit: number) => [c.concept ?? c.reading, c.postMortem, c.lab, c.deliverable][unit];
+
+/** Title shown in the trail's unit list. */
+export function unitTitle(m: number, unit: number): string {
+  const c = LESSONS[m] ?? {};
+  return [c.reading?.title ?? c.concept?.question, c.postMortem?.title, c.lab?.title, c.deliverable?.title][unit] ?? "";
+}
+
+// Time estimates: reading units at 200 words a minute, rounded up to 5 minutes; labs use their stated duration.
+const WORDS_PER_MINUTE = 200;
+const DELIVERABLE_MINUTES = 20;
+const DEFAULT_LAB_MINUTES = 30;
+
+const countWords = (texts: (string | undefined)[]) =>
+  texts.reduce((n, t) => n + (t ? t.split(/\s+/).filter(Boolean).length : 0), 0);
+const toMinutes = (words: number) => Math.max(5, Math.ceil(words / WORDS_PER_MINUTE / 5) * 5);
+const questionText = (q?: Question) => (q ? [q.prompt, ...q.options.map((o) => o.text)] : []);
+
+/** Estimated minutes for a unit, as shown on the trail ("~10 mins"). */
+export function unitMinutes(m: number, unit: number): number {
+  const c = LESSONS[m] ?? {};
+  if (unit === 0) {
+    const r = c.reading;
+    const sections = r?.sections.flatMap((s) => [...s.body, ...(s.bullets ?? []), s.callout?.text, ...(s.table?.rows.flat() ?? [])]) ?? [];
+    return toMinutes(countWords([r?.intro, ...sections, ...(r?.takeaways ?? []), ...questionText(r?.check), c.concept?.question]));
+  }
+  if (unit === 1) {
+    const pm = c.postMortem;
+    return toMinutes(countWords([pm?.context, ...(pm?.timeline.map((t) => t.text) ?? []), ...(pm?.lessons ?? []), ...questionText(pm?.question)]));
+  }
+  if (unit === 2) return Number.parseInt(c.lab?.duration ?? "", 10) || DEFAULT_LAB_MINUTES;
+  return DELIVERABLE_MINUTES;
+}

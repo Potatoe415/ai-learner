@@ -5,7 +5,9 @@ How errors, logs, and tests are built so any bug can be located fast.
 ## Current state (observed)
 
 - No shared error type, error codes, logger, or `trace_id` yet.
-- Invalid level routes (`/level/<n>` outside 0–10) return Next.js `notFound()` (404); `dynamicParams` is off.
+- Invalid module routes (`/module/<n>` outside 0–10) return Next.js `notFound()` (404); `dynamicParams` is off. `/level/:n` and `/trophies` redirect to `/module/:n` and `/profile`.
+- `?unit=N` is ignored unless N is a digit below 4 and that unit is done or next to do.
+- Stored progress is sanitised on read: malformed entries, unknown modules or units, and points above a unit's maximum are dropped.
 - `lib/progress.tsx` swallows `localStorage` read and write failures silently and falls back to in-memory state.
 - `useProgress()` throws a plain `Error` when used outside `ProgressProvider`.
 - No tests and no test runner.

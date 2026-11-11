@@ -1,7 +1,8 @@
 "use client";
 
-// Renderers for the content-driven lesson steps: Reading (Concept), Post-mortem, Lab, Deliverable.
-// Each step reports completion through `onComplete`; persistence stays in `lib/progress.tsx`.
+// Renderers for the content-driven lesson units: Reading (Concept), Post-mortem, Lab, Deliverable.
+// Each unit reports wrong answers through `onMiss` and completion through `onComplete`;
+// points and persistence stay in `lib/scoring.ts` and `lib/progress.tsx`.
 
 import { useState, type ReactNode } from "react";
 import { Check, Star } from "./icons";
@@ -10,7 +11,10 @@ import type { DeliverableStep, Lab, PostMortem, Question, Reading, Section, Tabl
 interface StepProps<T> {
   data: T;
   done: boolean;
-  onComplete: (xp: number) => void;
+  /** Points earned (done) or at stake (not done yet). */
+  points: number;
+  onComplete: () => void;
+  onMiss: () => void;
 }
 
 function DataTable({ table }: { table: Table }) {
@@ -47,14 +51,20 @@ function SectionBlock({ s }: { s: Section }) {
   );
 }
 
-function QuestionBlock({ q, done, onRight, kicker }: { q: Question; done: boolean; onRight: () => void; kicker: string }) {
+function QuestionBlock({ q, done, onRight, onWrong, kicker }: { q: Question; done: boolean; onRight: () => void; onWrong: () => void; kicker: string }) {
   const [picked, setPicked] = useState<string | null>(null);
+  const [tried, setTried] = useState<string[]>([]);
   const solved = done || picked === q.correct;
   const wrong = !!picked && !solved;
   const pick = (id: string) => {
     if (solved) return;
     setPicked(id);
-    if (id === q.correct) onRight();
+    if (id === q.correct) return onRight();
+    // Each wrong option costs points once, however many times it is clicked.
+    if (!tried.includes(id)) {
+      setTried((t) => [...t, id]);
+      onWrong();
+    }
   };
   return (
     <section className="card">
@@ -109,8 +119,8 @@ function Checklist({ items, done, onAllTicked, label }: { items: string[]; done:
   );
 }
 
-const XpEarned = ({ xp }: { xp: number }) => (
-  <span className="pill gold" style={{ alignSelf: "flex-start", fontWeight: 800 }}><Star fill="#fff" size={18} />+{xp} XP</span>
+export const PointsEarned = ({ points }: { points: number }) => (
+  <span className="pill gold" style={{ alignSelf: "flex-start", fontWeight: 800 }}><Star fill="#fff" size={18} />+{points} points</span>
 );
 
 const Head = ({ kicker, title, children }: { kicker: string; title: string; children?: ReactNode }) => (
@@ -121,7 +131,7 @@ const Head = ({ kicker, title, children }: { kicker: string; title: string; chil
   </header>
 );
 
-export function ReadingStep({ data, done, onComplete }: StepProps<Reading>) {
+export function ReadingStep({ data, done, points, onComplete, onMiss }: StepProps<Reading>) {
   return (
     <>
       <Head kicker={data.kicker} title={data.title}><p className="lead">{data.intro}</p></Head>
@@ -132,15 +142,15 @@ export function ReadingStep({ data, done, onComplete }: StepProps<Reading>) {
       </section>
       {data.check && (
         <>
-          <QuestionBlock q={data.check} done={done} onRight={() => onComplete(data.xp)} kicker="Check your understanding" />
-          {done && <XpEarned xp={data.xp} />}
+          <QuestionBlock q={data.check} done={done} onRight={onComplete} onWrong={onMiss} kicker="Check your understanding" />
+          {done && <PointsEarned points={points} />}
         </>
       )}
     </>
   );
 }
 
-export function PostMortemStep({ data, done, onComplete }: StepProps<PostMortem>) {
+export function PostMortemStep({ data, done, points, onComplete, onMiss }: StepProps<PostMortem>) {
   return (
     <>
       <Head kicker={data.kicker} title={data.title}><p className="lead">{data.context}</p></Head>
@@ -155,8 +165,8 @@ export function PostMortemStep({ data, done, onComplete }: StepProps<PostMortem>
         <span className="eyebrow">Lessons</span>
         <ul className="checks static">{data.lessons.map((l) => <li key={l}><Check size={20} color="#0E7C7B" /> <span>{l}</span></li>)}</ul>
       </section>
-      <QuestionBlock q={data.question} done={done} onRight={() => onComplete(data.xp)} kicker="Your call" />
-      {done && <XpEarned xp={data.xp} />}
+      <QuestionBlock q={data.question} done={done} onRight={onComplete} onWrong={onMiss} kicker="Your call" />
+      {done && <PointsEarned points={points} />}
       <footer className="sources">
         <span className="eyebrow">Sources</span>
         <ul>{data.sources.map((s) => <li key={s}>{s}</li>)}</ul>
@@ -165,7 +175,7 @@ export function PostMortemStep({ data, done, onComplete }: StepProps<PostMortem>
   );
 }
 
-export function LabStepView({ data, done, onComplete }: StepProps<Lab>) {
+export function LabStepView({ data, done, points, onComplete }: StepProps<Lab>) {
   return (
     <>
       <Head kicker={data.kicker} title={data.title}>
@@ -185,13 +195,13 @@ export function LabStepView({ data, done, onComplete }: StepProps<Lab>) {
           </li>
         ))}
       </ol>
-      <Checklist items={data.checklist} done={done} onAllTicked={() => onComplete(data.xp)} label={`Mark the lab done (+${data.xp} XP)`} />
-      {done && <XpEarned xp={data.xp} />}
+      <Checklist items={data.checklist} done={done} onAllTicked={onComplete} label={`Mark the lab done (+${points} points)`} />
+      {done && <PointsEarned points={points} />}
     </>
   );
 }
 
-export function DeliverableStepView({ data, done, onComplete }: StepProps<DeliverableStep>) {
+export function DeliverableStepView({ data, done, points, onComplete }: StepProps<DeliverableStep>) {
   const [copied, setCopied] = useState<"idle" | "ok" | "fail">("idle");
   const copy = async () => {
     try {
@@ -223,8 +233,8 @@ export function DeliverableStepView({ data, done, onComplete }: StepProps<Delive
         {copied === "fail" && <div role="status" className="hint">Copy is blocked in this browser. Use Download instead.</div>}
         <pre className="code tpl"><code>{data.template}</code></pre>
       </section>
-      <Checklist items={data.checklist} done={done} onAllTicked={() => onComplete(data.xp)} label={`My deliverable is filled in (+${data.xp} XP)`} />
-      {done && <XpEarned xp={data.xp} />}
+      <Checklist items={data.checklist} done={done} onAllTicked={onComplete} label={`My deliverable is filled in (+${points} points)`} />
+      {done && <PointsEarned points={points} />}
     </>
   );
 }

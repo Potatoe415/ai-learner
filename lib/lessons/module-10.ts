@@ -1,15 +1,15 @@
 import type { LessonContent } from "../lessons";
 
-// Level 10 · Capstone: ready. Source: MIT module 8 (chapter 1 Ethics in AI, chapter 2 The Capstone,
+// Module 10 · Capstone: ready. Source: MIT module 8 (chapter 1 Ethics in AI, chapter 2 The Capstone,
 // required assignment 8.1) and its complements (capability gap, compute limits, orchestration patterns,
 // Mailroom Metaphor, capstone sections and common failures, synthesis checklist).
 // Content file: long by nature (prose, code and templates), no logic.
-export const LEVEL_10: LessonContent = {
+export const MODULE_10: LessonContent = {
   reading: {
     kicker: "Concept · Ethics and the adoption plan",
     title: "Can we? Done. Should we, and on what terms?",
     intro:
-      "Nine levels taught you how to build, secure, test and scale an agent. This last one asks the questions that sit above all of them: who is affected, who is accountable, and is the outcome fair? Then it puts every piece you have made into one adoption plan you can defend in front of your leadership.",
+      "Ten modules taught you how to build, secure, test and scale an agent. This last one asks the questions that sit above all of them: who is affected, who is accountable, and is the outcome fair? Then it puts every piece you have made into one adoption plan you can defend in front of your leadership.",
     sections: [
       {
         heading: "Why ethics comes last",
@@ -157,7 +157,6 @@ export const LEVEL_10: LessonContent = {
         "Right. 30 / 48 = 0.63, well below the four-fifths line. Put people back on the affected decisions while you investigate, check the inputs for proxies, and make sure a named person owns the fix. That is the mailroom supervisor at work.",
     },
     bubble: "Last stretch. You know how to build it. Now let's make sure it's fair.",
-    xp: 20,
   },
 
   postMortem: {
@@ -209,7 +208,6 @@ export const LEVEL_10: LessonContent = {
       "Swenson, A. (2024, February 8). FCC bans AI-generated voices in robocalls that can deceive voters. PBS NewsHour.",
     ],
     bubble: "Good engineers, real data, unfair result. Let's see how it happened.",
-    xp: 20,
   },
 
   lab: {
@@ -220,7 +218,7 @@ export const LEVEL_10: LessonContent = {
     prerequisites: [
       "Python 3.10 or later (no extra packages, runs offline)",
       "Optional: a CSV export of real or test decisions from your agent",
-      "Your MVA one-pager and 4D KPI scorecard from levels 8 and 9",
+      "Your MVA one-pager and 4D KPI scorecard from modules 8 and 9",
     ],
     steps: [
       {
@@ -398,14 +396,13 @@ if freed / today > REDESIGN_SHARE:
       "Each issue found has a mitigation, an owner and a date",
     ],
     bubble: "Numbers first, opinions second. Let's audit your agent.",
-    xp: 30,
   },
 
   deliverable: {
     kicker: "Deliverable · Capstone adoption plan",
     title: "Your complete adoption plan",
     purpose:
-      "The final file: one coherent plan that brings together every piece you built, from the candidate card to the KPI scorecard, plus the ethics, fairness and workforce work from this level. Aim for 2 to 5 pages in the main body; move detail into appendices. Where you lack a number, say how you will get it.",
+      "The final file: one coherent plan that brings together every piece you built, from the candidate card to the KPI scorecard, plus the ethics, fairness and workforce work from this module. Aim for 2 to 5 pages in the main body; move detail into appendices. Where you lack a number, say how you will get it.",
     fileName: "capstone-adoption-plan.md",
     template: `# Capstone adoption plan
 
@@ -420,7 +417,7 @@ the main risk and how it is controlled, how success will be measured.
 -
 
 ## 1. Context and use case
-Reuses: agent candidate card (L0), MVA one-pager (L8).
+Reuses: agent candidate card (M0), MVA one-pager (M8).
 - Sector and type of organisation:
 - Department and process:
 - The one bottleneck we are fixing:
@@ -429,7 +426,7 @@ Reuses: agent candidate card (L0), MVA one-pager (L8).
 - What the minimum viable agent does, and does not do:
 
 ## 2. Technology choice and integration
-Reuses: loop map (L1), architecture choices (L3), integration map (L4).
+Reuses: loop map (M1), architecture choices (M3), integration map (M4).
 | Choice | Option picked | Alternatives considered | Why this one |
 |---|---|---|---|
 | Model tiers and routing | | | |
@@ -443,7 +440,7 @@ Reuses: loop map (L1), architecture choices (L3), integration map (L4).
 - Circuit breakers and kill switch (who can stop it, how fast):
 
 ## 3. Cost model
-Reuses: cost estimate (L2). Prices read on (date):
+Reuses: cost estimate (M2). Prices read on (date):
 | Line | One-off (capex) | Monthly (opex) | Notes |
 |---|---|---|---|
 | Model tokens (routed, with tool tax and history) | | | |
@@ -459,7 +456,7 @@ Reuses: cost estimate (L2). Prices read on (date):
 - Break-even point:
 
 ## 4. Security plan (NIST CSF 2.0)
-Reuses: security memo (L5).
+Reuses: security memo (M5).
 | Function | Main risk for this agent | Control in place | Owner |
 |---|---|---|---|
 | Govern | | | |
@@ -472,7 +469,7 @@ Reuses: security memo (L5).
 - Data privacy measures (masking, retention, vendor terms):
 
 ## 5. Change management, training and workforce
-Reuses: Crawl-Walk-Run plan (L9), workforce map (this level).
+Reuses: Crawl-Walk-Run plan (M9), workforce map (this module).
 | Role affected | Tasks moving to the agent | Tasks that stay | New tasks | Hours freed per week |
 |---|---|---|---|---|
 | | | | | |
@@ -485,7 +482,7 @@ Reuses: Crawl-Walk-Run plan (L9), workforce map (this level).
 - Support for roles that shrink:
 
 ## 6. Scaling strategy: Crawl, Walk, Run
-Reuses: Crawl-Walk-Run plan (L9).
+Reuses: Crawl-Walk-Run plan (M9).
 | Phase | Autonomy level | Scope | Exit gate (numeric) | Target date |
 |---|---|---|---|---|
 | Crawl | Suggests, a person approves every action | | | |
@@ -495,7 +492,7 @@ Reuses: Crawl-Walk-Run plan (L9).
 - What sends us back a phase:
 
 ## 7. Governance, compliance and ethics
-Reuses: guardrail register (L6), eval and audit plan (L7), bias audit (this level).
+Reuses: guardrail register (M6), eval and audit plan (M7), bias audit (this module).
 
 ### 7.1 Compliance
 | Regulation | Applies because | What we do |
@@ -530,7 +527,7 @@ Reuses: guardrail register (L6), eval and audit plan (L7), bias audit (this leve
 - Escalation path when something goes wrong:
 
 ## 8. KPIs
-Reuses: 4D KPI scorecard (L9).
+Reuses: 4D KPI scorecard (M9).
 | Dimension | KPI | Baseline | Target | Source | Frequency |
 |---|---|---|---|---|---|
 | Effectiveness | | | | | |
@@ -545,7 +542,7 @@ Reuses: 4D KPI scorecard (L9).
 | | | | |
 
 ## Appendix: pieces reused
-| Level | Piece | File | Last updated |
+| Module | Piece | File | Last updated |
 |---|---|---|---|
 | 0 | Agent candidate card | agent-candidate-card.md | |
 | 1 | Loop map | loop-map.md | |
@@ -567,6 +564,5 @@ Reuses: 4D KPI scorecard (L9).
       "Ethics names the laws, the bias audit result, the workforce impact and one accountable person; KPIs cover all four dimensions",
     ],
     bubble: "Everything you built, in one file. This is the one you take to your leadership. Well done, architect.",
-    xp: 30,
   },
 };

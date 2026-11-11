@@ -1,8 +1,8 @@
 import type { LessonContent } from "../lessons";
 
-// Level 1 · The agent loop. Source: MIT module 1 (sections 2 and 4) and its complements.
+// Module 1 · The agent loop. Source: MIT module 1 (sections 2 and 4) and its complements.
 // Content file: long by nature (prose, code and templates), no logic.
-export const LEVEL_1: LessonContent = {
+export const MODULE_1: LessonContent = {
   reading: {
     kicker: "Concept · Perceive, Reason, Act, Reflect",
     title: "Inside the loop that drives every agent",
@@ -112,7 +112,6 @@ export const LEVEL_1: LessonContent = {
         "Yes. A deterministic gate, here policy lookup plus a ceiling, sits between Reason and Act. It does not care how persuasive the reasoning sounds.",
     },
     bubble: "Four stages, one loop. Let's take it apart.",
-    xp: 20,
   },
 
   postMortem: {
@@ -153,14 +152,13 @@ export const LEVEL_1: LessonContent = {
         d: "Temperature changes variety, not accuracy. It usually makes factual errors more likely.",
       },
       explanation:
-        "Right. A small golden set from your own contracts, run on both models, tells you whether the savings are worth the error rate. Level 7 turns this into a routine.",
+        "Right. A small golden set from your own contracts, run on both models, tells you whether the savings are worth the error rate. Module 7 turns this into a routine.",
     },
     sources: [
       "OpenAI. (2025, April 16). OpenAI o3 and o4-mini system card.",
       "Paul, K., & Tong, A. (2024, September 13). OpenAI launches new series of AI models with “reasoning” abilities. Reuters.",
     ],
     bubble: "Even the best models slip. Let's see how.",
-    xp: 20,
   },
 
   lab: {
@@ -255,14 +253,13 @@ if __name__ == "__main__":
       "I can point to Perceive, Reason, Act and Reflect in the code",
     ],
     bubble: "Code time. Forty lines, no API key.",
-    xp: 30,
   },
 
   deliverable: {
     kicker: "Deliverable · Loop map",
     title: "Map the loop of your candidate workflow",
     purpose:
-      "Take the workflow from your agent candidate card (level 0) and describe each stage of its loop: what comes in, what is decided, what is done, and what is checked.",
+      "Take the workflow from your agent candidate card (module 0) and describe each stage of its loop: what comes in, what is decided, what is done, and what is checked.",
     fileName: "loop-map.md",
     template: `# Loop map
 
@@ -299,6 +296,5 @@ Date:
       "Facts the agent must not invent are listed",
     ],
     bubble: "Your loop, on one page.",
-    xp: 30,
   },
 };

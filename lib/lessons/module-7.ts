@@ -1,13 +1,13 @@
 import type { LessonContent } from "../lessons";
 
-// Level 7 · Evals & audit. Source: MIT module 7 (sections 2 and 4, assignment 7.1) and its complements.
+// Module 7 · Evals & audit. Source: MIT module 7 (sections 2 and 4, assignment 7.1) and its complements.
 // Content file: long by nature (prose, code and templates), no logic.
-export const LEVEL_7: LessonContent = {
+export const MODULE_7: LessonContent = {
   reading: {
     kicker: "Concept · Testing, evals, audit trails",
     title: "If you can't prove it, it didn't happen",
     intro:
-      "A regulator, an auditor or a judge does not grade your intentions. They ask for evidence: what you tested, what the agent did, who approved it. This level covers how to test something that never answers twice the same way, how to score it automatically, and what to record so that you can answer any question about it by tomorrow afternoon.",
+      "A regulator, an auditor or a judge does not grade your intentions. They ask for evidence: what you tested, what the agent did, who approved it. This module covers how to test something that never answers twice the same way, how to score it automatically, and what to record so that you can answer any question about it by tomorrow afternoon.",
     sections: [
       {
         heading: "Unit tests are not enough",
@@ -65,7 +65,7 @@ export const LEVEL_7: LessonContent = {
         },
         bullets: [
           "Each case stores the question, the context it should retrieve, a reference answer written or checked by a domain expert, and phrases that must or must not appear.",
-          "Cases contain no real personal data. Remember level 6: an erasure request also reaches your test sets.",
+          "Cases contain no real personal data. Remember module 6: an erasure request also reaches your test sets.",
           "Never tune prompts on the whole set. Keep a held-out part, or you end up testing what you memorised.",
         ],
       },
@@ -158,7 +158,6 @@ export const LEVEL_7: LessonContent = {
         "Right. High faithfulness with low recall means the model is honest about an incomplete context. Fix the retriever, rerun the golden set, and compare against the stored baseline.",
     },
     bubble: "Every watch needs a logbook. Let's learn what to write in it.",
-    xp: 20,
   },
 
   postMortem: {
@@ -206,7 +205,6 @@ export const LEVEL_7: LessonContent = {
       "Federal Trade Commission. (2024). In the Matter of DoNotPay, Inc. Complaint and proposed consent order.",
     ],
     bubble: "A bold claim, no evidence on file. Let's read the record.",
-    xp: 20,
   },
 
   lab: {
@@ -387,21 +385,20 @@ raise SystemExit(1 if failed else 0)`,
       "My thresholds were written down before I read the scores",
     ],
     bubble: "A small set, scored the same way every time. That is how trust is measured.",
-    xp: 30,
   },
 
   deliverable: {
     kicker: "Deliverable · Evaluation and audit plan",
     title: "How you will test, score and prove it",
     purpose:
-      "A one-to-two page plan for your candidate workflow: the golden set, the metrics and thresholds that gate a release, the red-team cases, the judge rules, what is logged and kept, and who reviews. Together with your guardrail register (level 6) it forms the governance plan of your capstone adoption plan. Reuse your loop map (level 1) for trajectories, your cost estimate (level 2) to budget eval runs, and your security memo (level 5) for red-team cases.",
+      "A one-to-two page plan for your candidate workflow: the golden set, the metrics and thresholds that gate a release, the red-team cases, the judge rules, what is logged and kept, and who reviews. Together with your guardrail register (module 6) it forms the governance plan of your capstone adoption plan. Reuse your loop map (module 1) for trajectories, your cost estimate (module 2) to budget eval runs, and your security memo (module 5) for red-team cases.",
     fileName: "eval-audit-plan.md",
     template: `# Evaluation and audit plan
 
 Workflow (from the candidate card):
 Author:
 Date:
-Linked documents: guardrail register (L6), security memo (L5), loop map (L1)
+Linked documents: guardrail register (M6), security memo (M5), loop map (M1)
 
 ## 1. Golden dataset
 - Size today / target, and mix (nominal __ % · edge __ % · red-team __ %):
@@ -461,6 +458,5 @@ Linked documents: guardrail register (L6), security memo (L5), loop map (L1)
       "A mock audit or the 2 pm test is scheduled with a name next to it",
     ],
     bubble: "Write the logbook before the voyage. I'll keep the watch.",
-    xp: 30,
   },
 };

@@ -1,13 +1,13 @@
 import type { LessonContent } from "../lessons";
 
-// Level 6 · Hard guardrails. Source: MIT module 7 (sections 1 and 3, assignment 7.1) and its complements.
+// Module 6 · Hard guardrails. Source: MIT module 7 (sections 1 and 3, assignment 7.1) and its complements.
 // Content file: long by nature (prose, code and templates), no logic.
-export const LEVEL_6: LessonContent = {
+export const MODULE_6: LessonContent = {
   reading: {
     kicker: "Concept · AI Act, GDPR, guardrails",
     title: "A sign on the wall is not a wall",
     intro:
-      "An agent that reads personal data and acts on it is subject to privacy law from its first request. Some rules can live in the prompt. The ones that carry legal weight cannot. This level maps the main laws onto agent design, then shows where to put the checks that a clever user cannot talk their way past. It is a design guide, not legal advice: confirm your reading with your legal team or data protection officer.",
+      "An agent that reads personal data and acts on it is subject to privacy law from its first request. Some rules can live in the prompt. The ones that carry legal weight cannot. This module maps the main laws onto agent design, then shows where to put the checks that a clever user cannot talk their way past. It is a design guide, not legal advice: confirm your reading with your legal team or data protection officer.",
     sections: [
       {
         heading: "Three privacy laws, one design brief",
@@ -152,7 +152,6 @@ export const LEVEL_6: LessonContent = {
         "Right. A deterministic egress filter does not read the conversation, so it cannot be talked round. Keep the prompt rule for tone, and log every time the filter fires: that log is your evidence.",
     },
     bubble: "I keep watch at the gate. Let's see which rules are walls and which are only signs.",
-    xp: 20,
   },
 
   postMortem: {
@@ -200,7 +199,6 @@ export const LEVEL_6: LessonContent = {
       "Proctor, J. (2024, February 15). Air Canada found liable for chatbot's bad advice on plane tickets. CBC News.",
     ],
     bubble: "A friendly answer, a costly promise. Let's look closely.",
-    xp: 20,
   },
 
   lab: {
@@ -317,7 +315,7 @@ if __name__ == "__main__":
       {
         title: "Place it in your loop",
         body: [
-          "Open your loop map from level 1. Mark where this gate sits: after Reason, before any reply leaves your system and before any tool call writes data. Note which fields your own workflow would need in its schema, and which ceilings hand over to a person.",
+          "Open your loop map from module 1. Mark where this gate sits: after Reason, before any reply leaves your system and before any tool call writes data. Note which fields your own workflow would need in its schema, and which ceilings hand over to a person.",
           "Optional: replace one stub with a real model asked to answer in the same JSON shape. Count how often its output fails the gate over 20 tries.",
         ],
       },
@@ -330,14 +328,13 @@ if __name__ == "__main__":
       "I marked where the gate sits in my own loop map",
     ],
     bubble: "Code at the gate. It does not argue, and it does not forget.",
-    xp: 30,
   },
 
   deliverable: {
     kicker: "Deliverable · Guardrail register",
     title: "A compliance sheet for your candidate workflow",
     purpose:
-      "One to two pages that say which laws apply to your workflow, how you will honour erasure and human review, and which guardrails sit where in the loop. It builds on your candidate card (level 0), loop map (level 1), architecture (level 3), integration map (level 4) and security memo (level 5), and becomes the governance section of your capstone adoption plan. It is a working document, not legal advice: have it reviewed by legal or your DPO.",
+      "One to two pages that say which laws apply to your workflow, how you will honour erasure and human review, and which guardrails sit where in the loop. It builds on your candidate card (module 0), loop map (module 1), architecture (module 3), integration map (module 4) and security memo (module 5), and becomes the governance section of your capstone adoption plan. It is a working document, not legal advice: have it reviewed by legal or your DPO.",
     fileName: "guardrail-register.md",
     template: `# Guardrail register
 
@@ -409,6 +406,5 @@ Reviewed by (legal / DPO):
       "Each guardrail has a position in the loop, a failure behaviour and an owner",
     ],
     bubble: "Write down every wall and where it stands. I'll check the gates.",
-    xp: 30,
   },
 };

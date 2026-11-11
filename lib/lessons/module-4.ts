@@ -1,13 +1,13 @@
 import type { LessonContent } from "../lessons";
 
-// Level 4 · The universal plug. Source: MIT module 3 (sections 1 to 5, assignment 3.1) and its complements.
+// Module 4 · The universal plug. Source: MIT module 3 (sections 1 to 5, assignment 3.1) and its complements.
 // Content file: long by nature (prose, code and templates), no logic.
-export const LEVEL_4: LessonContent = {
+export const MODULE_4: LessonContent = {
   reading: {
     kicker: "Concept · Tools, MCP, legacy systems",
     title: "One plug, many sockets",
     intro:
-      "A playlist plays what was planned. A live band reads the room and takes requests. Agents are the band: they act inside your software, not next to it. This level is about the wiring: how an agent calls tools, why old systems push back, and how one protocol replaces a drawer full of adapters.",
+      "A playlist plays what was planned. A live band reads the room and takes requests. Agents are the band: they act inside your software, not next to it. This module is about the wiring: how an agent calls tools, why old systems push back, and how one protocol replaces a drawer full of adapters.",
     sections: [
       {
         heading: "From clicking to asking",
@@ -154,7 +154,6 @@ export const LEVEL_4: LessonContent = {
       "MCP wraps each tool once for every agent, but it does not decide what an agent is allowed to do.",
     ],
     bubble: "Grab a cable. Let's plug some agents in!",
-    xp: 20,
   },
 
   concept: {
@@ -187,7 +186,6 @@ export const LEVEL_4: LessonContent = {
     },
     bubbles: { start: "Mission: plug 4 agents into 6 tools.", wrong: "Hmm, recount the links!", right: "Plugged in! Nicely done." },
     next: "Continue: Knight Capital post-mortem",
-    xp: 20,
   },
 
   postMortem: {
@@ -238,7 +236,6 @@ export const LEVEL_4: LessonContent = {
       "Milne, S. (2024, October 31). AI tools show biases in ranking job applicants' names according to perceived race and gender. UW News.",
     ],
     bubble: "Even the best plug needs a fuse. Here's why.",
-    xp: 20,
   },
 
   lab: {
@@ -331,7 +328,7 @@ if __name__ == "__main__":
         title: "Open it in the MCP Inspector",
         body: [
           "This starts your server and opens the Inspector in the browser (the first run asks to install it through npx). Connect, then open the Tools tab and list the tools.",
-          "Look at the JSON schema generated for each tool. That text is loaded into the model's context on every call: this is the tool tax from level 2.",
+          "Look at the JSON schema generated for each tool. That text is loaded into the model's context on every call: this is the tool tax from module 2.",
         ],
         code: { lang: "shell", text: "mcp dev server.py" },
       },
@@ -368,19 +365,18 @@ if __name__ == "__main__":
       "Creating or deleting the KILL_SWITCH file stops or resumes writes without touching the agent",
     ],
     bubble: "Your own plug, with a fuse. Let's build it!",
-    xp: 30,
   },
 
   deliverable: {
     kicker: "Deliverable · Integration map",
     title: "Map every cable of your candidate workflow",
     purpose:
-      "Show how the agent from your candidate card connects to real systems: through which interface, with which rights, and what stops it when things go wrong. It reuses your loop map (level 1), cost estimate (level 2) and architecture choice (level 3), and becomes the integration and scaling sections of your capstone adoption plan.",
+      "Show how the agent from your candidate card connects to real systems: through which interface, with which rights, and what stops it when things go wrong. It reuses your loop map (module 1), cost estimate (module 2) and architecture choice (module 3), and becomes the integration and scaling sections of your capstone adoption plan.",
     fileName: "integration-map.md",
     template: `# Integration map
 
 Workflow (from the candidate card):
-Topology and build tier (from level 3):
+Topology and build tier (from module 3):
 Author:
 Date:
 
@@ -439,6 +435,5 @@ Agent and platform; workflow and benefit; integration approach and main legacy b
       "The agent runs with minimum scopes, under the user's identity where access differs per user",
     ],
     bubble: "Every cable on one page. Your capstone will thank you!",
-    xp: 30,
   },
 };

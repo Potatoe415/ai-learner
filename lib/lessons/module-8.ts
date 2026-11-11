@@ -1,13 +1,13 @@
 import type { LessonContent } from "../lessons";
 
-// Level 8 · Your first useful agent. Source: MIT module 5 (sections 1 to 7, assignment 5.1) and its complements.
+// Module 8 · Your first useful agent. Source: MIT module 5 (sections 1 to 7, assignment 5.1) and its complements.
 // Content file: long by nature (prose, code and templates), no logic.
-export const LEVEL_8: LessonContent = {
+export const MODULE_8: LessonContent = {
   reading: {
     kicker: "Concept · Maturity, Minimum Viable Agent",
     title: "Ship one small agent that works, not a big one that might",
     intro:
-      "Most first agents fail for organisational reasons, not technical ones. The company was not ready, the scope was too wide, or nobody owned the result. This level gives you three tools to avoid that: a maturity map to know where you stand, a Minimum Viable Agent to start small, and a team model to decide who builds and runs it.",
+      "Most first agents fail for organisational reasons, not technical ones. The company was not ready, the scope was too wide, or nobody owned the result. This module gives you three tools to avoid that: a maturity map to know where you stand, a Minimum Viable Agent to start small, and a team model to decide who builds and runs it.",
     sections: [
       {
         heading: "The maturity cycle: five moves, in order",
@@ -159,7 +159,6 @@ export const LEVEL_8: LessonContent = {
         "Right. Frequent, low-risk questions, a real data source, a person in the loop and a health metric. It fits stage 2 and builds the governance habits that stage 3 will need.",
     },
     bubble: "Cap here. Today we ship something small that works.",
-    xp: 20,
   },
 
   postMortem: {
@@ -210,7 +209,6 @@ export const LEVEL_8: LessonContent = {
       "Cerullo, M. (2023, February). JPMorgan Chase restricts staffers' use of ChatGPT. CBS News.",
     ],
     bubble: "A big name, a stage 1 mistake. Let's learn from it.",
-    xp: 20,
   },
 
   lab: {
@@ -220,7 +218,7 @@ export const LEVEL_8: LessonContent = {
     duration: "40 minutes",
     prerequisites: [
       "Python 3.10 or later",
-      "Your loop map (level 1) and cost estimate (level 2)",
+      "Your loop map (module 1) and cost estimate (module 2)",
       "Any chat assistant",
     ],
     steps: [
@@ -286,7 +284,7 @@ print("Start with a person approving every output, and track the override rate."
         title: "Run it and challenge the result",
         body: [
           "With the example data, leave and benefits questions win. CV screening saves the most hours but is flagged and excluded.",
-          "Now argue with your own ranking. Is the winner a single task of a few minutes, or a whole process in disguise? Compare the monthly ceiling with your level 2 cost estimate: if running the agent costs more than the hours it saves, the winner is not the winner.",
+          "Now argue with your own ranking. Is the winner a single task of a few minutes, or a whole process in disguise? Compare the monthly ceiling with your module 2 cost estimate: if running the agent costs more than the hours it saves, the winner is not the winner.",
         ],
         code: { lang: "shell", text: "python mva_scorer.py" },
       },
@@ -323,12 +321,11 @@ single change you would make first:
     checklist: [
       "I scored at least four real tasks from my workflow",
       "High-risk uses are flagged and kept out of the MVA",
-      "My MVA's monthly ceiling is compared with my level 2 cost estimate",
+      "My MVA's monthly ceiling is compared with my module 2 cost estimate",
       "Scope in, scope out and the human gate are written down",
       "I applied or explicitly rejected each point of the critique",
     ],
     bubble: "Small scope, sharp metric. Let's find your bottleneck.",
-    xp: 30,
   },
 
   deliverable: {
@@ -399,6 +396,5 @@ Date:
       "The team model and both owners are named",
     ],
     bubble: "One page, one bottleneck, one number. Ship it.",
-    xp: 30,
   },
 };

@@ -1,8 +1,8 @@
 import type { LessonContent } from "../lessons";
 
-// Level 2 · The token meter. Source: MIT module 1 (sections 3 and 5, assignment 1.1) and its complements.
+// Module 2 · The token meter. Source: MIT module 1 (sections 3 and 5, assignment 1.1) and its complements.
 // Content file: long by nature (prose, code and templates), no logic.
-export const LEVEL_2: LessonContent = {
+export const MODULE_2: LessonContent = {
   reading: {
     kicker: "Concept · What an agent really costs",
     title: "You don't need a minivan to buy milk",
@@ -113,7 +113,6 @@ export const LEVEL_2: LessonContent = {
         "Right: (0.5 × $0.03 + 1 × $0.06) = $0.075 per call, × 10,000 = $750 a day, × 30 = $22,500 a month. Keeping input and output apart is the first rule of AI budgeting.",
     },
     bubble: "Every token has a price tag. Let's read it.",
-    xp: 20,
   },
 
   postMortem: {
@@ -160,7 +159,6 @@ export const LEVEL_2: LessonContent = {
       "Tordjman, K. L., et al. (2025, January 13). How AI agents are opening the golden era of customer experience. BCG.",
     ],
     bubble: "Savings that customers liked. Let's see why.",
-    xp: 20,
   },
 
   lab: {
@@ -240,7 +238,6 @@ print(f"Routed, with tools and history: \${real:,.2f}")`,
       "I listed what I still need to know before deciding",
     ],
     bubble: "Plug in your numbers. The meter does the rest.",
-    xp: 30,
   },
 
   deliverable: {
@@ -297,6 +294,5 @@ Prices read on (date):
       "At least one open question is listed",
     ],
     bubble: "This sheet goes straight into your capstone.",
-    xp: 30,
   },
 };
