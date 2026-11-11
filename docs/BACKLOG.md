@@ -12,7 +12,7 @@ Current work only. Completed work lives in git history.
 - [ ] Run the module 7 lab (guardrail + RAGAS) once with a real API key and check the expected scores.
 - [ ] Set `outputFileTracingRoot` in `next.config.mjs` (build warns about a parent `package-lock.json`).
 - [ ] `lib/curriculum.ts` `CourseModule.topics` comment says "used until full lessons are written": decide whether to keep the field.
-- [ ] Add a single `check` script: typecheck + lint + tests + dependency audit (no linter or test runner yet). First tests: `lib/scoring.ts` (worst case reaches every rank) and `lib/progress.tsx` sanitise and v3 migration.
+- [ ] Add a single `check` script: typecheck + lint + tests + dependency audit (no linter or test runner yet). Include `scripts/content/` tests (parser errors with file:line, Markdown round trip). First tests: `lib/scoring.ts` (worst case reaches every rank) and `lib/progress.tsx` sanitise and v3 migration.
 - [ ] Commit `package-lock.json` after the first install on the dev machine.
 - [ ] Choose hosting; record it in `docs/ARCHITECTURE.md` with a decision; create `docs/RUNBOOK.md`.
 - [ ] Decide how the error and logging contract of `docs/DEBUGGING.md` applies to a client-only app; add the shared error type.

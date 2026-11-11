@@ -3,9 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "content:extract": "node scripts/content/extract.mjs",
+    "content:build": "node scripts/content/build.mjs",
+    "content:status": "node scripts/content/status.mjs",
+    "predev": "npm run content:build",
     "dev": "next dev",
+    "prebuild": "npm run content:build",
     "build": "next build",
     "start": "next start",
+    "pretypecheck": "npm run content:build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

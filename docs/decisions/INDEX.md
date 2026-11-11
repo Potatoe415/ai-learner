@@ -10,9 +10,10 @@ Template: `docs/_templates/DECISION.md`.
 | 0002 | 2026-11-10 | Next.js and TypeScript for the web app | Accepted |
 | 0003 | 2026-11-10 | Learner progress in browser localStorage | Accepted |
 | 0004 | 2026-11-10 | English-first interface, French later | Accepted |
-| 0005 | 2026-11-11 | Lesson content as typed TypeScript objects, one file per level | Accepted |
+| 0005 | 2026-11-11 | Lesson content as typed TypeScript objects, one file per level | Superseded by 0008 |
 | 0006 | 2026-11-11 | Trailhead model: one trail, modules, badges, points and ranks | Accepted (module count superseded by 0007) |
 | 0007 | 2026-11-11 | Eight modules, one per MIT module | Accepted |
+| 0008 | 2026-11-11 | All site content from Markdown, through a staged, stateless pipeline | Accepted |
 
 ## When to log a decision
 Any of:
