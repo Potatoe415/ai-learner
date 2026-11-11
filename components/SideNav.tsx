@@ -16,13 +16,10 @@ import { useProgress } from "@/lib/progress";
 const COLLAPSED_KEY = "agent-path:nav-collapsed";
 const fmt = (n: number) => n.toLocaleString("en-US");
 
-/** Module groups as shown in the menu: the base camp, then each zone. */
-const GROUPS = [
-  { key: "base", label: "Base camp", color: "#1A2233", modules: MODULES.filter((m) => m.zone === "base") },
-  ...ZONES.map((z) => ({ key: z.key, label: z.name, color: z.color, modules: MODULES.filter((m) => m.zone === z.key) })),
-];
+/** Module groups as shown in the menu: one per zone. */
+const GROUPS = ZONES.map((z) => ({ key: z.key, label: z.name, color: z.color, modules: MODULES.filter((m) => m.zone === z.key) }));
 
-const colorOf = (m: CourseModule) => (m.zone === "base" ? "#1A2233" : getZone(m.zone).color);
+const colorOf = (m: CourseModule) => getZone(m.zone).color;
 
 interface Active {
   path: string;

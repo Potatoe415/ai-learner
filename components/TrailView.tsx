@@ -13,7 +13,7 @@ import { unitMinutes, unitTitle } from "@/lib/lessons";
 import { MODULE_MAX_POINTS, RANKS, TRAIL_MAX_POINTS } from "@/lib/scoring";
 import { useProgress } from "@/lib/progress";
 
-const Mascot = ({ who, size }: { who: Zone["mascot"] | "Loop"; size: number }) =>
+const Mascot = ({ who, size }: { who: Zone["mascot"]; size: number }) =>
   who === "Plug" ? <Plug size={size} /> : who === "Ward" ? <Ward size={size} /> : who === "Cap" ? <Cap size={size} /> : <Loop size={size} />;
 
 const fmt = (n: number) => n.toLocaleString("en-US");
@@ -104,7 +104,6 @@ export default function TrailView() {
   const pct = Math.round((unitsDone / (MODULES.length * UNITS.length)) * 100);
   const minutesLeft = MODULES.reduce((sum, m) => sum + UNITS.reduce((s, _, u) => s + (p.isUnitDone(m.n, u) ? 0 : unitMinutes(m.n, u)), 0), 0);
   const finished = doneCount === MODULES.length;
-  const base = MODULES.filter((m) => m.zone === "base");
 
   return (
     <div className="page">
@@ -143,12 +142,6 @@ export default function TrailView() {
           <span className="trailstats">{doneCount} / {MODULES.length} badges</span>
         </div>
       </section>
-
-      {base.map((m) => (
-        <div className="zonewrap" key={m.n}>
-          <ModuleCard mod={m} color="#1A2233" />
-        </div>
-      ))}
 
       {ZONES.map((zone) => (
         <div className="zonewrap" key={zone.key}>

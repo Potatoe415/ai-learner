@@ -1,17 +1,14 @@
 // Module badges and rank insignia (presentational SVG). One badge per module, keyed by module number.
 
 const GLYPHS: Record<number, { d: string; fill: string; stroke: string }> = {
-  0: { d: "M38 32L58 44L38 56Z", fill: "#1A2233", stroke: "#fff" },
   1: { d: "M58 44a14 14 0 1 1-4.5-10.3M55 27v8h-8", fill: "#0E7C7B", stroke: "#fff" },
-  2: { d: "M30 44a14 14 0 1 0 28 0a14 14 0 1 0-28 0M38 44a6 6 0 1 0 12 0a6 6 0 1 0-12 0", fill: "#0E7C7B", stroke: "#fff" },
-  3: { d: "M36 32h-6v24h6M52 32h6v24h-6M40 44h8", fill: "#0E7C7B", stroke: "#fff" },
-  4: { d: "M38 32v10M50 32v10M34 42h20v4a10 10 0 0 1-20 0ZM44 58v6", fill: "#0E7C7B", stroke: "#fff" },
-  5: { d: "M30 42a10 10 0 1 0 20 0a10 10 0 1 0-20 0M47 49L58 60", fill: "#3B3FA8", stroke: "#fff" },
-  6: { d: "M44 30L57 35V45C57 53 51 58 44 61C37 58 31 53 31 45V35ZM38 45l4 4 8-9", fill: "#3B3FA8", stroke: "#fff" },
-  7: { d: "M32 36a12 5 0 1 0 24 0a12 5 0 1 0-24 0M32 36v16a12 5 0 0 0 24 0V36M32 44a12 5 0 0 0 24 0", fill: "#3B3FA8", stroke: "#fff" },
-  8: { d: "M36 60V30M36 31h20l-5 6 5 6H36", fill: "#B84E00", stroke: "#fff" },
-  9: { d: "M34 58V32h12M44 44h16M54 38l6 6-6 6", fill: "#B84E00", stroke: "#fff" },
-  10: { d: "M44 29l4.7 9.6 10.6 1.5-7.7 7.5 1.8 10.5L44 53l-9.4 5 1.8-10.5-7.7-7.5 10.6-1.5Z", fill: "#F2B134", stroke: "#1A2233" },
+  2: { d: "M36 32h-6v24h6M52 32h6v24h-6M40 44h8", fill: "#0E7C7B", stroke: "#fff" },
+  3: { d: "M38 32v10M50 32v10M34 42h20v4a10 10 0 0 1-20 0ZM44 58v6", fill: "#0E7C7B", stroke: "#fff" },
+  4: { d: "M30 42a10 10 0 1 0 20 0a10 10 0 1 0-20 0M47 49L58 60", fill: "#3B3FA8", stroke: "#fff" },
+  5: { d: "M36 60V30M36 31h20l-5 6 5 6H36", fill: "#B84E00", stroke: "#fff" },
+  6: { d: "M34 58V32h12M44 44h16M54 38l6 6-6 6", fill: "#B84E00", stroke: "#fff" },
+  7: { d: "M44 30L57 35V45C57 53 51 58 44 61C37 58 31 53 31 45V35ZM38 45l4 4 8-9", fill: "#7A2E6E", stroke: "#fff" },
+  8: { d: "M44 29l4.7 9.6 10.6 1.5-7.7 7.5 1.8 10.5L44 53l-9.4 5 1.8-10.5-7.7-7.5 10.6-1.5Z", fill: "#F2B134", stroke: "#1A2233" },
 };
 
 /** Hexagonal module badge; greyed until earned, with a green seal once earned (as on Trailhead). */

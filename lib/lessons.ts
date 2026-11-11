@@ -3,7 +3,6 @@
 // Points are not part of the content: they come from `lib/scoring.ts`.
 // Source material: `RAW_content/02_Modules/` (rewritten in our own words, see decision 0005).
 
-import { MODULE_0 } from "./lessons/module-0";
 import { MODULE_1 } from "./lessons/module-1";
 import { MODULE_2 } from "./lessons/module-2";
 import { MODULE_3 } from "./lessons/module-3";
@@ -12,10 +11,8 @@ import { MODULE_5 } from "./lessons/module-5";
 import { MODULE_6 } from "./lessons/module-6";
 import { MODULE_7 } from "./lessons/module-7";
 import { MODULE_8 } from "./lessons/module-8";
-import { MODULE_9 } from "./lessons/module-9";
-import { MODULE_10 } from "./lessons/module-10";
 
-/** Interactive "pick the right number" quiz (module 4 style). */
+/** Interactive "pick the right number" quiz (module 3 style). */
 export interface ConceptQuiz {
   kicker: string;
   question: string;
@@ -62,7 +59,7 @@ export interface Reading {
   intro: string;
   sections: Section[];
   takeaways: string[];
-  /** Omitted when the module's interactive `concept` quiz already plays the check role (module 4). */
+  /** Omitted when the module's interactive `concept` quiz already plays the check role (module 3). */
   check?: Question;
   bubble: string;
 }
@@ -121,7 +118,6 @@ export interface LessonContent {
 }
 
 export const LESSONS: Record<number, LessonContent> = {
-  0: MODULE_0,
   1: MODULE_1,
   2: MODULE_2,
   3: MODULE_3,
@@ -130,8 +126,6 @@ export const LESSONS: Record<number, LessonContent> = {
   6: MODULE_6,
   7: MODULE_7,
   8: MODULE_8,
-  9: MODULE_9,
-  10: MODULE_10,
 };
 
 /** Content of a unit (0 Concept, 1 Post-mortem, 2 Lab, 3 Deliverable). The interactive quiz completes unit 0 when present. */

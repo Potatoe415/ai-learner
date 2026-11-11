@@ -101,7 +101,7 @@ function UnitBody({ content, unit, ...props }: UnitProps) {
   return null;
 }
 
-const Mascot = ({ who }: { who: Zone["mascot"] | "Loop" }) =>
+const Mascot = ({ who }: { who: Zone["mascot"] }) =>
   who === "Plug" ? <Plug size={200} /> : who === "Ward" ? <Ward size={200} /> : who === "Cap" ? <Cap size={200} /> : <Loop size={200} />;
 
 const noop = () => {};
@@ -116,9 +116,9 @@ export function LessonFromUrl({ module }: { module: number }) {
 export default function LessonView({ module, startUnit }: { module: number; startUnit: number | null }) {
   const p = useProgress();
   const mod = getModule(module)!;
-  const zone = mod.zone === "base" ? null : getZone(mod.zone);
-  const color = zone?.color ?? "#1A2233";
-  // Every module 0-10 has content (lib/lessons.ts); a missing unit would be a content bug.
+  const zone = getZone(mod.zone);
+  const color = zone.color;
+  // Every module 1-8 has content (lib/lessons.ts); a missing unit would be a content bug.
   const content = LESSONS[module] ?? {};
   const locked = p.ready && module > p.currentModule;
   const firstOpen = UNITS.findIndex((_, i) => !p.isUnitDone(module, i));
@@ -200,7 +200,7 @@ export default function LessonView({ module, startUnit }: { module: number; star
           <>
             <div className="mascot sticky" style={{ flex: "0 1 240px" }}>
               <div className="bubble white">{bubbleOf(content, unit)}</div>
-              {zone ? <Mascot who={zone.mascot} /> : <Loop size={200} mood={unitDone ? "cheer" : "think"} />}
+              {zone.mascot === "Loop" ? <Loop size={200} mood={unitDone ? "cheer" : "think"} /> : <Mascot who={zone.mascot} />}
             </div>
             <div key={unit} style={{ flex: "1 1 480px", minWidth: 0, display: "flex", flexDirection: "column", gap: 20 }}>
               <UnitBody

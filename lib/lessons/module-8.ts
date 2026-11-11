@@ -1,400 +1,521 @@
 import type { LessonContent } from "../lessons";
 
-// Module 8 · Your first useful agent. Source: MIT module 5 (sections 1 to 7, assignment 5.1) and its complements.
+// Module 8 · Ethics & capstone. Source: MIT module 8 (chapter 1 Ethics in AI, chapter 2 The Capstone,
+// video 8.1, required assignment 8.1) and its complements (capability gap, compute limits, orchestration
+// patterns, Mailroom Metaphor and operational ethics, the eight capstone sections, synthesis checklist).
 // Content file: long by nature (prose, code and templates), no logic.
 export const MODULE_8: LessonContent = {
   reading: {
-    kicker: "Concept · Maturity, Minimum Viable Agent",
-    title: "Ship one small agent that works, not a big one that might",
+    kicker: "Concept · Ethics, workforce and the adoption plan",
+    title: "We can build it. Should we, and on what terms?",
     intro:
-      "Most first agents fail for organisational reasons, not technical ones. The company was not ready, the scope was too wide, or nobody owned the result. This module gives you three tools to avoid that: a maturity map to know where you stand, a Minimum Viable Agent to start small, and a team model to decide who builds and runs it.",
+      "Seven modules taught you to price, build, connect, secure, scope, roll out and govern an agent. This last one asks the questions that sit above all of them: who is affected, who answers when it goes wrong, and is the outcome fair? Then it folds everything you have produced into one adoption plan you can put in front of your leadership.",
     sections: [
       {
-        heading: "The maturity cycle: five moves, in order",
+        heading: "Why ethics comes last",
         body: [
-          "Adoption is a cycle, not a launch. Each move prepares the next one, and skipping one shows up later as resistance, risk or a pilot nobody uses.",
+          "Ethics is placed at the end on purpose. It is not an afterthought but the lens you hold every earlier decision up to: the model you chose, the data you feed it, the actions you allow, the people whose work changes. “Can we?” is answered. Now: should we, and under which conditions?",
+          "AI raises sharper questions than ordinary software for three reasons. It is often opaque, so nobody can fully say why it decided something. It works on probabilities, not fixed rules. And it scales, so a single flaw is repeated across thousands or millions of decisions before anyone notices.",
         ],
         table: {
-          head: ["Move", "What you do", "What you get out of it"],
+          head: ["", "A broken spreadsheet formula", "A flawed model in production"],
           rows: [
-            ["1 · Spot opportunities", "Find repetitive tasks and recurring bottlenecks. Split them into small steps (pick targets, enrich data, draft a message).", "A shortlist, and sponsors who have seen a quick, concrete demo"],
-            ["2 · Teach the basics", "Train people to prompt, read outputs critically and know the limits. Publish an approved tool list, a usage policy and ethical rules.", "Shared vocabulary, fewer unsanctioned tools"],
-            ["3 · Map workflows", "Draw today's process step by step, mark where an agent could help, prototype, then score each idea on value, effort and risk.", "A ranked backlog of prototypes"],
-            ["4 · Enable", "Give the winners a team, secure platforms, data pipelines, standard APIs and a dashboard (time saved, error rate, throughput).", "A pilot that runs on real systems and is measured"],
-            ["5 · Scale and share", "Turn what works into standard procedure. Write the case study: architecture, method, governance, numbers. Grow champions and a community of practice.", "Reuse across teams, and the next round of opportunities"],
-          ],
-        },
-        callout: {
-          label: "Watch out: shadow AI",
-          text: "When approved tools lag behind, people use their own. In a 2024 survey of 7,000 workers in seven countries, 38 % admitted sharing sensitive work data with AI tools without permission, and 52 % had never been trained to use AI safely. The fix has three parts: policy (approved tools, audits, a governance group), technology (data loss prevention, access control, log review) and culture (training, safe sandboxes, leaders who set the example).",
-        },
-      },
-      {
-        heading: "Where you really stand",
-        body: [
-          "The cycle says what to do. A maturity ladder says how far you have got. Be honest here: the right first agent depends on the stage, not on ambition.",
-        ],
-        table: {
-          head: ["Stage", "What it looks like", "Main risk", "Agent you can ship"],
-          rows: [
-            ["1 · Ad-hoc", "Individuals use consumer chatbots on their own", "Data and IP leaking into public tools, nothing learned centrally", "None yet: approve a tool and a policy first"],
-            ["2 · Tactical", "Departments buy isolated point solutions (help desk bot, summariser)", "Tool sprawl and data silos", "One narrow agent with a clear metric"],
-            ["3 · Integrated", "Agents sit on the core systems (CRM, ERP, HRIS) with KPIs, guardrails and role-based access", "Integration debt", "Agents that read and write in one function"],
-            ["4 · Orchestrated", "Multi-agent workflows run across departments; people handle exceptions", "Cascading failures between agents", "Cross-functional, closed-loop workflows"],
-            ["5 · Reinvented", "Products, pricing and service are designed around agents", "Strategic lock-in", "New business models"],
-          ],
-        },
-        bullets: [
-          "Crawl: small pilots on routine work (data entry, invoices, reports), data clean-up, briefings, draft governance.",
-          "Walk: supervised agents that recommend while a person decides (next best action, assisted chat), better pipelines, business and tech teams working together.",
-          "Run: autonomous agents (anomaly detection with automatic fixes, personalisation at scale), a Center of Excellence watching models and ROI against KPIs.",
-        ],
-      },
-      {
-        heading: "The Minimum Viable Agent",
-        body: [
-          "A Minimum Viable Agent (MVA) is the smallest agent that removes one real bottleneck and proves it with a number. Think lean manufacturing, not moonshot: lower the cost of learning, then improve in small steps.",
-        ],
-        bullets: [
-          "One task, short and repetitive: a few minutes, many times a week. Not a whole process.",
-          "A person validates every output at first. Autonomy is earned, step by step.",
-          "One business number it moves: more revenue or less cost. If you cannot say which, stop.",
-          "Override rate as the health signal: if the reviewer corrects more than about one output in five, the input data is dirty or the task is too vague for the model.",
-          "Governance is part of ROI. Ten hours saved a week do not offset a data breach nobody checked for.",
-          "Start with volunteers. A team that fears for its jobs can feed the agent bad data to prove it fails.",
-        ],
-        callout: {
-          label: "Why outsourced work moves first",
-          text: "Customer support, invoice processing and back-office data entry were outsourced because classic software could not read messy documents or use judgement. Agents can. These tasks also have clear KPIs (tickets, handling time, satisfaction), so ROI is easy to show, and their cost grows with volume, which agents can flatten. HR experience gains are real but harder to put in numbers. Consultants and outsourcing firms are rebuilding their offers around this shift, which makes them useful partners and also vendors with an interest.",
-        },
-      },
-      {
-        heading: "Functional deployment matrix",
-        body: [
-          "A functional agent is built for one domain: its data, its tools, its rules. That is what separates it from a general assistant. Each function has a safe entry point and a trap.",
-          "Reported results give an order of magnitude, not a promise: vendors cite up to 70 % fewer manual HR tasks, 12 % faster financial processing with 22 % happier staff, and up to 80 % of routine IT issues handled automatically.",
-        ],
-        table: {
-          head: ["Function", "Start here (MVA)", "Mature pattern", "Trap"],
-          rows: [
-            ["HR", "Leave and benefits answers from the HRIS, onboarding scheduling", "End-to-end onboarding: documents, access, training", "Automated CV screening or performance scoring: high-risk under the EU AI Act"],
-            ["Finance", "Know-your-customer document collection and checks", "Research retrieval and portfolio insight for advisers", "Advice without audit trail in a regulated setting"],
-            ["IT", "Password resets, access requests, ticket summaries", "Open, route and close tickets, raise purchase orders with approval", "Write access to systems without a gate"],
-            ["Marketing", "Detect ad performance decay and propose variants", "Closed-loop campaigns that shift budget to what converts", "Mass-produced bland copy that damages the brand"],
-            ["Sales", "Fill CRM fields from call transcripts", "Draft technical follow-ups for the rep to approve", "Sending to clients without review"],
-            ["Supply chain", "Flag a delay and list alternative suppliers", "Price the options and prepare a purchase order for sign-off", "Ordering autonomously on noisy signals"],
-            ["Health care", "Bed assignment, scheduling, supply reorders", "Imaging triage, early-warning monitoring, care coordination", "Clinical decisions without a clinician"],
-          ],
-        },
-        callout: {
-          label: "Regulation",
-          text: "The EU AI Act lists AI used for recruitment, selection and promotion as high-risk (Annex III). That means risk management, logging, human oversight, technical documentation and bias checks before use. Breaching these duties can cost up to €15 million or 3 % of worldwide turnover. Internal HR FAQs and scheduling stay low-risk: that is where an HR MVA belongs.",
-        },
-      },
-      {
-        heading: "Two surfaces every function shares",
-        body: [
-          "Product work: generative tools propose options (Nike's athlete-led shoe concepts, Tesla's component variants, L'Oréal's formulations, Crocs' customer-designed charms). Agentic systems close the loop: GM's generative design generates, scores and re-iterates parts against strength and weight goals; Hyperganic's system took a rocket engine from specification to a hot-fire test; IKEA's lab explored hundreds of concepts from its archive; Oracle's sales agents decide what to write, to whom and when.",
-          "The browser: it is where most knowledge work happens. AI built into Edge, Brave, Arc or Chrome's developer tools summarises, compares and explains in place. It is also an exit door for data, a source of confident errors, and a reason to stop checking.",
-        ],
-        table: {
-          head: ["Lifecycle stage", "What an agent can take on"],
-          rows: [
-            ["Ideation", "Scan trends, reviews and feedback to spot gaps"],
-            ["Prototyping", "Generate, test and revise digital prototypes in loops"],
-            ["Development and QA", "Write and review code, keep test suites up to date"],
-            ["Launch and after", "Coordinate docs, deployment and compliance checks; watch usage and propose changes"],
-          ],
-        },
-        callout: {
-          label: "Getting ready",
-          text: "Four shifts, none of them a rebuild: people trained to supervise agents, tools that connect models to your systems, processes where agent output has a slot (stand-ups, release planning), and managers who supervise collaboration instead of commanding every step.",
-        },
-      },
-      {
-        heading: "Who builds it: centralized, embedded or hybrid",
-        body: [
-          "A centralized model is one general assistant in Slack or Teams, owned by IT, routing questions to HR, legal or finance systems. An embedded model puts specialised agents inside each team's own tools (a finance agent in the spreadsheet, a design agent in Figma), owned by the function.",
-          "On the team side, the same choice appears as a Center of Excellence (one central group builds and governs) versus a federated set-up (functions build, a central team sets the standards).",
-        ],
-        table: {
-          head: ["", "Centralized / CoE", "Embedded / federated"],
-          rows: [
-            ["Scope", "Broad, general", "Narrow, domain-specific"],
-            ["Owner", "IT or automation team", "The function"],
-            ["Governance", "One place to control and audit", "Harder to keep consistent"],
-            ["Fit to the work", "Generic, can miss brand or domain nuance", "Tuned to local data and tools"],
-            ["Launch", "Fast, company-wide", "Set-up per department"],
-            ["Cost", "Lower to start", "Higher to maintain"],
-            ["Maturity", "Crawl: one assistant only", "Walk: first embedded pilots. Run: federated agents on shared infrastructure"],
+            ["Reach", "One team, one report", "Every customer, applicant or supplier it touches"],
+            ["Speed of damage", "As fast as people open the file", "As fast as the agent runs"],
+            ["Who answers", "The file owner", "Unclear, unless someone was named in advance"],
           ],
         },
         callout: {
           label: "Field note",
-          text: "Most companies end up hybrid: a central gateway for common requests, embedded specialists for deep work, and one shared rulebook. Sensitive data (patient records under HIPAA, for example) is safer behind the governed central layer. And when agents pass work to each other, use strict JSON schemas, versioned prompts and a log per step: a free-text hand-off breaks as soon as someone makes one prompt “more concise”.",
+          text: "Ethical failures are business failures: lost trust, disengaged staff, customer backlash, regulators asking questions. Putting ethics into governance is risk management, not charity.",
+        },
+      },
+      {
+        heading: "Four principles leaders keep meeting",
+        body: [
+          "Practice and research converge on four guideposts. Each one is easy to agree with and hard to run, which is why the next section turns them into procedures.",
+        ],
+        table: {
+          head: ["Principle", "What it asks of you"],
+          rows: [
+            ["Fairness and non-discrimination", "Skewed training data can copy or harden bias. Make sure nobody is disadvantaged because of a protected characteristic. Fair AI also tends to perform better for the business."],
+            ["Transparency and explainability", "Black boxes breed distrust. You must be able to explain a decision in plain words to staff, customers and regulators."],
+            ["Accountability and responsibility", "Autonomy does not remove responsibility. A person keeps oversight of, and answers for, what the agent does."],
+            ["Privacy and data stewardship", "Data rules keep tightening, so careless handling is a legal and a reputational risk. Use data with care and for a stated purpose."],
+          ],
+        },
+      },
+      {
+        heading: "Run your agent like a mailroom",
+        body: [
+          "Instructor Oscar Sanchez proposed a down-to-earth way to make those principles operational: treat an autonomous agent like the company mailroom. A good mailroom has five habits, and each one is a control you can build.",
+        ],
+        table: {
+          head: ["The mailroom clerk…", "Principle", "What it becomes in your agent"],
+          rows: [
+            ["never reads your letters", "Privacy", "Personal data masked before the model sees it; vendor terms with zero data retention"],
+            ["delivers only to verified recipients", "Access control", "Write access limited by IAM roles; the agent touches only what it is allowed to"],
+            ["logs every parcel in and out", "Auditability", "A structured rationale stored with each decision, in metadata you can query"],
+            ["refuses hazardous or illegal cargo", "Guardrails", "Blocked actions and inputs, enforced in code rather than in the prompt"],
+            ["works under a supervisor who answers for losses", "Human responsibility", "A designated role, for example the director of operations, accountable for every agent decision"],
+          ],
+        },
+        bullets: [
+          "Fairness in practice: run disparate impact tests continuously on synthetic demographic datasets, and feed the agent no input that can stand in for a demographic trait (a proxy).",
+          "Transparency in practice: tell people when they are dealing with an AI, and emit a decision rationale they can be shown.",
+          "Proportional intervention: low-confidence or high-financial-impact operations go to a human review queue automatically.",
+        ],
+        callout: {
+          label: "Keep in mind",
+          text: "An agent cannot be held legally or financially accountable. A person always is. If your plan does not name that person, the choice will be made for you after the incident.",
+        },
+      },
+      {
+        heading: "The work changes before the jobs go",
+        body: [
+          "Job loss is the concern employees voice most, and it is about more than income: it touches identity, purpose and dignity. History offers a partial answer. ATMs took over some teller tasks and banks moved tellers towards customer service. Spreadsheets displaced manual bookkeepers and created demand for financial analysts. Automation tends to remove tasks first and reshape roles second.",
+          "Ignore that, and it bites. In August 2025 the Commonwealth Bank of Australia tried to replace 45 call-centre jobs with an AI voice bot. Call volumes rose, performance fell, and the bank reversed the cuts, rehired the staff and admitted it had misjudged the cost. Elsewhere, AI ordering at Hungry Jack's drive-throughs drew public concern about entry-level jobs for teenagers.",
+          "The mailroom image helps here too. Sorting and routing is mechanical, so the agent takes it. The odd parcel, the angry recipient, the exception to policy call for judgement: they stay with people and become a bigger share of the job. Most experts now expect AI to both reshape and replace jobs; the leader's task is to transform work wherever possible.",
+        ],
+        bullets: [
+          "Reskilling, with budget and time agreed before launch.",
+          "Internal mobility: a route into the new tasks (review queue, quality audits, exceptions).",
+          "Early, honest communication about what changes and what does not.",
+          "Real transition support for the roles that do shrink.",
+        ],
+      },
+      {
+        heading: "Other risks, and three quick tests",
+        body: [
+          "Bias is one risk among several. Voice cloning already powers fraud: in 2019 criminals imitated a director's voice and talked a UK energy company into wiring $243,000 to a fraudulent account. In 2024 the US Federal Communications Commission banned AI-generated voices in robocalls after a fake President Biden message tried to mislead voters. In medicine, when a diagnostic tool misses something and a patient is harmed, it is still unclear whether the doctor, the developer or the hospital is liable.",
+          "Leaders need tools, not abstraction. Before you approve a use case, run three short tests, then back them with structured artefacts: model cards, bias audits and ethics checklists.",
+        ],
+        bullets: [
+          "Do no harm: borrowed from medicine. What is the worst realistic outcome for the person on the other end, and is it acceptable?",
+          "Stakeholder impact: write one line each on how employees, customers, investors and society are affected.",
+          "Front-page test: would you be comfortable explaining this decision if it made tomorrow's headlines?",
+          "Model card: a standard document giving a model's purpose, data sources, performance, limits and risks. Google researchers introduced the idea in 2019 to help judge whether a model is fit, fair and safe for a given use.",
+        ],
+        table: {
+          head: ["Region", "Typical stance"],
+          rows: [
+            ["Europe", "Often leads with privacy-first norms"],
+            ["United States", "Innovation first, with oversight emerging"],
+            ["Asia", "Varies: some countries run state-led experimentation and regulation"],
+          ],
+        },
+        callout: {
+          label: "Leadership",
+          text: "Values in a mission statement change nothing; values built into operations, training and reporting lines do. Groups such as the Partnership on AI bring stakeholders together to set norms you can borrow. The question moves from “how far can we push efficiency?” to “how do we advance responsibly?”",
+        },
+      },
+      {
+        heading: "When one agent becomes several",
+        body: [
+          "Your capstone may need more than one agent. In the closing webinar, Dr. John Williams described two ways to organise them once a single script is no longer enough. Both avoid long conversational chains between agents, which break as soon as one prompt changes (the “chain jam” from module 5).",
+        ],
+        table: {
+          head: ["Pattern", "How it works", "Why it helps"],
+          rows: [
+            ["Supervisor (hierarchical)", "A central model splits the goal into sub-tasks, hands each to a specialised worker, checks what comes back and assembles the result", "Workers keep small, focused context windows; the supervisor keeps only a summary, so prompts do not bloat"],
+            ["Shared artifact (blackboard)", "Agents never message each other; they read and write a shared state (a database, a JSON workspace, a draft document)", "Agents are fully decoupled: one writes a change, another inspects it, no handoff needed"],
+          ],
+        },
+      },
+      {
+        heading: "Close the capability gap with one plan",
+        body: [
+          "The technology can now plan, call tools and act. Yet Dr. Abel Sanchez estimates that 85% of enterprise use is still basic editing, summarising and chat. The gap is human, behavioural and organisational, not technical. Boards bring decades of operating experience but no mental model for software that is not deterministic, so they default to caution.",
+          "Your adoption plan bridges that gap by speaking their language: a risk register, lower operating costs, compliance commitments, measurable results. It has eight sections, and instructors flagged a classic trap for each.",
+        ],
+        table: {
+          head: ["Section", "What it must show", "Classic trap"],
+          rows: [
+            ["1 · Context", "Sector, organisation, one department, one concrete bottleneck", "A use case as wide as “transforming healthcare with AI”"],
+            ["2 · Technology", "Model tiers, hosting (cloud or local), integration (MCP, APIs), and why", "A list of tools with no trade-offs explained"],
+            ["3 · Cost", "Capex, opex, staffing and training, total cost of ownership", "Raw token costs only"],
+            ["4 · Security", "The six NIST CSF 2.0 functions, prompt injection, tool privilege limits", "“We will encrypt the data”"],
+            ["5 · Change and training", "Co-design workshops, retraining incentives, psychological safety", "A user manual nobody reads"],
+            ["6 · Scaling", "Crawl, Walk, Run with numeric milestones, autonomy levels and gates", "Full autonomy on day one"],
+            ["7 · Governance and ethics", "Named laws (GDPR, EU AI Act, HIPAA, CCPA) and the person accountable for failures", "No specific regulation named"],
+            ["8 · KPIs", "Effectiveness, efficiency, learning and adaptation, human adoption", "Revenue ROI alone"],
+          ],
+        },
+        callout: {
+          label: "Big picture",
+          text: "The hyperscalers (Microsoft, Alphabet, Amazon, Meta) are investing upwards of $100 to $150 billion a year in GPU clusters and custom chips, and electricity has become the main constraint: multi-gigawatt power deals, even decommissioned nuclear reactors such as Three Mile Island being brought back. Expect cloud token prices to keep falling, and local or sovereign hosting to stay hard to get.",
         },
       },
     ],
     takeaways: [
-      "Know your maturity stage first: the right first agent depends on it.",
-      "An MVA removes one bottleneck, keeps a person in the loop and moves one business number.",
-      "Pick the team model on purpose: centralized to start and govern, embedded for depth, hybrid as you grow.",
+      "Every principle needs a mechanism and an owner. The agent is never the accountable party.",
+      "Plan the work, not only the tool: which tasks move to the agent, which stay human, which are new.",
+      "One plan, eight sections, built from what you already made. Where a number is missing, say how you will get it.",
     ],
     check: {
       prompt:
-        "Your company is at stage 2: a few departmental bots, no shared governance. HR asks for a first agent and wants results within a quarter. Which one do you scope?",
+        "Your agent approves supplier refunds. The board asks who is responsible if it pays the wrong supplier. Which answer fits this module?",
       options: [
-        { id: "a", text: "An agent that screens every CV and sends a ranked shortlist to managers" },
-        { id: "b", text: "A leave and benefits agent grounded in the HRIS, with HR reviewing answers at first and tracking the override rate" },
-        { id: "c", text: "A multi-agent onboarding system across HR, IT and finance, running without human review" },
-        { id: "d", text: "Letting each recruiter choose a chat tool and see what sticks" },
+        { id: "a", text: "The model vendor, since its terms of service cover errors made by the model" },
+        { id: "b", text: "A named role, such as the director of operations, owns every decision; high-amount or low-confidence refunds go to a review queue and each decision is logged with its rationale" },
+        { id: "c", text: "Nobody needs to be named once the agent's measured accuracy is above 95%" },
+        { id: "d", text: "Responsibility is shared with users, because the model card lists the agent's limits" },
       ],
       correct: "b",
       hints: {
-        a: "Hiring is a high-risk use under the EU AI Act. It needs audits, documentation and oversight a stage 2 company does not have yet.",
-        c: "Cross-functional orchestration is stage 4. Skipping two stages is how pilots stall.",
-        d: "That is stage 1, shadow AI. It leaks data and teaches the company nothing.",
+        a: "Your organisation runs the agent and pays the supplier. A vendor contract does not move accountability for your decisions out of the building.",
+        c: "Accuracy says how often it is right, not who answers when it is wrong. At scale, 5% is a lot of wrong refunds.",
+        d: "A model card is transparency: it helps you judge fitness for use. It does not transfer responsibility to anyone.",
       },
       explanation:
-        "Right. Frequent, low-risk questions, a real data source, a person in the loop and a health metric. It fits stage 2 and builds the governance habits that stage 3 will need.",
+        "Right. That is the mailroom supervisor: a named human answers, unusual or costly parcels go to a person, and every parcel is in the ledger.",
     },
-    bubble: "Cap here. Today we ship something small that works.",
+    bubble: "Last stretch. You know how to build it, now let's make sure it's fair.",
   },
 
   postMortem: {
-    kicker: "Post-mortem · Samsung, 2023",
-    title: "Stage 1 in the headlines: code pasted into a public chatbot",
+    kicker: "Post-mortem · Amazon's hiring tool, 2018",
+    title: "The recruiting model that learned to prefer men",
     context:
-      "In spring 2023 Samsung's semiconductor division let engineers use ChatGPT. Within weeks, staff had pasted confidential material into it: source code to fix a bug, code to optimise, and a meeting recording turned into minutes. In May, Samsung banned generative AI tools on company devices and networks while it built its own.",
+      "Amazon built an AI tool to rank job applicants' résumés. It learned from the company's historical hiring data, and that history reflected a tech industry dominated by men. The model took the pattern for a sign of quality and began recommending men over women. In 2018 Amazon scrapped it, and Reuters reported the story that October.",
     numbers: [
-      { value: "3", label: "reported leaks in about three weeks" },
-      { value: "1,024 bytes", label: "emergency cap on what staff could paste per prompt" },
-      { value: "38 %", label: "of workers in a 2024 survey admit sharing sensitive data with AI tools" },
-      { value: "52 %", label: "of workers never trained to use AI safely (same survey)" },
+      { value: "2018", label: "Year Amazon scrapped the tool" },
+      { value: "“women's”", label: "One word enough to push a résumé down the ranking" },
+      { value: "Past hires", label: "The training data: years of decisions in a male-dominated field" },
+      { value: "2 fronts", label: "Damage: reputation in the media, legal exposure under equal employment laws" },
     ],
     timeline: [
-      { label: "March 2023", text: "The chip division opens ChatGPT to staff, without an approved enterprise tool or clear rules on what may be shared." },
-      { label: "Weeks later", text: "Three incidents surface. Data sent to a consumer chatbot sits on the provider's servers and may be kept or reused." },
-      { label: "May 2023", text: "A memo bans generative AI on company devices and internal networks. Apple and JPMorgan restrict staff use for similar reasons." },
-      { label: "After", text: "Samsung develops in-house AI tools. The ban buys time; it does not give engineers what they wanted the chatbot for." },
+      { label: "Build", text: "The tool is trained on the company's historical hiring data. Nobody examines what those past decisions encode before using them as the definition of a good candidate." },
+      { label: "The pattern", text: "The model systematically downgrades résumés containing the word “women's”, as in “women's chess club captain”. It has learned the skew in past hiring and applies it to every new applicant." },
+      { label: "2018 · Scrapped", text: "Amazon abandons the tool once the bias is discovered." },
+      { label: "Oct 2018 · Public", text: "Reuters reports the case. Media coverage presents it as proof that bias can be “baked into” AI." },
+      { label: "Afterwards", text: "The case becomes a standard warning: unexamined training data can encode and amplify discrimination, with reputational and legal consequences for the employer." },
     ],
     lessons: [
-      "Demand comes before the policy. If no approved tool exists, people find one: that is stage 1, whether you planned it or not.",
-      "Treat any consumer AI tool in the browser as an outbound data channel until contracts and controls say otherwise.",
-      "A ban is an emergency brake, not a strategy. The way out is a sanctioned tool, a clear policy, data loss prevention and training.",
-      "The engineers had found real bottlenecks (debugging, code review, minutes). That list is the start of move 1 of the maturity cycle.",
+      "Historical data records past decisions, including their bias. A model trained on it learns that bias and repeats it at scale.",
+      "Test outcomes by group before launch and keep testing after: continuous disparate impact tests on synthetic demographic datasets are built to catch exactly this kind of skew.",
+      "Hunt for proxies. The model never needed a gender field: a single word carried the signal.",
+      "Document the model in a model card (purpose, data sources, performance, limits, risks) so its fitness for hiring is judged before use, not after.",
+      "Stopping is a valid outcome. Someone must own the decision and be able to switch the system off.",
     ],
     question: {
-      prompt: "You are the CIO. You discover developers pasting internal code into a consumer chatbot. What do you do first?",
+      prompt: "What was the root cause of the bias in Amazon's recruiting tool?",
       options: [
-        { id: "a", text: "Ban all generative AI for good" },
-        { id: "b", text: "Provide an approved enterprise tool with no-training terms, publish a short policy, add data loss prevention and train the teams" },
-        { id: "c", text: "Do nothing: productivity matters more" },
-        { id: "d", text: "Freeze everything until a full autonomous agent platform is built" },
+        { id: "a", text: "A programming bug in the ranking code" },
+        { id: "b", text: "Training on historical hiring data that reflected a male-dominated industry, which the model learned as a signal of quality" },
+        { id: "c", text: "Gender was entered as an explicit input field" },
+        { id: "d", text: "The hiring team instructed the model to favour men" },
       ],
       correct: "b",
       hints: {
-        a: "A permanent ban pushes use onto personal devices, where you see nothing. Useful as a brake, not as a plan.",
-        c: "Leaked code and customer data are a legal and competitive risk. Governance is part of the ROI.",
-        d: "That jumps from stage 1 to stage 4. Meanwhile the shadow use continues.",
+        a: "The code did what it was built to do: learn from the data. The problem was what the data contained.",
+        c: "No gender field was needed. The bias came through words such as “women's”, which acted as a proxy.",
+        d: "Nothing in the record points to intent. Unexamined data was enough to produce a discriminatory result.",
       },
       explanation:
-        "Yes. Give people a safe way to do what they were already doing, then watch what they use it for. Those uses are your first MVA candidates.",
+        "Exactly. Bias in, bias out. The model learned the past and projected it onto every new applicant, which is why fairness has to be tested on outcomes, not assumed from good intentions.",
     },
     sources: [
-      "Park, K. (2023, May 2). Samsung bans use of generative AI tools like ChatGPT after April internal data leak. TechCrunch.",
-      "Gurman, M. (2023, May 2). Samsung bans staff's AI use after spotting ChatGPT data leak. Bloomberg.",
-      "National Cybersecurity Alliance & CybSafe. (2024). Oh, Behave! The annual cybersecurity attitudes and behaviors report 2024-2025.",
-      "Vincent, J. (2023, May 19). Apple restricts employees from using ChatGPT over fear of data leaks. The Verge.",
-      "Cerullo, M. (2023, February). JPMorgan Chase restricts staffers' use of ChatGPT. CBS News.",
+      "Dastin, J. (2018, October 11). Insight - Amazon scraps secret AI recruiting tool that showed bias against women. Reuters.",
+      "MIT Applied Agentic AI, Module 8: Business risks of ethical failures (biased hiring algorithms).",
     ],
-    bubble: "A big name, a stage 1 mistake. Let's learn from it.",
+    bubble: "Good engineers, real data, unfair result. Let's see how it happened.",
   },
 
   lab: {
-    kicker: "Lab · Scope your MVA",
-    title: "Find the one bottleneck worth automating first",
-    goal: "Break your candidate workflow into tasks, score them on value, effort, risk and readiness, pick one MVA, cut its scope, then get a design critique from a chat assistant.",
+    kicker: "Lab · Mailroom map",
+    title: "Map what your agent changes in the mailroom",
+    goal: "Break your candidate workflow into tasks, decide which move to the agent, which stay human and which are new, measure the hours that shift, then check that each mailroom control has a mechanism and a named owner.",
     duration: "40 minutes",
     prerequisites: [
-      "Python 3.10 or later",
-      "Your loop map (module 1) and cost estimate (module 2)",
-      "Any chat assistant",
+      "Python 3.10 or later (standard library only, runs offline)",
+      "Your candidate workflow and cost estimate (module 1) and your Minimum Viable Agent scope (module 5)",
+      "Your Crawl-Walk-Run rollout (module 6) and governance plan (module 7), if you have them",
     ],
     steps: [
       {
-        title: "List the tasks",
+        title: "List the tasks, with real hours",
         body: [
-          "From your loop map, write down four to eight tasks that make up the workflow. For each: minutes per occurrence, occurrences per week, build effort (1 to 5), harm if wrong (1 to 5), whether you already track a number for it, and whether its input data is clean and reachable.",
-          "Flag any task that decides on hiring, promotion or credit: those are high-risk uses and never an MVA.",
+          "Take the people who do your candidate workflow today. Write down every task they perform and the human hours per week it takes. Ask them rather than guess: this list is also your first co-design conversation.",
+          "Then label each task. Routing is mechanical sorting and moving: it goes to the agent. Judgement covers exceptions, disputes and relationships: it stays with people. New is the work the agent creates for people, such as working its review queue or auditing a sample of its decisions.",
         ],
       },
       {
-        title: "Score them",
+        title: "Write the map",
         body: [
-          "Save this as mva_scorer.py and replace the example tasks and hourly cost with yours. The score is monthly value, halved for each missing piece of readiness, divided by effort times risk.",
+          "Save this as mailroom_map.py and replace the example (supplier invoice handling) with your own workflow. The CONTROLS block holds the five mailroom habits plus fairness, transparency and proportional intervention. Leave a field empty when it is not decided yet: the script will flag it.",
         ],
         code: {
           lang: "python",
-          text: `# mva_scorer.py: rank the tasks of one workflow and pick a Minimum Viable Agent.
-from dataclasses import dataclass
+          text: `# mailroom_map.py: map your candidate workflow task by task, then check the mailroom controls.
+# Usage: python mailroom_map.py   (replace the example below with your own workflow first)
 
-@dataclass
-class Task:
-    name: str
-    minutes: float      # human time per occurrence today
-    per_week: int       # occurrences per week
-    effort: int         # 1 (a few days) to 5 (several months) to build
-    risk: int           # 1 (harmless) to 5 (legal, money or safety harm)
-    kpi_clear: bool     # do you already track a number for it?
-    data_ready: bool    # inputs are clean and reachable (API, export)
-    high_risk_use: bool = False  # e.g. hiring, promotion, credit decisions
+WORKFLOW = "Supplier invoice handling, finance operations"  # your candidate workflow
+ACCOUNTABLE = "Director of Finance Operations"  # one named human role, never "the agent"
 
-# Replace with the tasks of your own workflow (from your loop map).
+# (task, human hours per week today, human hours per week after launch, done by after launch, kind)
+#   routing   = mechanical sorting and routing: moves to the agent
+#   judgement = exceptions, disputes, relationships: stays with people
+#   new       = work the agent creates for people (review queue, audits)
 TASKS = [
-    Task("Answer leave and benefits questions", 6, 150, 2, 2, True, True),
-    Task("Screen CVs into a shortlist", 10, 200, 3, 5, True, True, high_risk_use=True),
-    Task("Schedule onboarding sessions", 15, 20, 2, 1, True, True),
-    Task("Collect and check new-hire documents", 8, 20, 3, 3, True, False),
+    ("Read incoming invoices, extract the fields", 8, 0, "agent", "routing"),
+    ("Match invoices to purchase orders", 10, 1, "agent, person spot-checks", "routing"),
+    ("Chase missing documents", 5, 1, "agent", "routing"),
+    ("Resolve supplier disputes", 4, 5, "person", "judgement"),
+    ("Approve payments above policy limits", 3, 3, "person", "judgement"),
+    ("Work the agent's review queue", 0, 4, "person", "new"),
+    ("Audit a weekly sample of agent decisions", 0, 2, "person", "new"),
 ]
-HOURLY_COST = 40  # loaded cost per hour of the person doing the task today
 
-def hours_per_month(t: Task) -> float:
-    return t.minutes * t.per_week * 52 / 12 / 60
+# Every control needs a concrete mechanism and a named owner. Empty string = not decided yet.
+CONTROLS = {
+    "Privacy (never read the letters)": (
+        "Mask bank details and personal data before the model sees them", "Data protection lead"),
+    "Access control (verified recipients only)": (
+        "Agent writes only to the payment-proposal table, through its own IAM role", "IT security"),
+    "Auditability (log every parcel)": (
+        "Each decision stored with inputs, tools called and a short rationale", ""),
+    "Guardrails (refuse hazardous cargo)": ("", ""),
+    "Accountability (the supervisor answers)": ("Named in the governance plan", ACCOUNTABLE),
+    "Fairness (no group disadvantaged)": (
+        "Disparate impact test on a synthetic supplier set before each release", "Procurement analyst"),
+    "Transparency (people know it is an AI)": (
+        "Supplier emails say they come from an automated assistant", "Finance operations lead"),
+    "Proportional intervention (odd parcels to a person)": (
+        "Low-confidence or high-amount cases go to the review queue", "Finance operations lead"),
+}
 
-def score(t: Task) -> float:
-    value = hours_per_month(t) * HOURLY_COST
-    readiness = (1.0 if t.kpi_clear else 0.5) * (1.0 if t.data_ready else 0.5)
-    return value * readiness / (t.effort * t.risk)
+print(f"Mailroom map: {WORKFLOW}")
+print(f"Accountable for every agent decision: {ACCOUNTABLE}")
+print()
+print(f"{'Task':44} {'Today':>6} {'After':>6}  Kind       Done by")
+for task, now, after, who, kind in TASKS:
+    print(f"{task:44} {now:>5}h {after:>5}h  {kind:10} {who}")
 
-print(f"{'Task':40} {'h/month':>8} {'score':>7}")
-for t in sorted(TASKS, key=score, reverse=True):
-    flag = "  <- high-risk use, not an MVA" if t.high_risk_use else ""
-    print(f"{t.name:40} {hours_per_month(t):8.1f} {score(t):7.0f}{flag}")
+today = sum(t[1] for t in TASKS)
+after = sum(t[2] for t in TASKS)
+moved = sum(t[1] - t[2] for t in TASKS if t[4] != "new")
+new = sum(t[2] for t in TASKS if t[4] == "new")
+net = today - after
+print()
+print(f"Human hours per week today: {today}, after launch: {after}")
+print(f"Taken off existing tasks: {moved} h, new human tasks: {new} h, net freed: {net} h ({net / today:.0%})")
 
-eligible = [t for t in TASKS if not t.high_risk_use and t.risk <= 3]
-best = max(eligible, key=score)
-saved = hours_per_month(best)
-print(f"\\nMVA candidate: {best.name}")
-print(f"Ceiling: about {saved:.0f} hours (\${saved * HOURLY_COST:,.0f}) a month if fully automated.")
-print("Start with a person approving every output, and track the override rate.")`,
+warnings = []
+for task, now, after, who, kind in TASKS:
+    if kind == "judgement" and "agent" in who:
+        warnings.append(f"Judgement task handed to the agent: {task}")
+    if kind == "routing" and "person" not in who and after > 0:
+        warnings.append(f"Agent task with hours left but no person named: {task}")
+for name, (mechanism, owner) in CONTROLS.items():
+    if not mechanism:
+        warnings.append(f"No mechanism yet: {name}")
+    if not owner:
+        warnings.append(f"No owner yet: {name}")
+
+print()
+print(f"Open points: {len(warnings)}")
+for w in warnings:
+    print(f"  - {w}")`,
         },
       },
       {
-        title: "Run it and challenge the result",
+        title: "Run it and read the result",
         body: [
-          "With the example data, leave and benefits questions win. CV screening saves the most hours but is flagged and excluded.",
-          "Now argue with your own ranking. Is the winner a single task of a few minutes, or a whole process in disguise? Compare the monthly ceiling with your module 2 cost estimate: if running the agent costs more than the hours it saves, the winner is not the winner.",
+          "On the example, human hours drop from 30 to 16 a week: 20 hours leave existing tasks, 6 come back as new ones (review queue and audits), so 14 are freed, about 47% of the work. Disputes grow from 4 to 5 hours: judgement becomes a larger share of the job.",
+          "The script lists four open points. “Chase missing documents” still costs a human hour but nobody is named for it. Auditability has no owner. Guardrails have neither a mechanism nor an owner. Fix your own open points until the list is empty, or carry each one into the open questions of your plan.",
         ],
-        code: { lang: "shell", text: "python mva_scorer.py" },
+        code: { lang: "shell", text: "python mailroom_map.py" },
       },
       {
-        title: "Cut the scope",
+        title: "Decide where the freed time goes",
         body: [
-          "Write three short lists for the winning task. In scope: the exact inputs, the one action, the systems it reads and writes. Out of scope: everything else, named explicitly. Human gate: who approves what, and the override rate (say 20 %) above which you stop and fix the data or the task.",
-          "Then pick the team model: centralized assistant, embedded in the team's tool, or hybrid. Write one reason and one risk.",
+          "Freed hours that nobody plans for read as job cuts, whatever you intended. For each role, write what the freed time becomes (more judgement work, the new tasks, another team's backlog) and what reskilling it needs. If a role really shrinks, write the transition support you will offer and when you will say so. The Commonwealth Bank cut jobs first, then watched call volumes rise and had to reverse the cuts: test your numbers in the Crawl phase before anyone's job changes.",
         ],
       },
       {
-        title: "Get a design critique",
+        title: "Run the three tests",
         body: [
-          "Paste your scope into a chat assistant with this prompt. Fix what holds up; write down what you reject and why.",
+          "Under the map, write three lines. Do no harm: the worst realistic outcome for the person on the other end. Stakeholder impact: one line each for employees, customers, investors and society. Front-page test: the sentence you would be comfortable reading in a headline. These lines, the task map and the controls go straight into sections 5 and 7 of your adoption plan.",
         ],
-        code: {
-          lang: "prompt",
-          text: `You are a sceptical AI programme lead reviewing a Minimum Viable Agent.
-Here is my scope:
-[paste: task, inputs, action, systems, out of scope, human gate,
-team model, success metric, maturity stage of my company]
-
-Critique it on six points, two sentences each, and end with the
-single change you would make first:
-1. Is it one bottleneck, or a whole process in disguise?
-2. Does it fit the maturity stage I stated, or skip stages?
-3. Is the success metric tied to revenue or cost, with a baseline?
-4. Is any part a high-risk use (hiring, credit, health, profiling)?
-5. Are hand-offs to people or other agents structured, not free text?
-6. Is the team model (centralized, embedded, hybrid) justified?`,
-        },
       },
     ],
     checklist: [
-      "I scored at least four real tasks from my workflow",
-      "High-risk uses are flagged and kept out of the MVA",
-      "My MVA's monthly ceiling is compared with my module 2 cost estimate",
-      "Scope in, scope out and the human gate are written down",
-      "I applied or explicitly rejected each point of the critique",
+      "I listed the real tasks of my candidate workflow with hours, ideally checked with the people who do them",
+      "Each task is labelled routing, judgement or new, and no judgement task is handed to the agent alone",
+      "I know how many hours move, how many come back as new tasks, and where the freed time goes",
+      "Every mailroom control has a mechanism and a named owner, or is carried as an open question",
+      "I wrote the do-no-harm, stakeholder impact and front-page lines",
     ],
-    bubble: "Small scope, sharp metric. Let's find your bottleneck.",
+    bubble: "Mechanical to the agent, judgement to people. Let's sort your mailroom.",
   },
 
   deliverable: {
-    kicker: "Deliverable · MVA one-pager",
-    title: "One page to get your first agent approved",
+    kicker: "Deliverable · Capstone adoption plan",
+    title: "Your capstone adoption plan",
     purpose:
-      "A one-page brief for the Minimum Viable Agent you scoped in the lab. It pulls together your earlier work (candidate card, loop map, cost estimate, architecture, integration map, security memo, guardrails, eval plan) and becomes the scope and scaling section of your capstone adoption plan.",
-    fileName: "mva-one-pager.md",
-    template: `# Minimum Viable Agent: one-pager
+      "The final file: a two-to-five page executive plan for bringing an agent into one function of your organisation. It follows the eight sections of the capstone and assembles the deliverables of modules 1 to 7, plus this module's mailroom map. You are not writing from scratch: you are joining your pieces into one coherent story. Where you lack a figure, say how you will get it (internal data, an expert, more measurement).",
+    fileName: "capstone-adoption-plan.md",
+    template: `# Capstone adoption plan
 
-Workflow (from the candidate card):
+Organisation (one sentence, reused word for word everywhere in this document):
 Author:
-Date:
+Date and version:
+Accountable executive (answers for the agent's decisions):
 
-## 1. Context
-- Industry, organisation type, department:
-- Current workflow, in three to five steps (from the loop map):
-- Baseline today (time per task, volume per week, error rate):
+## Summary for leadership
+Five lines in board language (risk, operating cost, compliance, results), no jargon:
+- The bottleneck:
+- What the agent does, and what it does not do:
+- What it costs and what it saves:
+- The main risk and how it is controlled:
+- How success is measured:
 
-## 2. The bottleneck
-- The one task the MVA takes on:
-- Why this one (score from the lab, and the runner-up):
+## 1. Context and use case
+Reuses: candidate workflow (module 1), Minimum Viable Agent scope (module 5).
+- Sector and type of organisation:
+- Department, process or function:
+- The one concrete bottleneck we are fixing:
+- Volume and current cost (time, errors, delays):
+- Why an agent rather than a chat tool (what it will actually do, not just draft):
+- In scope for the first agent / explicitly out of scope:
 
-## 3. Maturity stage
-- Our stage (1 ad-hoc to 5 reinvented) and the evidence:
-- Shadow AI in this team today, and how we bring it into the open:
-- Crawl, walk or run for this MVA:
+## 2. Technology choice and integration
+Reuses: platform and architecture (module 2), integration plan (module 3).
+| Choice | Option picked | Alternative considered | Why this one |
+|---|---|---|---|
+| Platform or framework | | | |
+| Model tiers | | | |
+| Hosting (cloud or local) | | | |
+| Orchestration (single agent, supervisor, shared artifact) | | | |
+| Integration (MCP servers, APIs) | | | |
 
-## 4. Function and risk class
-- Function:
-- High-risk use (hiring, credit, health, profiling)? If yes, why this is still out of scope:
+- Systems the agent reads from:
+- Systems the agent writes to, and with which permissions:
 
-## 5. Scope
-| In scope | Out of scope |
-|---|---|
-| | |
+## 3. Cost considerations
+Reuses: cost estimate (module 1). Prices checked on (date):
+| Line | One-off (capex) | Monthly (opex) | Notes |
+|---|---|---|---|
+| Model tokens | | | |
+| Infrastructure and hosting | | | |
+| Data preparation and integration | | | |
+| Evaluation runs (golden set, red-teaming, CI/CD evals) | | | |
+| Staffing: build and maintenance | | | |
+| Human review in the loop | | | |
+| Training and change management | | | |
+| **Total cost, first 12 months** | | | |
 
-- Inputs and data sources:
-- Systems read / written (from the integration map):
-- Model tier and platform (low-code or custom code, from the architecture):
-- Human gate: who approves what:
-- Hand-offs to other agents or people use this format:
+- Expected savings or value, and how they are calculated:
+- Break-even point:
 
-## 6. Team model
-- Centralized / CoE, embedded / federated, or hybrid:
-- Business owner:            Technical owner:
-- Early advocates in the team:
-- External partner (consultant, vendor), if any, and their role:
+## 4. Security plan (NIST CSF 2.0)
+Reuses: security memo (module 4).
+| Function | Main risk for this agent | Control | Owner |
+|---|---|---|---|
+| Govern | | | |
+| Identify | | | |
+| Protect (incl. tool privilege limits) | | | |
+| Detect (incl. prompt injection) | | | |
+| Respond | | | |
+| Recover | | | |
 
-## 7. Success metric
-- Business number it moves (revenue up or cost down), with baseline and target:
-- Override rate threshold that triggers a fix:
-- Quality check (from the eval plan):
-- Security and guardrail controls in place (from the memo and guardrails):
+- Data privacy (masking, retention, vendor terms):
 
-## 8. 30 / 60 / 90 days
-| By day | Milestone | Decision point |
+## 5. Change management and training
+Reuses: Crawl-Walk-Run rollout (module 6), mailroom map (this module).
+| Role | Tasks moving to the agent | Tasks that stay | New tasks | Hours freed per week | Where the time goes |
+|---|---|---|---|---|---|
+| | | | | | |
+
+- Co-design workshops (who, when):
+- Hands-on training, by role:
+- Retraining incentives and internal mobility:
+- Psychological safety (how people raise problems without blame):
+- Communication plan (what is said, by whom, when):
+- Transition support for roles that shrink:
+
+## 6. Scaling strategy: Crawl, Walk, Run
+Reuses: Crawl-Walk-Run rollout (module 6).
+| Phase | Autonomy level | Scope | Exit gate (number) | Target date |
+|---|---|---|---|---|
+| Crawl | | | | |
+| Walk | | | | |
+| Run | | | | |
+
+- What sends us back a phase:
+
+## 7. Governance, compliance and ethics
+Reuses: governance plan with guardrails, evals and audit (module 7), mailroom map (this module).
+
+### 7.1 Compliance
+| Regulation (GDPR, EU AI Act, HIPAA, CCPA, sector rules) | Why it applies | What we do |
 |---|---|---|
-| 30 | Running on real data, every output reviewed | Override rate under threshold? |
-| 60 | | |
-| 90 | | Scale, adjust or stop |
+| | | |
+
+### 7.2 Guardrails, evaluation and audit
+- Hard guardrails (blocked actions, limits, schemas):
+- Evaluation (dataset, metrics, pass thresholds, frequency):
+- Audit trail (what is logged for each decision, how long it is kept):
+
+### 7.3 Ethics: the mailroom controls
+| Control | Mechanism in this agent | Evidence | Owner |
+|---|---|---|---|
+| Privacy | | | |
+| Access control | | | |
+| Auditability | | | |
+| Guardrails | | | |
+| Fairness (disparate impact tests, no proxy inputs) | | | |
+| Transparency (people know it is an AI) | | | |
+| Proportional intervention (review queue) | | | |
+
+- Main ethical risk, especially for the workforce, and its business impact:
+- Mitigation, and how it keeps trust:
+- Do no harm (worst realistic outcome):
+- Stakeholder impact (employees, customers, investors, society):
+- Front-page test (one sentence we would accept in a headline):
+- Model card (location, last update):
+
+### 7.4 Accountability
+- Person accountable for every agent decision:
+- Person who can switch it off:
+- Escalation path when something goes wrong:
+
+## 8. KPIs
+Reuses: 4D KPI scorecard (module 6).
+| Dimension | KPI | Baseline | Target | Source | Frequency |
+|---|---|---|---|---|---|
+| Effectiveness | | | | | |
+| Efficiency | | | | | |
+| Learning and adaptation | | | | | |
+| Human adoption | | | | | |
+
+## 9. Missing information
+| What we do not know yet | Why it matters | How we will get it (internal, expert, measurement) | By when |
+|---|---|---|---|
+| | | | |
+
+## Appendix: pieces reused
+| Module | Piece | File | Last updated |
+|---|---|---|---|
+| 1 | Candidate workflow and cost estimate | | |
+| 2 | Platform and architecture | | |
+| 3 | Integration plan | | |
+| 4 | Security memo (NIST CSF 2.0) | | |
+| 5 | Minimum Viable Agent scope | | |
+| 6 | 4D KPI scorecard, Crawl-Walk-Run rollout | | |
+| 7 | Governance plan (guardrails, evals, audit) | | |
+| 8 | Mailroom map | | |
 `,
     checklist: [
-      "The MVA covers one task, not a whole process",
-      "The maturity stage is backed by evidence, and the MVA does not skip stages",
-      "Scope out and the human gate are as explicit as scope in",
-      "The success metric has a baseline, a target and an override threshold",
-      "The team model and both owners are named",
+      "Two to five pages, all eight sections, one department and one bottleneck, the same organisation sentence throughout",
+      "The plan goes beyond chat: the agent does measurable work in a real workflow",
+      "Each technology choice is justified against an alternative, including orchestration if there are several agents",
+      "Costs cover infrastructure, data preparation, evaluation runs, staffing and change management, not only tokens",
+      "Security uses all six NIST CSF 2.0 functions and covers prompt injection and tool privileges",
+      "Crawl, Walk and Run each have a numeric gate; KPIs cover all four dimensions",
+      "Governance names the laws, the mailroom controls with owners, the workforce impact and one accountable person",
     ],
-    bubble: "One page, one bottleneck, one number. Ship it.",
+    bubble: "Everything you built, in one file. This is the one you take to your leadership.",
   },
 };

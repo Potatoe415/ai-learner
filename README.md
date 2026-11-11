@@ -14,7 +14,7 @@ npm run build
 
 ## Structure
 
-Trailhead model (decision 0006): one trail, **AI integration in organisations**, of 11 modules (0 to 10). Each module has 4 units
+Trailhead model (decisions 0006, 0007): one trail, **AI integration in organisations**, of 8 modules, one per MIT module (1 to 8). Each module has 4 units
 (Concept, Post-mortem, Lab, Deliverable) and earns one badge. Points and badges give the learner's level (0 to 5).
 
 | Path | Role |
@@ -24,10 +24,10 @@ Trailhead model (decision 0006): one trail, **AI integration in organisations**,
 | `app/profile` | Level insignia, badges / points / trails, next level, badge cabinet, executive templates |
 | `components/characters.tsx` | Loop, Plug, Ward, Cap (images in `public/characters/`) |
 | `components/badges.tsx` | Module badges and level insignia (SVG) |
-| `lib/curriculum.ts` | Trail, units, zones, modules 0 to 10, badges, deliverables |
+| `lib/curriculum.ts` | Trail, units, zones, modules 1 to 8, badges, deliverables |
 | `lib/scoring.ts` | Unit points (100 / 50 / 25 for quizzes, 200 for Lab and Deliverable) and the six levels |
 | `lib/lessons.ts`, `lib/lessons/module-N.ts` | Lesson content, one file per module |
-| `lib/progress.tsx` | Points, completion dates and wrong answers per unit, saved in `localStorage` (`agent-path:v2`) |
+| `lib/progress.tsx` | Points, completion dates and wrong answers per unit, saved in `localStorage` (`agent-path:v3`) |
 
 ## Adding content
 

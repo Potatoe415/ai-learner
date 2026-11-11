@@ -1,15 +1,15 @@
 "use client";
 
-// Learner progress, stored in localStorage (decisions 0003 and 0006).
-// v2 records, per unit, the points earned and the completion date, plus wrong answers on quiz units.
-// v1 progress (steps only) is migrated once, with full points per completed step.
+// Learner progress, stored in localStorage (decisions 0003, 0006 and 0007).
+// Records, per unit, the points earned and the completion date, plus wrong answers on quiz units.
+// v3 matches the 8-module trail. v1 and v2 used the former 0-10 numbering and other content: they are
+// not migrated (no meaningful mapping) and are left untouched in storage.
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { MAX_MODULE, MODULES, UNITS } from "./curriculum";
 import { maxUnitPoints, nextRankOf, rankOf, unitPoints, type Rank } from "./scoring";
 
-const KEY = "agent-path:v2";
-const LEGACY_KEY = "agent-path:v1";
+const KEY = "agent-path:v3";
 
 interface UnitRecord {
   points: number;
@@ -30,6 +30,7 @@ const dayKey = (d = new Date()) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
 const isIndex = (k: string, max: number) => /^\d+$/.test(k) && Number(k) <= max;
+const isModule = (k: string) => /^\d+$/.test(k) && MODULES.some((m) => m.n === Number(k));
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
 
 /** Keeps only well-formed entries; anything else in storage is dropped. */
@@ -38,7 +39,7 @@ function sanitize(raw: unknown): Stored {
   if (!isObj(raw)) return out;
   if (isObj(raw.units)) {
     for (const [m, unitsOfM] of Object.entries(raw.units)) {
-      if (!isIndex(m, MAX_MODULE) || !isObj(unitsOfM)) continue;
+      if (!isModule(m) || !isObj(unitsOfM)) continue;
       for (const [u, rec] of Object.entries(unitsOfM)) {
         if (!isIndex(u, UNITS.length - 1) || !isObj(rec)) continue;
         const { points, at } = rec;
@@ -50,7 +51,7 @@ function sanitize(raw: unknown): Stored {
   }
   if (isObj(raw.misses)) {
     for (const [m, missOfM] of Object.entries(raw.misses)) {
-      if (!isIndex(m, MAX_MODULE) || !isObj(missOfM)) continue;
+      if (!isModule(m) || !isObj(missOfM)) continue;
       for (const [u, n] of Object.entries(missOfM)) {
         if (!isIndex(u, UNITS.length - 1) || typeof n !== "number" || !Number.isInteger(n) || n < 0) continue;
         (out.misses[Number(m)] ??= {})[Number(u)] = Math.min(n, 99);
@@ -60,31 +61,9 @@ function sanitize(raw: unknown): Stored {
   return out;
 }
 
-/** v1 stored `steps: { [level]: number[] }` and `lastDay`; levels became modules with the same numbers. */
-function migrateV1(raw: unknown): Stored {
-  const out: Stored = { units: {}, misses: {} };
-  if (!isObj(raw) || !isObj(raw.steps)) return out;
-  // v1 kept no completion dates: the last active day is the best available approximation.
-  const at = typeof raw.lastDay === "string" && /^\d{4}-\d{2}-\d{2}$/.test(raw.lastDay) ? raw.lastDay : dayKey();
-  for (const [m, steps] of Object.entries(raw.steps)) {
-    if (!isIndex(m, MAX_MODULE) || !Array.isArray(steps)) continue;
-    for (const u of steps) {
-      if (typeof u !== "number" || !Number.isInteger(u) || u < 0 || u >= UNITS.length) continue;
-      (out.units[Number(m)] ??= {})[u] = { points: maxUnitPoints(u), at };
-    }
-  }
-  return out;
-}
-
 function load(): Stored {
   const raw = localStorage.getItem(KEY);
-  if (raw) return sanitize(JSON.parse(raw));
-  const legacy = localStorage.getItem(LEGACY_KEY);
-  if (!legacy) return EMPTY;
-  const migrated = migrateV1(JSON.parse(legacy));
-  localStorage.setItem(KEY, JSON.stringify(migrated));
-  localStorage.removeItem(LEGACY_KEY);
-  return migrated;
+  return raw ? sanitize(JSON.parse(raw)) : EMPTY;
 }
 
 interface Ctx {

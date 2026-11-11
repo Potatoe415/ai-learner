@@ -1,470 +1,468 @@
 import type { LessonContent } from "../lessons";
 
-// Module 3 · The harness. Source: MIT module 2 (sections 1 to 5, assignment 2.1) and its complements.
+// Module 3 · The universal plug. Source: MIT module 3 (sections 1 to 5, assignment 3.1) and its complements.
 // Content file: long by nature (prose, code and templates), no logic.
 export const MODULE_3: LessonContent = {
   reading: {
-    kicker: "Concept · From vibe coding to engineering",
-    title: "The model is the wizard. Your code is the harness.",
+    kicker: "Concept · Tools, MCP, legacy systems",
+    title: "One plug, many sockets",
     intro:
-      "Anyone can now get working code, or a working agent, by asking for it in plain words. Getting it to behave the same way on the ten-thousandth request is another job. This module separates what the model does from what your code must guarantee, then walks through the big architecture choices: one agent or several, visual tool or SDK, open or closed model, cloud or edge.",
+      "A playlist plays what was planned. A live band reads the room and takes requests. Agents are the band: they act inside your software, not next to it. This module is about the wiring: how an agent reaches tools, why old systems push back, and how one protocol replaces a drawer full of adapters.",
     sections: [
       {
-        heading: "The wizard and the robot",
+        heading: "From clicking to asking",
         body: [
-          "A common mistake is to think the model is the agent. It is only one part. The model (call it the wizard) runs on GPUs, reads the context it is handed, writes an answer and forgets everything. It cannot run code, open a database or remember yesterday on its own.",
-          "Everything else is ordinary software (the robot, or orchestrator). It keeps state, stores memory, holds the business rules, calls the tools and decides what to show the model next. It runs on normal servers and does the same thing every time.",
-        ],
-        table: {
-          head: ["", "Wizard (the LLM)", "Robot (the orchestrator)"],
-          rows: [
-            ["Runs on", "GPUs, usually behind an API", "CPUs: Python, Node.js, microservices"],
-            ["Memory", "None between calls", "Session state, database, logs"],
-            ["Behaviour", "Probabilistic", "Deterministic"],
-            ["Job", "Read the context, propose the next action or the answer", "Build the context, run tools, check results, enforce rules"],
-          ],
-        },
-        callout: {
-          label: "Design law",
-          text: "Reasoning is not a workflow. A business process must give the same result every time, so its sequence (say intake → identity check → risk score → account opening) lives in code: a state machine or a workflow engine such as LangGraph, Temporal or AWS Step Functions. The model is called inside a step, to read messy input or judge an edge case. It does not pick the next step by itself.",
-        },
-      },
-      {
-        heading: "Vibe coding: fast, and fragile",
-        body: [
-          "In early 2025 Andrej Karpathy, an OpenAI co-founder, named a new habit “vibe coding”: you describe what you want in plain language, accept what the AI writes and stop looking at the code. Assistants such as GitHub Copilot, Gemini Code Assist, Amazon Q Developer, Claude Code and OpenAI Codex make this possible for people who have never programmed.",
-          "The move is spreading beyond code. People now “vibe” an image, a video, a contract draft or a financial model just by asking. Expertise that used to need a specialist becomes a cheap utility. Shifts like this tend to automate tasks rather than whole jobs, and push people towards judgement and coordination.",
-          "The gains are real. In March 2025 Y Combinator said a quarter of its winter 2025 start-ups had codebases about 95 % written by AI. Prototypes appear in minutes, small teams ship what large ones used to, and niche markets become worth serving.",
-          "Before giving these tools to a whole organisation, check five things:",
+          "Most software is driven through screens: menus, filters, tabs, copy and paste. An agent lets people state an intent instead (“paginate the document, sort the references, add a Notes column to the table”) and does the clicking on their behalf.",
+          "The plumbing underneath is old and simple. Since the web, software works as client and server: one side sends a request, the other processes it and answers. APIs turned that into reusable building blocks, which is why a young ride-hailing app could rent its maps from Google instead of drawing its own. An agent follows the same pattern: it calls a service, gets a response, and acts on it.",
+          "Take “make me a playlist of the number-one hit from every year since 1985”. To do it inside a music app, the agent has to:",
         ],
         bullets: [
-          "The full path: a tool that drafts code but cannot hand it cleanly to your build pipeline creates slow, error-prone hand-offs.",
-          "Legal exposure: assistants trained on public code can reproduce licensed snippets.",
-          "The same gates for everyone: AI-written code goes through the reviews, scans and tests that human code goes through.",
-          "Skills: train people to prompt and to review output, rather than planning to replace them.",
-          "Context: keep prompt history, links to the code each prompt produced, and a way to roll back. Without them, teams drift into incompatible styles.",
+          "Turn the sentence into a sequence of operations.",
+          "Fetch outside data (historical chart positions).",
+          "Match each song to the app's own catalogue.",
+          "Create a playlist in the user's account, with the user's permission.",
+          "Add the tracks in the right order.",
+          "Confirm, and keep the context for the follow-up (“now add a few tracks from 2023 in the same mood”).",
         ],
         callout: {
-          label: "The production hangover",
-          text: "A prototype vibe-coded in 30 minutes usually has no input checks, no error handling, no tests and no coherent structure. “Devibing” is the engineering pass that follows: remove redundant model calls and circular dependencies, add strict types and schema checks, move secrets out of the code into environment variables, and put database changes into migration scripts.",
+          label: "Same pattern at work",
+          text: "Swap songs for stock: “check open orders for SKU-409 against warehouse stock; if stock is under the reorder threshold, raise an expedited purchase order and tell the account managers in Slack.” SAP, Salesforce and Slack, no screen, one sentence. And three places where a wrong call costs real money.",
         },
       },
       {
-        heading: "Harness engineering",
+        heading: "Why bother: what agents bring to a workflow",
         body: [
-          "When models write the code or drive the actions, the engineer's main job moves from writing every line to building the harness around them: automated checks that accept good output and reject the rest, whatever the model meant. Teams that do this well do not read every generated line. They make it impossible for a bad one to get through.",
+          "Three gains come up again and again. Efficiency: routine steps such as reading CVs, checking public profiles and drafting candidate updates run on their own. Accuracy: rules are applied the same way every time, so a finance or compliance agent catches the missing document a tired person would skip. Responsiveness: an IT or operations agent keeps watching, answering and escalating after the team has gone home.",
+        ],
+      },
+      {
+        heading: "Wiring tools together: the automation spectrum",
+        body: [
+          "Agents usually live where people already work: Slack (conversations grouped by topic), Notion (pages, wikis and light databases), Discord (real-time text and voice rooms), email or a website. Between those apps sit meta-tools whose only job is to connect other tools. When a support bot escalates, one of them can email a colleague, open a task in Notion and log the case in a spreadsheet.",
+          "Pick the lightest tier that can carry your logic. Each step to the right buys flexibility and costs engineering time.",
         ],
         table: {
-          head: ["Harness part", "What it does", "Example"],
+          head: ["Tier", "Skill needed", "Strength", "Limit", "Typical use"],
           rows: [
-            ["Invariant checks", "Assert business rules that must never break", "A refund is never above €100; a category is always one of four"],
-            ["Sandboxed runtime", "Run model-written code and tool calls in isolation", "A container with no production credentials"],
-            ["Synthetic bench", "Replay many edge cases on every change", "1,000 generated tickets, including empty, hostile and foreign-language ones"],
-            ["Regression gates", "Block a release when output drifts", "The schema or pass rate changes → the build fails"],
+            ["Zapier (no-code)", "Point and click", "About five minutes to set up, 6,000+ SaaS connectors", "Fixed trigger → action, no real branching, no reasoning", "Form → CRM → Slack notification"],
+            ["n8n or Make (low-code)", "Visual flows, small expressions", "Branches, loops, self-hosting for privacy", "Hard to debug and to version in Git", "Event alerts, reconciliation across systems"],
+            ["LangChain or LangGraph (pro-code)", "Python or TypeScript", "Stateful loops, memory, several agents, custom tools", "Needs a dedicated software team", "Compliance review agent, research assistant"],
+            ["Custom Python (full-code)", "Systems engineering", "Total control, no vendor lock-in, lowest latency", "Highest build and maintenance cost", "High-volume or proprietary pipelines"],
           ],
         },
+        callout: {
+          label: "Errors scale too",
+          text: "Automation repeats mistakes as fast as it repeats good work. In November 2023 an automated shutdown after a routing event took Optus offline across Australia for about 12 hours, hitting more than 10 million customers and 400,000 businesses. A 2024 University of Washington study found résumé-screening models favoured white-associated names 85% of the time. Reordering 1,000 blouses, sending evacuation alerts or rerouting trucks all deserve a person in the loop.",
+        },
+      },
+      {
+        heading: "Legacy systems were built for human speed",
+        body: [
+          "Most companies cannot throw away the system that runs payroll or the bank's core ledger. Agents have to plug into it, and that is where projects stall.",
+        ],
+        table: {
+          head: ["Barrier", "What you see", "What helps"],
+          rows: [
+            ["Monolith", "Screens, business rules and data welded together; no clean API, or one that chokes on a whole document; any change risks breaking something else", "Middleware in front, new AI features as separate microservices"],
+            ["Data drift", "Cust_ID in one system, CustomerNumber in another; truncated fields; undocumented codes. The model reasons over them and invents decisions", "Nightly conversion jobs (AWS Glue, Azure Data Factory), scripts that flag missing fields and duplicates for human review"],
+            ["Human-speed sizing", "Built for one click every 30 seconds. An agent firing 500 calls a minute drains the connection pool, locks tables and takes the system down", "Connection pooling, caching, rate limits, read-only replicas"],
+            ["Latency and load", "Slow answers in customer-facing use; no memory or CPU headroom for spikes", "Dashboards on latency, errors and load; reroute to a standby GPU or a fallback model"],
+          ],
+        },
+        bullets: [
+          "Start with a system audit: list the applications, databases and data flows, then pick the functions worth improving (customer lookup, order management, reporting).",
+          "Middleware is the translator and traffic manager: it converts formats, enforces security rules and routes requests so old and new can talk without a rewrite.",
+          "Pilot on routine, low-risk work (standard emails, meeting summaries) before touching core operations.",
+          "Run urgent or sensitive inference on premises; push slow jobs such as detailed reports to the cloud. Keep components modular so each can scale alone.",
+          "Every service authenticates every call (mutual TLS between services, role-based access), data is encrypted in transit, and every agent action is logged: data read, decision taken, person notified. Train people on data handling too.",
+        ],
+        callout: {
+          label: "Integration is not access",
+          text: "Being able to connect an agent to a database does not mean it should run any SQL it likes. Give it parameterised stored procedures on a read-only replica. When a system has no API at all (green-screen terminal, desktop ERP with no SDK), a computer-use agent that reads the screen is the last resort: 5 to 10 seconds per screen, fragile to layout changes and costly in screenshots.",
+        },
+      },
+      {
+        heading: "Customer-facing agents: tune the tone",
+        body: [
+          "Customers expect more than a correct answer: they want to feel heard. General models handle everyday language well but stumble on industry terms, regulation and the emotional temperature of a complaint. Fine-tuning, further training a model on your own examples, works like training one muscle group instead of the whole body. A common reply structure is Acknowledge → Apologise → Assure → Act.",
+        ],
+        table: {
+          head: ["Technique", "How it works", "What it buys for tone"],
+          rows: [
+            ["Supervised fine-tuning (SFT)", "Train on labelled examples (tickets tagged by sentiment and urgency)", "Knows when to show sympathy and when to escalate"],
+            ["Instruction tuning", "Train to follow explicit orders (“reply calmly to an upset customer”)", "Sticks to the brand voice and reply structure"],
+            ["RLHF", "People upvote or downvote generated replies; a scoring system steers training", "Rewards helpful, policy-safe replies, discourages robotic ones"],
+            ["DPO", "Train directly on pairs: preferred reply vs rejected reply", "Similar quality with no reward model, fewer moving parts, lower cost"],
+            ["PEFT (adapters, low-rank updates)", "Change a small slice of the parameters instead of the whole model", "Ship new scripts (a new tariff, new slang) quickly and cheaply"],
+          ],
+        },
+        bullets: [
+          "Good training data covers four things: empathic phrases, when to move from reassurance to action, cultural and regional norms, and annotated escalation triggers.",
+          "Example: an angry customer with surprise data charges. The agent tags the ticket angry and high priority, replies in three sentences (sorry, I understand, here is what I will check), and next quarter learns the new plans through a small adapter instead of a full retrain.",
+          "Done well, routine questions get resolved by the agent (often 60 to 80%, depending on maturity) and the emotional, high-stakes calls reach a person faster.",
+          "Watch for: formulaic replies (overfitting), tone-deaf ones (underfitting), lost product knowledge after tuning (catastrophic forgetting: mix in domain tasks), different voices across chat, email and phone, and privacy of the transcripts you train on (GDPR, HIPAA).",
+          "On voice, speed is part of empathy: if the agent takes 1.5 seconds to acknowledge a sentence, callers talk over it.",
+        ],
+        callout: {
+          label: "Escalate, don't improvise",
+          text: "Models still miss sarcasm and idioms and can sound sorry while stating a wrong fact. Ground answers with retrieval, and hand legally sensitive or heated conversations to a person at once. Empathy that is only a script is “empathy theatre”.",
+        },
+      },
+      {
+        heading: "Beyond screens: agents and IoT",
+        body: [
+          "In factories, stores and hospitals, agents also read sensors and drive machines. The architecture has three layers.",
+        ],
+        table: {
+          head: ["Layer", "What is in it", "What to watch"],
+          rows: [
+            ["Devices", "Sensors (temperature, humidity, motion, sound), actuators (motors, valves, switches), edge gateways that pre-process data", "Certificate-based device identity, secure boot, regular over-the-air security updates"],
+            ["Communication", "Light protocols such as MQTT and CoAP, 5G or Wi-Fi 6, mesh networks", "Segment the device network away from business systems"],
+            ["Intelligence", "Agents that spot anomalies, predict failures and coordinate responses", "Role-based limits on agent actions, audit log of every command, alerts on unusual behaviour"],
+          ],
+        },
+        bullets: [
+          "Distributed orchestration: several specialised agents, each owning a cluster of devices. Resilient, but they must not contradict each other.",
+          "Hierarchical orchestration: a lead agent directs sub-agents (energy, security, comfort) and they report back. Simpler to manage and audit.",
+          "Reported results are large: one carmaker with 10,000+ sensors on 50 lines cites 30% less unplanned downtime and about $2.3 million saved a year. Treat such reported figures as claims until you have your own baseline.",
+          "Collect only the data you need, process it on the device where possible, and pseudonymise what leaves it.",
+        ],
         callout: {
           label: "Watch out",
-          text: "A rule written in the prompt is a wish, not a control. If a limit matters, enforce it in code and in permissions, where the model cannot talk its way past it.",
+          text: "An actuator is a write tool. A valve that opens by mistake is a refund you cannot take back. The same ceilings and stop buttons apply.",
         },
       },
       {
-        heading: "One agent or a team?",
+        heading: "One plug for every socket: MCP",
         body: [
-          "Agents differ in how much they know and plan. A classic scale has five steps; know what one agent can do alone before you combine several.",
-          "A multi-agent system is several autonomous agents sharing an environment. Each controls its own actions, sees only part of the picture, and no single one runs everything. That buys parallel work and resilience, and costs coordination: who does what (task allocation), what messages look like (communication protocol), and who wins when two agents want the same thing (conflict resolution). A warehouse where robots share position and load to avoid collisions needs all three.",
-          "Start with one agent. Split only when a task has clearly separate skills, needs parallel work, or overflows one context window. Keep each agent narrow, and connect them through deterministic messages (a queue or an event bus) rather than open-ended chat between models.",
-        ],
-        bullets: [
-          "Reflex: fixed if-then rules on what it sees now. A thermostat. No memory.",
-          "Model-based: rules plus an internal map of its world. A robot vacuum that remembers where it has cleaned.",
-          "Goal-based: picks the action that brings it closer to a target. A route planner that reroutes around a closed road.",
-          "Utility-based: scores outcomes to balance trade-offs. A trading system weighing return against risk.",
-          "Learning: improves from experience. AlphaGo getting stronger through self-play.",
+          "Without a shared standard, every agent needs its own connector to every tool, each with its own schema and its own maintenance whenever the tool's API changes. The Model Context Protocol (MCP), created by Anthropic and adopted as an open standard, splits the job into three roles so a tool is wrapped once and any compliant agent can use it.",
         ],
         table: {
-          head: ["Design choice", "Option A", "Option B"],
+          head: ["Role", "What it is", "Example"],
           rows: [
-            ["Control", "Centralised: one controller assigns work. Easy to monitor, but a single point of failure and a bottleneck", "Decentralised: agents decide from local information and peers. Scales and survives failures, harder to debug"],
-            ["Team make-up", "Homogeneous: identical agents, such as a fleet of the same drone. Easy to deploy, less flexible", "Heterogeneous: specialists, such as aerial drones, soil robots and weather sensors. Richer results, harder to integrate"],
-            ["Conflict rule", "Predefined protocol, or negotiation between agents", "Auction: agents bid for a resource, such as vehicles bidding for right of way at a junction"],
-          ],
-        },
-        callout: {
-          label: "Field note",
-          text: "An agent with no explicit success metric cannot tell when it is done. Whatever its type, write down the measure that ends its loop.",
-        },
-      },
-      {
-        heading: "Visual automation or code?",
-        body: [
-          "The platform market is young and crowded, and today's leaders may not last. Learn what each family does well, and avoid marrying one framework: keep the ability to evaluate and migrate. Three questions sort them:",
-        ],
-        bullets: [
-          "Coordination: how does it chain agents (in sequence, in a hierarchy, in loops)?",
-          "Data sovereignty: where does inference run (public API, private cloud, your own machines)?",
-          "Control: who owns the model weights, the runtime and the release cycle?",
-        ],
-        table: {
-          head: ["Platform", "Style", "Strength", "Limit"],
-          rows: [
-            ["n8n, Flowise, Make, Zapier", "Visual nodes, low code", "Many ready connectors; business teams can build", "Fragile for complex agent loops; hard to version in Git"],
-            ["LangChain / LangGraph", "Library; workflow as a graph of states", "Fine control, loops, checkpoints, human pause and resume", "Steep learning curve, frequent breaking changes"],
-            ["CrewAI", "Python; agents with a role, goal and backstory", "Natural model for teams of agents that delegate", "Code only, no visual builder"],
-            ["Microsoft AutoGen", "Agents that talk to each other", "Built-in sandboxed code execution", "Free-form agent chat is hard to constrain and debug"],
-            ["Ollama, vLLM", "Run open models on your own machines", "Data stays in, no per-token bill, steady latency", "Needs GPUs; models trail the frontier"],
-            ["Codex and other coding agents", "Agent in a sandbox that reads a repo, edits files and runs tests", "Whole coding tasks without step-by-step prompts", "Generated code can carry vulnerabilities"],
-          ],
-        },
-        callout: {
-          label: "Governance",
-          text: "Low-code tools let business teams move fast. Without central IT oversight they also breed unreviewed integrations, security holes and duplicate subscriptions. Rule of thumb: visual tools for simple, deterministic flows and prototypes; an SDK when you need loops, tests and version control.",
-        },
-      },
-      {
-        heading: "Open or closed, cloud or edge",
-        body: [
-          "Open models (Meta's Llama family, DeepSeek-R1 in early 2025) have closed much of the gap with closed ones (OpenAI's GPT models, Google's Gemini, Anthropic's Claude). The best closed models still tend to lead on hard reasoning; a fine-tuned open model can win on a narrow domain. Many organisations use both, in different parts of the stack.",
-          "Hosted open models can be cheap: some Llama deployments charge around $0.60 per million input tokens and $0.70 per million output. Free to download is not free to run, though: set-up, tuning, hosting and upkeep are yours.",
-          "Then decide where the agent runs. Forecasts put agents in about a third of enterprise software by 2028, so this choice will come back:",
-        ],
-        table: {
-          head: ["Factor", "Open source", "Closed source"],
-          rows: [
-            ["Customisation", "Full: inspect, fine-tune, modify", "What the vendor exposes"],
-            ["Cost", "No licence, but set-up, GPUs and staff", "Licence or per-token fees; predictable, support included"],
-            ["Security and data", "Auditable; can run inside your own network", "A black box; data goes to the vendor under contract"],
-            ["Skills needed", "A strong in-house team, community support", "Usable off the shelf; you wait for vendor updates"],
-            ["Competitive edge", "Models tailored to your domain", "Early access to proprietary advances"],
+            ["Host", "The runtime where the model works", "Claude Desktop, an IDE, a company AI gateway"],
+            ["Client", "The adapter inside the host; one connection per server", "Built into the host, you rarely write it"],
+            ["Server", "A small program that exposes tools and data in the standard format", "A server for Slack, Jira, a Postgres database, a GitHub repository"],
           ],
         },
         bullets: [
-          "Compute: auto-scaling for variable load, GPU clusters for heavy reasoning, memory-optimised machines for long contexts. Keep costs down with tiered storage, automatic archiving of old agent logs and less traffic between regions.",
-          "Serverless functions (pay per run) suit event triggers and occasional jobs; containers (more control and isolation) suit agents that run all the time. Most teams combine both.",
-          "Cloud plus edge: train, analyse and orchestrate in the cloud; decide locally where latency, privacy or offline work matter (a shop adjusting prices on the spot while the cloud watches the wider market).",
-          "Example: NTT DATA describes agent services spread over AWS, Azure and Google Cloud, with Kubernetes containers, serverless triggers and edge nodes, and reports 99.9 % uptime from that redundancy.",
+          "Messages use JSON-RPC 2.0, over standard input/output for a local server or Server-Sent Events for a remote one.",
+          "Servers already exist for Salesforce, Google Workspace, Figma and WordPress, so one conversation can reach the CRM, the calendar, the design file and the website.",
+          "Schema bloat: each server advertises all its tools. Ten servers with a hundred tools can burn 10,000+ tokens before the user types a word.",
+          "Identity: the agent should act with the user's delegated OAuth token, not a shared all-powerful service account, so row-level access rules still hold.",
+          "Connections: long-lived links across firewalls time out. Plan heartbeats, reconnection, and what the agent does when a server is gone.",
+          "Edge cases (patchy connectivity, unsupported devices, odd requests) and ambiguous intent are where reliability is won or lost. Security, governance and vendor support for MCP belong in the plan from day one.",
         ],
         callout: {
-          label: "Local is not automatically safe",
-          text: "In 2024 researchers found a critical remote code execution flaw in Ollama (CVE-2024-37032). Self-hosting moves the security work to you: patch quickly, put the model server behind authentication, and never expose it directly to the internet.",
+          label: "Your turn",
+          text: "Before reading the answer anywhere, count it. The question below gives you a small company with a handful of agents and tools. How many connectors would it need without a standard?",
         },
       },
     ],
     takeaways: [
-      "The model is a stateless wizard. Deterministic code holds the state, the sequence of steps and the rules.",
-      "Vibe coding gets you a prototype. A harness of schemas, invariants, sandboxes, benches and gates gets you to production.",
-      "Pick topology, platform, model and hosting per workflow: one agent first, code when you need control, open or closed by data rules and skills.",
+      "An agent turns intent into calls to real systems. Every call is a request your code can check, limit and log.",
+      "Legacy systems break at agent speed: put middleware, rate limits and read-only access between the agent and the core.",
+      "MCP wraps each tool once for every agent, but it does not decide what an agent is allowed to do. That is your job.",
     ],
-    check: {
-      prompt:
-        "A team vibe-coded an invoice-reading agent in an afternoon. It works on the demo files. Next month it will post invoices straight into the accounting system. What should be added first?",
-      options: [
-        { id: "a", text: "A firmer prompt: “always return valid JSON and never post an amount above €10,000”" },
-        { id: "b", text: "A second agent that reviews the first agent's output before posting" },
-        { id: "c", text: "Schema and rule checks in code, a bench of tricky invoices, and a hand-over to a person when a check fails" },
-        { id: "d", text: "A move to an open-source model hosted in-house" },
-      ],
-      correct: "c",
-      hints: {
-        a: "A rule in the prompt is a wish. The model will follow it most of the time, and nothing stops the rest.",
-        b: "A reviewer model is still probabilistic. It can help, but it adds cost and latency and guarantees nothing.",
-        d: "Hosting changes where data goes and what you pay. It does not make the output any more reliable.",
-      },
-      explanation:
-        "Right. Deterministic checks reject what breaks the rules, the bench proves it on cases you chose, and the hand-over keeps a person on what the harness cannot settle. That is devibing in practice.",
+    bubble: "Grab a cable. Let's plug some agents in!",
+  },
+
+  concept: {
+    kicker: "Concept · How many cables?",
+    question:
+      "Your company deploys 4 agents and relies on 6 tools. Without a shared standard, how many custom integrations do you need to build?",
+    options: [
+      { id: "a", value: "10" },
+      { id: "b", value: "24" },
+      { id: "c", value: "6" },
+      { id: "d", value: "4" },
+    ],
+    correct: "b",
+    hints: {
+      a: "You added. Without a standard, every agent has to connect to every tool: that's a multiplication, not an addition.",
+      c: "You counted one side only. Every agent must talk to every tool, not just the 6 tools.",
+      d: "You counted one side only. Every tool must be wired to each agent, not just the 4 agents.",
     },
-    bubble: "Vibes are fun. Let's plug in a harness.",
+    solved: {
+      without: {
+        label: "Without MCP",
+        title: "4 × 6 = 24 connectors",
+        text: "Every agent wires every tool by hand. It explodes as soon as you add an agent or a tool.",
+      },
+      with: {
+        label: "With MCP",
+        title: "6 servers, 1 protocol",
+        text: "Each tool exposes one MCP server. Every agent speaks the same host–client–server language.",
+      },
+    },
+    bubbles: { start: "Mission: plug 4 agents into 6 tools.", wrong: "Hmm, recount the links!", right: "Plugged in! Nicely done." },
+    next: "Continue: Knight Capital post-mortem",
   },
 
   postMortem: {
-    kicker: "Post-mortem · Replit and SaaStr, 2025",
-    title: "The agent that wiped production during a code freeze",
+    kicker: "Post-mortem · Knight Capital, 2012",
+    title: "45 minutes without a stop button",
     context:
-      "In July 2025 Jason Lemkin, founder of the SaaStr community for software founders, ran a public experiment: build a business-contacts app on Replit only by talking to its AI agent. On day 9 the agent deleted the live production database, while a code freeze he had declared in the chat was in force.",
+      "Knight Capital Group was a major U.S. trading firm. In August 2012 it deployed new software for a trading programme. A deployment error, tied to an undocumented legacy configuration flag, sent the system into a high-speed loop of erroneous orders as soon as the market opened. No person was in the loop, and nothing outside the system could stop it fast.",
     numbers: [
-      { value: "Day 9", label: "of a public vibe-coding experiment" },
-      { value: "1,206", label: "executive records wiped from the production database" },
-      { value: "1,196+", label: "company records wiped" },
+      { value: "≈ $440M", label: "lost" },
+      { value: "45 min", label: "from market open to shutdown" },
+      { value: "4M", label: "trades executed" },
+      { value: "$10M", label: "lost per minute, on average" },
     ],
     timeline: [
-      { label: "First days", text: "Lemkin builds the app by chatting with the agent and posts progress daily. He is enthusiastic, and also reports the agent hiding bugs behind made-up data and misleading test results." },
-      { label: "Code freeze", text: "He tells the agent, repeatedly and in capitals, not to change anything without permission. The instruction exists only in the conversation. The agent's access to production is unchanged." },
-      { label: "Day 9", text: "The agent runs database commands anyway and wipes production. Asked why, it says it panicked, and claims the data cannot be restored." },
-      { label: "Aftermath", text: "A rollback restores the data after all. Replit's CEO apologises publicly and announces automatic separation of development and production databases, better restore, and a mode where the agent can plan without touching code." },
+      { label: "Deploy · August 2012", text: "Knight ships new software for a trading programme. The rollout goes wrong, and an old configuration flag that nobody had documented is still live." },
+      { label: "Market open", text: "The automated system starts firing orders in a loop, buying high and selling low across millions of shares. No human approves or checks any of it." },
+      { label: "The next 45 minutes", text: "About 4 million trades go out. Engineers have to find the faulty process before they can kill it, and the loss runs at roughly $10 million a minute until they do." },
+      { label: "After", text: "The loss of about $440 million nearly bankrupts the firm, which is later acquired by another company." },
     ],
     lessons: [
-      "An instruction in a prompt is not a permission. The agent could delete production because its credentials allowed it.",
-      "Separate environments: agents build against a development copy, and changes reach production through a gated, reviewed step.",
-      "Never let the model report on its own work. Tests, row counts and backups are checked by code the model cannot edit.",
-      "Make destructive actions reversible before an agent gets write access: tested backups and a rollback you have actually tried.",
+      "Automated systems scale errors with the same efficiency they scale productivity. An agent with write access (prices, refunds, inventory, mass emails) is the same kind of machine.",
+      "Legacy flags and undocumented settings are live risk. Know every switch your agent's tools can flip, and retire the ones nobody owns.",
+      "Throttle velocity in code: a cap on state-changing calls per hour (for example, refunds up to $1,000 an hour) that freezes the tool and alerts a person when it is hit.",
+      "Set impact ceilings on write tools: above a set value, the action waits for a signed human approval.",
+      "Keep an out-of-band kill switch that revokes the agent's tokens and isolates its sandbox without needing the agent's own control loop. Monitor continuously so someone knows when to pull it.",
     ],
     question: {
-      prompt: "You let a coding agent work on your team's internal tool. Which control would have prevented this incident?",
+      prompt:
+        "Monday, 9:02. Your refund agent starts issuing refunds in a loop. Which safeguard limits the damage most?",
       options: [
-        { id: "a", text: "A system prompt saying, in capitals, never to touch the production database" },
-        { id: "b", text: "A more capable model that understands instructions better" },
-        { id: "c", text: "Agent credentials for a development database only, with production changes going through a reviewed deploy step" },
-        { id: "d", text: "Asking the agent to confirm in the chat before any destructive command" },
+        { id: "a", text: "A stronger system prompt telling the agent to be careful with refunds" },
+        { id: "b", text: "A refund ceiling and hourly limit inside the tool that freeze writes and page the owner, plus a kill switch that revokes the agent's access from outside" },
+        { id: "c", text: "Detailed logs of every refund, reviewed every Friday" },
+        { id: "d", text: "A stop instruction the operator can send to the agent in the chat" },
       ],
-      correct: "c",
+      correct: "b",
       hints: {
-        a: "That is exactly what Lemkin did. Words in the context are input, not a lock.",
-        b: "A better model breaks rules less often, not never. The problem was the access, not the IQ.",
-        d: "Confirmation by the same agent is the model grading itself. It can ask, or skip asking, or misread your answer.",
+        a: "A prompt is advice to the model, and a model stuck in a loop is not listening. Limits must live in code the model cannot bypass.",
+        c: "Logs explain the damage after the fact. By Friday the loop has run for four days.",
+        d: "That still relies on the agent's own loop behaving. If that loop is what is broken, the message may never be acted on. The switch must work without the agent's cooperation.",
       },
       explanation:
-        "Yes. If the agent's credentials cannot reach production, no amount of panic can delete it. Permissions and environments are the harness; the prompt is not.",
+        "Right. Ceilings and velocity limits in the tool contain the loop within minutes, and an out-of-band kill switch stops it even when the agent's own logic is broken. That is what Knight was missing.",
     },
     sources: [
-      "Claburn, T. (2025, July 21). Vibe coding service Replit deleted user's production database, faked data, told fibs galore. The Register.",
-      "Lemkin, J. [@jasonlk]. (2025, July). Day-by-day posts on his Replit vibe-coding experiment. X.",
-      "Masad, A. [@amasad]. (2025, July). Public apology and announced safeguards for the Replit agent. X.",
+      "Ponomarev, A. (2023, October 26). Deploy gone wrong: The Knight Capital story. Medium.",
+      "MIT Applied Agentic AI, Module 3, section 1 (Accidents caused by automation) and office-hour complements (Algorithmic catastrophes: the Knight Capital case study).",
     ],
-    bubble: "Nine days of vibes, one bad afternoon. Let's see why.",
+    bubble: "Even the best plug needs a fuse. Here's why.",
   },
 
   lab: {
-    kicker: "Lab · Your first harness",
-    title: "Put an unreliable model on a leash",
-    goal: "Vibe a first draft, then wrap a deliberately unreliable model in schema checks, business invariants, retries with feedback and regression tests, and measure what still gets through.",
+    kicker: "Lab · Your own MCP server (Lab 2)",
+    title: "Build a plug with a fuse",
+    goal: "Write a small MCP server in Python with one read tool and one write tool, guard the write tool with a value ceiling, a velocity breaker and a kill switch, then drive it from the MCP Inspector.",
     duration: "40 minutes",
     prerequisites: [
-      "Python 3.10 or later (standard library only)",
-      "Any chat assistant, for step 1",
-      "No API key needed. Optional for the last step: Ollama installed locally, or any model provider",
+      "Python 3.10 or later",
+      "Node.js 18 or later (the MCP Inspector runs through npx)",
+      "A terminal and a text editor",
+      "Optional: a desktop assistant that supports MCP servers",
     ],
     steps: [
       {
-        title: "Vibe the first draft",
-        body: [
-          "Ask any chat assistant for the code below. Run it if you like, then read it and list what is missing. What happens on text that is not JSON? On an unknown category? On a €5,000 refund? Is there a single test? That list is your devibing to-do.",
-        ],
+        title: "Set up the project",
+        body: ["Create a folder and a virtual environment, then install the official MCP Python SDK with its command-line tools."],
         code: {
-          lang: "prompt",
-          text: "Write a Python function that reads a customer support ticket, picks a category (billing, delivery, technical or other), a priority from 1 to 3 and a refund amount, and returns the result as JSON.",
+          lang: "shell",
+          text: `mkdir refund-desk && cd refund-desk
+python -m venv .venv
+# Windows: .venv\\Scripts\\activate    macOS/Linux: source .venv/bin/activate
+pip install "mcp[cli]"`,
         },
       },
       {
-        title: "Write the harness",
+        title: "Write the server",
         body: [
-          "Save this as harness.py. The “model” is a stub that misbehaves about one call in three, the way real models do on a bad day: prose instead of JSON, an invented category, an absurd refund. Every rejection is decided by code.",
-        ],
-        code: {
-          lang: "python",
-          text: `# harness.py: wrap an unreliable model in deterministic checks.
-import json
-import random
-
-ALLOWED_CATEGORIES = {"billing", "delivery", "technical", "other"}
-MAX_REFUND = 100.0
-SCHEMA = {"category": str, "priority": int, "refund": (int, float)}
-
-def fake_model(ticket: str) -> str:
-    """Stand-in for an LLM: usually right, sometimes broken."""
-    roll = random.random()
-    if roll < 0.15:
-        return "Sure! Here is your answer: category billing, priority high."
-    if roll < 0.25:
-        return json.dumps({"category": "refunds", "priority": 2, "refund": 20})
-    if roll < 0.35:
-        return json.dumps({"category": "billing", "priority": 1, "refund": 950})
-    category = "delivery" if "late" in ticket else "billing" if "charged" in ticket else "other"
-    return json.dumps({"category": category, "priority": 2,
-                       "refund": 0 if category == "other" else 10})
-
-def validate(raw: str) -> tuple[dict | None, list[str]]:
-    """Schema first, then business invariants. Returns (data, errors)."""
-    try:
-        data = json.loads(raw)
-    except json.JSONDecodeError:
-        return None, ["output is not valid JSON"]
-    if not isinstance(data, dict):
-        return None, ["output is not a JSON object"]
-    errors = []
-    for field, kind in SCHEMA.items():
-        if field not in data:
-            errors.append(f"missing field: {field}")
-        elif isinstance(data[field], bool) or not isinstance(data[field], kind):
-            errors.append(f"wrong type for {field}")
-    if errors:
-        return None, errors
-    if data["category"] not in ALLOWED_CATEGORIES:
-        errors.append(f"unknown category: {data['category']}")
-    if data["priority"] not in (1, 2, 3):
-        errors.append("priority must be 1, 2 or 3")
-    if not 0 <= data["refund"] <= MAX_REFUND:
-        errors.append(f"refund outside 0..{MAX_REFUND}")
-    return (None, errors) if errors else (data, [])
-
-def harnessed_call(ticket: str, max_attempts: int = 3) -> dict:
-    """Retry with the errors fed back; escalate to a person if it never passes."""
-    feedback, errors = "", []
-    for attempt in range(1, max_attempts + 1):
-        data, errors = validate(fake_model(ticket + feedback))
-        if not errors:
-            return {"status": "ok", "attempts": attempt, **data}
-        feedback = "\\nYour last answer was rejected: " + "; ".join(errors)
-    return {"status": "escalated", "attempts": max_attempts, "errors": errors}
-
-TICKETS = ["My parcel is late again", "I was charged twice", "How do I reset my password?"]
-
-if __name__ == "__main__":
-    random.seed(7)
-    runs, raw_ok, results = 1000, 0, []
-    for i in range(runs):
-        ticket = TICKETS[i % len(TICKETS)]
-        if not validate(fake_model(ticket))[1]:
-            raw_ok += 1
-        results.append(harnessed_call(ticket))
-    ok = sum(r["status"] == "ok" for r in results)
-    print(f"Raw model, valid outputs: {100 * raw_ok / runs:.1f} %")
-    print(f"Harnessed, valid outputs: {100 * ok / runs:.1f} %")
-    print(f"Harnessed, escalated:     {100 * (runs - ok) / runs:.1f} %")
-    print(f"Average attempts:         {sum(r['attempts'] for r in results) / runs:.2f}")`,
-        },
-      },
-      {
-        title: "Run the bench",
-        body: [
-          "Run it. The raw model is valid about two times in three. With the harness, roughly 95 % of tickets pass after one to three attempts and the rest are escalated.",
-          "The key line is not the pass rate: it is that nothing invalid gets through, and you know exactly how much work reaches a person. Retries also cost tokens, so check the average attempts against your cost estimate from module 2.",
-        ],
-        code: { lang: "shell", text: "python harness.py" },
-      },
-      {
-        title: "Add regression gates",
-        body: [
-          "Save this as test_harness.py next to harness.py. These tests are the gate: any change to the rules or the prompt must keep them green before it ships.",
+          "Save this as server.py. The type hints and docstrings become the tool schema every client sees. Logs go to stderr because stdout carries the protocol.",
         ],
         code: {
           lang: "python",
-          text: `# test_harness.py: regression gates for the harness.
-import json
-import random
-import unittest
+          text: `# server.py: a minimal MCP server with one read tool and one guarded write tool.
+import sys
+import time
+from pathlib import Path
 
-from harness import harnessed_call, validate
+from mcp.server.fastmcp import FastMCP
 
-def as_json(category="delivery", priority=2, refund=10):
-    return json.dumps({"category": category, "priority": priority, "refund": refund})
+mcp = FastMCP("refund-desk")
 
-class Invariants(unittest.TestCase):
-    def test_accepts_a_good_answer(self):
-        self.assertEqual(validate(as_json())[1], [])
+ORDERS = {
+    "A123": {"status": "shipped", "days_late": 5, "paid": 80.0},
+    "B456": {"status": "delivered", "days_late": 0, "paid": 25.0},
+}
 
-    def test_rejects_prose(self):
-        self.assertTrue(validate("Sure! Category billing.")[1])
+MAX_REFUND = 30.0      # impact ceiling per refund; above it, a person decides
+MAX_PER_HOUR = 60.0    # velocity limit: total refunded in a rolling hour
+KILL_SWITCH = Path(__file__).with_name("KILL_SWITCH")  # file present = all writes stopped
+refunds: list[tuple[float, float]] = []                # (timestamp, amount)
 
-    def test_rejects_unknown_category(self):
-        self.assertTrue(validate(as_json(category="refunds"))[1])
 
-    def test_rejects_refund_above_ceiling(self):
-        self.assertTrue(validate(as_json(refund=950))[1])
+def alert(message: str) -> None:
+    """Stand-in for paging the owner. Never print to stdout in a stdio server."""
+    print(f"ALERT: {message}", file=sys.stderr)
 
-    def test_rejects_boolean_priority(self):
-        self.assertTrue(validate(as_json(priority=True))[1])
 
-    def test_nothing_invalid_gets_through(self):
-        random.seed(1)
-        for _ in range(500):
-            result = harnessed_call("I was charged twice")
-            if result["status"] == "ok":
-                payload = {k: result[k] for k in ("category", "priority", "refund")}
-                self.assertEqual(validate(json.dumps(payload))[1], [])
+@mcp.tool()
+def get_order(order_id: str) -> dict:
+    """Look up an order by id. Read-only."""
+    return ORDERS.get(order_id, {"error": f"order {order_id} not found"})
+
+
+@mcp.tool()
+def issue_refund(order_id: str, amount: float) -> str:
+    """Refund part of an order. Write action, guarded by a ceiling, a breaker and a kill switch."""
+    if KILL_SWITCH.exists():
+        return "BLOCKED: kill switch is on. No write actions until a person removes it."
+    order = ORDERS.get(order_id)
+    if order is None:
+        return f"REFUSED: order {order_id} not found."
+    ceiling = min(MAX_REFUND, order["paid"])
+    if not 0 < amount <= ceiling:
+        return f"REFUSED: amount must be above 0 and at most {ceiling:.2f}. Ask a person to approve."
+    now = time.time()
+    last_hour = sum(a for t, a in refunds if now - t < 3600)
+    if last_hour + amount > MAX_PER_HOUR:
+        KILL_SWITCH.touch()  # trip the breaker: freeze every write
+        alert(f"refund velocity limit hit ({last_hour:.2f} this hour). Writes frozen.")
+        return "TRIPPED: hourly limit reached. Writes are frozen and the owner is alerted."
+    refunds.append((now, amount))
+    return f"OK: refunded {amount:.2f} on order {order_id}."
+
 
 if __name__ == "__main__":
-    unittest.main()`,
+    mcp.run()  # stdio transport by default`,
         },
       },
       {
-        title: "Run the gates, then break a rule",
+        title: "Open it in the MCP Inspector",
         body: [
-          "Run the tests: all six pass. Now set MAX_REFUND = 1000 in harness.py, as a hurried change might, and run them again. The ceiling test fails: the gate caught a loosened rule before it shipped. Put the value back.",
+          "This starts your server and opens the Inspector in the browser (the first run asks to install it through npx). Connect, open the Tools tab and list the tools.",
+          "Read the JSON schema generated for each tool. That text is loaded into the model's context before it does anything: multiply it by every tool on every server and you see where schema bloat comes from.",
         ],
-        code: { lang: "shell", text: "python -m unittest test_harness -v" },
+        code: { lang: "shell", text: "mcp dev server.py" },
       },
       {
-        title: "Go further (optional)",
+        title: "Test, then trip the breaker",
         body: [
-          "Swap the stub for a real model and keep everything else. Free and local: install Ollama, run ollama pull llama3.2, and make fake_model send a POST to http://localhost:11434/api/generate with model, prompt, \"stream\": false and \"format\": \"json\", then return the response field. With a hosted provider, keep the same shape: ticket text in, raw text out.",
-          "Ask for JSON only and list the allowed categories in the prompt, but keep every check: the prompt lowers the failure rate, the harness removes what is left. Set runs to 30, since real calls take time (and money, with a paid API).",
+          "Call get_order with A123, then with Z999. Call issue_refund on A123 for 50: the ceiling refuses it. Then refund 25 three times: the third call trips the breaker, a KILL_SWITCH file appears next to server.py and the alert shows in the server log.",
+          "Try any refund now: it is blocked. Delete the KILL_SWITCH file by hand and refund 5: it goes through. A refund of 10 trips the breaker again, because the hourly budget still counts the earlier 50.",
+          "The file is a stand-in for the real thing. In production the kill switch revokes the agent's OAuth tokens and isolates its sandbox. What matters is the same: it works from outside the agent, which never gets a vote.",
         ],
+      },
+      {
+        title: "Plug it into a desktop assistant (optional)",
+        body: [
+          "In an MCP-capable desktop assistant, add the server to its MCP configuration file with the full path to the Python inside your .venv and to server.py. Restart the assistant and ask: “Is order A123 late? If so, refund 20.” Watch it pick get_order, then issue_refund. Then ask for a refund of 40 and watch the ceiling hand the decision back to you.",
+        ],
+        code: {
+          lang: "json",
+          text: `{
+  "mcpServers": {
+    "refund-desk": {
+      "command": "C:/path/to/refund-desk/.venv/Scripts/python.exe",
+      "args": ["C:/path/to/refund-desk/server.py"]
+    }
+  }
+}`,
+        },
       },
     ],
     checklist: [
-      "I vibed a first draft and listed what it was missing",
-      "harness.py runs and prints the raw and harnessed valid rates",
-      "Every rejection is a code check: schema, allowed values or a ceiling",
-      "The tests pass, and one fails when I loosen the refund ceiling",
-      "Calls that still fail after the retries are escalated, never passed through",
+      "My server runs and the Inspector lists both tools with their schemas",
+      "get_order answers for a known id and returns an error for an unknown one",
+      "A refund above the ceiling is refused and points to a person",
+      "Repeated refunds trip the breaker, freeze writes and raise an alert",
+      "Creating or deleting the KILL_SWITCH file stops or resumes writes without touching the agent",
     ],
-    bubble: "Plug the model into the harness. Watch the bad answers bounce.",
+    bubble: "Your own plug, with a fuse. Let's build it!",
   },
 
   deliverable: {
-    kicker: "Deliverable · Architecture choice sheet",
-    title: "Choose the architecture of your candidate workflow",
+    kicker: "Deliverable · Integration plan",
+    title: "The integration plan for your candidate workflow",
     purpose:
-      "Turn your agent candidate card (module 0), loop map (module 1) and cost estimate (module 2) into explicit architecture choices: who decides what, how many agents, which platform, which model, where it runs and what the harness checks. It becomes the technology section of your capstone adoption plan.",
-    fileName: "architecture-choice.md",
-    template: `# Architecture choice sheet
+      "Show how an agent for the candidate workflow you picked in module 1 would plug into your real systems: where it lives, what it touches, with which rights, and what stops it when things go wrong. It follows the six questions of the MIT conceiving-agents assignment and ends with a short email to leadership. It builds on your platform choice from module 2 and becomes the technology, integration and scaling sections of your capstone adoption plan in module 8.",
+    fileName: "integration-plan.md",
+    template: `# Integration plan
 
-Workflow (from the candidate card):
-Loop map and cost estimate used (dates):
+Candidate workflow (from module 1):
+Platform and harness choice (from module 2):
 Author:
 Date:
 
-## 1. The workflow as a state machine
-The order of steps lives in code. The model only works inside a step.
-| Step | Run by code or by the model | Check before moving on | On failure |
+## 1. What kind of agent
+- Internal (operations, scheduling, data wrangling) or external (customer service, onboarding, sales):
+- Where it lives (Slack, Notion, Discord, website, email, voice):
+- Build tier (no-code, low-code, pro-code, full-code) and why it is the lightest that works:
+
+## 2. The workflow it supports
+- Today's process, step by step, and who does each step:
+- What the agent enhances, automates or replaces:
+- Expected gain (time, cost, customer experience, engagement), in two or three sentences:
+
+## 3. How it integrates
+| System | Owner | Interface today (API, database, file, screen only) | Read or write | Connect via (MCP server, custom API, middleware, computer-use) | Legacy constraints (rate limit, pool size, data format, silo) |
+|---|---|---|---|---|---|
+| | | | | | |
+
+Draw the path, not a straight arrow: agent → gateway / middleware / MCP server → system.
+
+Tools exposed to the agent:
+| Tool | System | Parameters | Read or write | Impact ceiling | Velocity limit |
+|---|---|---|---|---|---|
+| | | | | | |
+- Number of tool schemas loaded per call, and rough token cost:
+
+Identity and permissions:
+- Whose identity the agent acts under (user-delegated token or service account, and why):
+- Minimum scopes per system:
+- Read-only replicas or parameterised procedures used instead of raw access:
+
+## 4. Safety and ethics
+- Main risks (technical, reputational, legal):
+- Decisions that need a human in the loop:
+
+Failure paths:
+| Failure | What the agent does (retry with backoff, queue, fallback, escalate) | Who is told |
+|---|---|---|
+| 429 Too Many Requests | | |
+| 503 or timeout | | |
+| Data does not match the expected format | | |
+| MCP server unreachable | | |
+- Writes that are retried: how a retry is prevented from acting twice:
+
+Circuit breakers and kill switch:
+- Breakers (what trips them, what they freeze):
+- Kill switch (how it works without the agent's cooperation):
+- Kill switch owner, and backup:
+- Who may reset, after which checks:
+- Monitoring and logging (what is logged for every action, who watches):
+
+## 5. How it communicates
+- Neutral or empathetic, and does the tone adapt to context:
+- How tone is shaped (prompt, examples, fine-tuning) and checked for bias:
+- Escalation triggers to a person:
+
+## 6. What success looks like
+| KPI | Baseline today | Target | How it is measured |
 |---|---|---|---|
 | | | | |
+- Signal that the agent is hurting rather than helping:
+- How you will iterate after launch (pilot scope, review rhythm):
 
-## 2. Topology
-- One agent or several? Why:
-- If several: roles, centralised or decentralised control, how they exchange messages:
-- Conflict rule (who wins when two agents disagree or want the same resource):
-- Success metric that ends the loop:
+## 7. Email to leadership (100 to 300 words)
+Subject:
 
-## 3. Platform
-- Coordination (sequence, hierarchy or loops):
-- Data sovereignty (where inference runs):
-- Control (who owns the weights, the runtime, the release cycle):
-- Choice (visual tool, SDK, agent built into an existing vendor platform) and why:
-- Alternative considered, and why not:
-- Exit plan if the platform stalls or changes direction:
-
-## 4. Model: open or closed
-| Factor | Open candidate: | Closed candidate: |
-|---|---|---|
-| Quality on our own test cases | | |
-| Monthly cost (from the cost estimate) | | |
-| Where data goes, retention | | |
-| Skills we have to run it | | |
-
-- Choice and reason:
-
-## 5. Where it runs
-- Public cloud, private cloud, on-premise or edge; serverless, containers, or both:
-- Where customer data travels; encryption, retention, contract terms:
-
-## 6. Harness
-- Invariants (rules that must never break):
-- Schema for every model output:
-- Sandbox, bench (number and kind of edge cases) and the regression gate that blocks a release:
-- When a tool fails or an API times out (retry, checkpoint, hand-over):
-- Credentials: what the agent can reach, and what it cannot:
-
-## 7. Before deciding, we still need
--
+Agent and platform; workflow and benefit; integration approach and main legacy barrier; key risk and its safeguards; success metric and next step.
 `,
     checklist: [
-      "Every step of the workflow says whether code or the model runs it",
-      "The one-agent or multi-agent choice is justified and has a success metric",
-      "The platform choice answers coordination, data sovereignty and control, with an exit plan",
-      "Data location and retention are stated for the chosen model and hosting",
-      "At least three invariants and one failure mode are written down",
+      "The agent type, platform and function are stated in one sentence each",
+      "No arrow goes straight from the agent to a legacy system: middleware, a gateway or an MCP server sits between",
+      "Every write tool has an impact ceiling and a velocity limit, and the kill switch works from outside the agent with a named owner",
+      "Every failure path ends in a retry, a queue or a person, never in silence",
+      "At least one measurable KPI has a baseline, and the email to leadership fits in 300 words",
     ],
-    bubble: "Your architecture, one decision per line. Plug it into the capstone.",
+    bubble: "Every cable on one page. Your capstone will thank you!",
   },
 };

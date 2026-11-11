@@ -1,410 +1,518 @@
 import type { LessonContent } from "../lessons";
 
-// Module 6 · Hard guardrails. Source: MIT module 7 (sections 1 and 3, assignment 7.1) and its complements.
+// Module 6 · From pilot to practice. Source: MIT module 6 (sections 1 to 4, assignment 6.1) and its complements.
 // Content file: long by nature (prose, code and templates), no logic.
 export const MODULE_6: LessonContent = {
   reading: {
-    kicker: "Concept · AI Act, GDPR, guardrails",
-    title: "A sign on the wall is not a wall",
+    kicker: "Concept · The last mile",
+    title: "A pilot that works is not a deployment",
     intro:
-      "An agent that reads personal data and acts on it is subject to privacy law from its first request. Some rules can live in the prompt. The ones that carry legal weight cannot. This module maps the main laws onto agent design, then shows where to put the checks that a clever user cannot talk their way past. It is a design guide, not legal advice: confirm your reading with your legal team or data protection officer.",
+      "Most AI pilots look good. Far fewer reach daily use. The stretch between the two is the last mile: real callers, real data, real systems, and people who have to change how they work. This module shows why pilots stall, how to widen an agent's autonomy in stages, how to bring people along, and how to prove with numbers that it works.",
     sections: [
       {
-        heading: "Three privacy laws, one design brief",
+        heading: "Voice agents: a pilot that passed, a launch that failed",
         body: [
-          "Most agents in Europe and the US meet at least one of three laws. They differ in who they cover and how consent works, but they ask the system for the same things: collect little, explain what you do, let people see and remove their data, and keep evidence.",
+          "A voice agent talks with people instead of offering keypad menus. It chains three parts you already know: speech-to-text to turn the call into words, a language model or decision engine to work out what the caller wants, and text-to-speech to answer in a natural voice. Live calls add their own traps: people interrupt, talk over the agent and pack several requests into one sentence, so turn-taking matters as much as accuracy.",
+          "Healthcare is a natural target: bookings, opening hours, refill requests, test-result calls. The course's teaching case is fictional but painfully familiar. Maple Heights Family Clinic sees about 150 patients a day and its phone lines are jammed every morning. It pilots a voice agent for three jobs: book appointments, give opening hours, pass calls to staff. Staff play patients and read clean scripts. The agent copes, leadership approves, and the first live week goes wrong in four places.",
         ],
         table: {
-          head: ["", "GDPR (EU, 2018)", "CCPA (California, 2018)", "HIPAA (US federal, 1996)"],
+          head: ["What happened live", "Root cause", "What should have been there"],
           rows: [
-            ["Who it covers", "Anyone processing personal data of people in the EU, wherever the company sits", "For-profit businesses above revenue or data-volume thresholds that collect data on California residents", "Covered entities (health plans, clearinghouses, providers) and their business associates"],
-            ["Consent model", "A lawful basis for every purpose (Article 6); consent must be explicit opt-in when it is the basis", "Opt-out of the sale of personal data; opt-in needed to sell data of minors under 16", "Patient authorisation for most uses beyond treatment, payment and health care operations"],
-            ["Key rights", "Access, correction, erasure, restriction, objection, portability, safeguards on automated decisions", "Know, access, delete, opt out of sale", "Access to one's records; strict limits on disclosure"],
-            ["Enforcement", "National data protection authorities; up to €20 million or 4 % of global annual turnover", "California Attorney General and the California Privacy Protection Agency; up to $7,500 per intentional violation (now indexed to inflation)", "HHS civil penalties from about $140 to over $2 million a year; criminal cases (DOJ) up to $250,000 and 10 years in prison"],
-            ["What it means for the agent", "Data minimisation, purpose limits, pseudonymisation, a human route for big decisions", "An opt-out switch the agent respects, visibility of what is stored and shared", "PHI only on a need-to-know basis, encryption, audit trails, a signed BAA with every AI vendor"],
-          ],
-        },
-        bullets: [
-          "Data minimisation: the agent receives only the fields the task needs. A delivery bot does not need the date of birth.",
-          "Purpose limitation: data collected to process an order is not reused to train a model or profile customers without a new basis.",
-          "HIPAA's minimum necessary rule pushes towards attribute-based access: who sees which field depends on role, sensitivity and context, checked on every call.",
-          "AI can also help comply. Mayo Clinic, for instance, uses AI to flag unusual access to electronic health records, such as lookups at odd hours or by staff with no need for that file.",
-        ],
-        callout: {
-          label: "Fines are real",
-          text: "In December 2024 Italy's data protection authority fined OpenAI €15 million over ChatGPT, citing among other things the lack of an adequate legal basis for training on personal data and weak transparency towards users. The model provider is not the only one exposed: you are.",
-        },
-      },
-      {
-        heading: "Two GDPR articles that collide with agents",
-        body: [
-          "Article 17, the right to erasure. A person can ask you to delete their personal data, and you must do it without undue delay unless an exception applies. In a retrieval (RAG) agent, their data no longer sits in one table. It has been chunked, embedded, indexed and copied.",
-          "An embedding is a list of numbers, but it is derived from personal text and can sometimes be partly reversed. Treat it as personal data. Deleting one vector is possible in most vector databases, yet the delete may stay soft until the index is compacted, and copies hide in backups, caches, logs, evaluation sets and any model fine-tuned on the data.",
-        ],
-        bullets: [
-          "Keep raw personal data out of vector metadata. Each vector points to a pseudonymous document ID; the text lives in a separate store you control.",
-          "Index by data subject, so “everything about customer 4812” can be found and removed in one query.",
-          "Crypto-shredding: encrypt each customer's chunks with a key of their own. On an erasure request, destroy the key. The text becomes unreadable everywhere, including in backups.",
-          "Never fine-tune on personal data you may have to erase. Removing it from model weights means retraining.",
-        ],
-        table: {
-          head: ["Article 22 asks", "What it means for an agent"],
-          rows: [
-            ["Is a decision based solely on automated processing?", "The agent decides and nobody with authority reviews the outcome before it applies"],
-            ["Does it have legal or similarly significant effects?", "Credit, hiring, insurance, benefits, account closure. A product recommendation does not qualify"],
-            ["Is there an exception?", "Necessary for a contract, authorised by law, or explicit consent"],
-            ["Even then, which safeguards?", "The person can obtain human intervention, give their point of view and contest the decision, and must get meaningful information about the logic involved (Articles 13 to 15)"],
+            ["Elderly callers, slang, a parent in a car with the GPS talking over her: the agent repeats its prompt, then hangs up", "Tested on scripts, never on interruptions, broken speech or several requests in one sentence", "Tests with messy real speech, accents, overlapping audio and barge-in"],
+            ["Slots offered that were already gone, double bookings, patients not in the system", "The scheduling API served stale data at peak demand", "Integration tested under load, with a freshness check before every booking"],
+            ["A caller who needs the nurse about her blood sugar is looped back to the main menu", "Hand-off only fired on exact phrases like “talk to a human”", "Escalation on intent and distress, not on keywords"],
+            ["Public complaints within a week, staff rebooking by hand, morale down", "No dashboard, no tagging of failed calls, no way for staff to report issues", "Escalation, booking accuracy and hang-up rates watched from day one"],
           ],
         },
         callout: {
-          label: "Controller, not bystander",
-          text: "Signing an enterprise contract with a model provider does not move your GDPR duties onto them. They act as your processor (Article 28: you need a data processing agreement, and you should check their retention terms). You remain the controller, and the regulator will ask you.",
+          label: "Done right",
+          text: "At Cencora, a large US healthcare distributor and clinic operator, a voice agent called Eva, built by Infinitus, handles benefits verification and drug-service calls. It absorbs work once done by more than 100 full-time staff, runs about four times faster, sends uncertain cases to human review, and every call is recorded and spot-checked.",
         },
       },
       {
-        heading: "The EU AI Act: obligations follow risk",
+        heading: "Pilot purgatory",
         body: [
-          "The AI Act (Regulation (EU) 2024/1689) entered into force on 1 August 2024. It does not regulate “AI” as a whole. It sorts uses into risk tiers and adds a separate layer for general-purpose AI (GPAI) models, the large models most agents are built on.",
+          "The clinic is not an exception. Industry estimates put the share of AI initiatives stuck at the pilot stage at 70 to 90 %, with roughly four production systems for every 33 prototypes. Last-mile integration is the work of turning a local trial into routine operations at scale, and it is where the value is either realised or lost.",
+          "Pilots succeed for reasons that do not survive scale: one narrow problem, curated or static data, a sandbox cut off from live systems, clear targets, and a 6 to 12 week timeline that rewards speed over durability. A team can show 90 % success in that setting and still have proved very little about production.",
         ],
         table: {
-          head: ["Tier", "Examples", "What applies"],
+          head: ["", "In the pilot", "In production"],
           rows: [
-            ["Unacceptable (banned)", "Social scoring, manipulation exploiting vulnerabilities, emotion recognition at work or school, untargeted scraping of faces", "Prohibited since 2 February 2025"],
-            ["High risk", "CV screening and promotion decisions, credit scoring, access to essential services, education grading, safety parts of regulated products", "Risk management, data governance, technical documentation, automatic logs (Article 12), human oversight (Article 14), accuracy and robustness, registration"],
-            ["Limited risk", "Chatbots, AI-generated or manipulated images, audio and video", "Transparency: people must know they are talking to an AI, and synthetic content must be marked"],
-            ["Minimal risk", "Spam filters, internal search, drafting assistants", "No new obligations; voluntary codes"],
-            ["GPAI models (separate layer)", "The foundation models behind most agents", "Providers publish technical documentation, a copyright policy and a training-data summary (since 2 August 2025); models with systemic risk add evaluations, adversarial testing and incident reporting"],
+            ["Inputs", "Clean, structured test cases", "Messy, ambiguous, sometimes hostile real traffic"],
+            ["Systems", "Sandbox, no integration burden", "Legacy telephony, CRM or medical records, streaming data, real load"],
+            ["People", "Enthusiastic volunteers", "Busy staff who may see the agent as a step towards layoffs"],
+            ["Governance", "Rarely any audit log, access control or liability rules", "Legal and compliance can halt it the day they look"],
+            ["Cost", "A small test budget", "Compute that grows with volume (IBM expected AI compute cost to rise 89 % between 2023 and 2025)"],
+            ["Proof", "“It works in the demo”", "A business number moves, and keeps moving"],
           ],
         },
         bullets: [
-          "Your agent's tier comes from its use, not its model. The same LLM is minimal risk drafting emails and high risk ranking job applicants.",
-          "If you build on a provider's model and run it in your company, you are usually a deployer. For a high-risk use that means: use it as instructed, assign trained people to oversight, keep the logs, and inform affected workers.",
-          "Fines go up to €35 million or 7 % of global turnover for banned practices, and up to €15 million or 3 % for most other breaches.",
+          "Start from one narrow use case with a business metric attached. Technical success with no visible business value leaves an ROI clarity gap nobody will fund.",
+          "Onboard the agent like a new hire: simple tasks first, harder ones as trust grows, with guardrails tested along the way.",
+          "Plan integration with the real back-end systems (APIs, middleware) and keep data flowing in real time. Without MLOps habits (automated deployment, version control, monitoring) a pilot cannot be reproduced at scale.",
+          "Design conversations for varied phrasing, accents and misunderstandings, with easy recovery and a clear route to a person.",
+          "Check data readiness (available, clean, diverse, secure) and give a governance group ownership. Amazon scrapped an internal hiring tool after it learned from past CVs to prefer men.",
+          "Treat change management and training as part of the build. This is often a multi-year journey.",
         ],
-        callout: {
-          label: "Check the calendar",
-          text: "The original schedule applied most high-risk rules from 2 August 2026 and rules for AI inside regulated products from August 2027. In late 2025 the Commission proposed postponing parts of the high-risk timetable. Read the dates in force on the day you write your plan.",
-        },
       },
       {
-        heading: "Speed vs oversight: think like a finance department",
+        heading: "Automate steps, then widen autonomy",
         body: [
-          "If anyone in a company can spend any amount, purchases are fast and fraud is easy. If the CFO signs off on every box of paper clips, nothing is lost and nothing moves. Most firms approve small purchases instantly and route large ones to a manager. Agent actions work the same way: guardrails are the approval rules, oversight is how they are enforced.",
-          "Two kinds of risk pull on the dial. Compliance risk is breaking a law or policy. Operational risk is hurting the business through errors, delays or poor service. Tight guardrails lower both but cost speed. Place them by plotting each action on two axes.",
+          "Saskia Listle's law of decomposition: you cannot automate a process, only a step. Asking one agent to “automate client onboarding” gives you a huge context, dozens of failure modes and no way to debug. Break the workflow into small steps, score each on predictability (rule-like or judgement) and on risk (reversible or not), and automate the predictable, low-risk steps first, with plain code checks between them.",
+          "Then widen autonomy in three stages. Each stage ends with an exit gate written as numbers and agreed before the stage starts.",
         ],
         table: {
-          head: ["", "Low speed needed", "High speed needed"],
+          head: ["Stage", "The agent…", "People…", "Example (Olivia, a partner-hours agent)"],
           rows: [
-            ["High risk", "Loan approvals, hiring decisions, regulatory filings. Manual oversight: a person approves before the action", "Real-time fraud blocking, medical emergency triage. Automated hard checks in the path, human review after the fact through logs"],
-            ["Low risk", "Scheduling suggestions, a draft quarterly report. Minimal oversight", "Autocomplete, product recommendations. Light oversight, periodic review"],
+            ["Crawl · human in the loop", "Extracts, drafts and recommends, never acts", "Review, edit and submit 100 % of cases; build baseline telemetry and a gold-standard set", "Suggests opening-hour extensions; account managers check and send"],
+            ["Walk · human on the loop", "Executes low-risk, deterministic actions; flags anything below a confidence floor (say 85 %)", "Watch dashboards, inspect samples, take the escalations", "Messages partners; a clear “YES” updates Salesforce and the POS, anything ambiguous goes to a person"],
+            ["Run · autonomy with circuit breakers", "Runs whole multi-step workflows", "Spot-audit, review monthly KPI drift, answer automated anomaly alerts", "Runs across Benelux and Germany; managers review weekly conversion dashboards and anomaly logs"],
           ],
         },
         bullets: [
-          "A support bot answers product questions instantly, but pauses on “send me all the data you hold on me”: it verifies identity and logs the request.",
-          "A medical intake agent collects general symptoms quickly, and switches to secure handling plus a human reviewer when a diagnosis or medication comes up.",
-          "A recommender suggests products at once, and processes a deletion request immediately, then verifies it.",
-          "An internal assistant shares the Q4 forecast without delay, and refuses “show me the CEO's emails”.",
+          "Know when to stop using the model. Once about 95 % of cases in a step follow the same logic, rewrite that step as a script or microservice: the faculty cite token costs down 90 %, latency from seconds to milliseconds, and fully reproducible audits.",
+          "Keep a person in the decision seat for consequential moves. Frankee.ai's agile assistant pulls blockers from chat on its own, but never reschedules a sprint or assigns tickets without the Scrum Master's click.",
+          "Re-test every model upgrade before promoting it. At Frankee.ai, an unannounced API change truncated outputs and silently broke user-story generation.",
         ],
       },
       {
-        heading: "Soft vs hard guardrails",
+        heading: "People: resistance is the usual blocker",
         body: [
-          "A soft guardrail asks the model to behave: a system prompt (“never reveal customer data”), few-shot examples, a constitution. It shapes tone and handles routine cases well. It is also probabilistic, so a long conversation, a role-play or a hidden instruction can talk it out of the rule.",
-          "A hard guardrail is code that runs outside the model and gives the same answer every time. It does not read the conversation, so it cannot be persuaded. Anything with legal or financial weight needs one.",
+          "Ali Tobah's view: the technology is ready; the last mile is organisational, about incentives, psychological safety and clear liability. Up to 70 % of change programmes are reported to fail on employee pushback or weak management support. With AI the fear is concrete: one survey found 74 % of Indian workers fear AI could take their jobs, and experts warn up to 40 % of roles worldwide could be affected. Not knowing how the system decides, or doubting one's own skills, adds to it.",
+          "Resistance also comes from above and around: leaders attached to familiar practice, cultures that prefer established processes, avoid risk and think in silos, thin budgets, legacy systems that make the agent look unreliable, and unclear AI policies. Frontline staff who feel threatened may quietly route around the agent, or collect its edge-case errors to prove it cannot be trusted.",
+          "ADKAR treats change as five building blocks, in order, for each group of people:",
         ],
         table: {
-          head: ["Position in the loop", "Hard guardrail", "What it stops"],
+          head: ["Block", "Question to answer", "What it looks like for an agent"],
           rows: [
-            ["Ingress (before the model)", "Input filters, allowed character sets, rate and velocity limits, injection signatures", "Abuse and floods before you pay for a token"],
-            ["Soft layer", "System prompt, persona, examples", "Off-tone or off-topic replies, most of the time"],
-            ["Egress (after the model)", "Strict output schema (Pydantic, JSON Schema), allowed values and ceilings, PII masking (regex, Presidio, cloud PII services)", "Malformed output, invented categories, amounts over the limit, personal data leaving the system"],
-            ["Tool call", "A policy enforcement point: middleware that checks the agent's scope before every write", "An agent writing where its credentials should not reach"],
-            ["Human", "Approval queue for actions above a threshold", "High-risk, irreversible or unusual decisions"],
+            ["Awareness", "Why change?", "Explain the problem the agent solves and why now"],
+            ["Desire", "What is in it for me?", "Say plainly how the agent augments the role and what happens to the work it takes"],
+            ["Knowledge", "How do I work with it?", "Hands-on workshops on the real tool; per Listle, a PDF and a 30-minute webinar will not do"],
+            ["Ability", "Can I do it on a busy day?", "Coaching, mentoring, a help desk, staff co-designing the guardrails"],
+            ["Reinforcement", "Will it stick?", "Share wins, act on feedback, track adoption by team"],
           ],
         },
+        bullets: [
+          "Kotter's eight steps give the organisation-level sequence: create urgency, build a coalition of AI champions, set a vision of human-AI work, communicate it, remove barriers, win early with pilots, consolidate gains, anchor the change in culture.",
+          "Talk openly: town halls, direct answers to fears, honesty about how decisions are made. Transparency is linked to less resistance and higher adoption.",
+          "Involve people: cross-functional committees, users choosing use cases, peer change champions.",
+          "Roll out in rings: internal testing with selected staff, a beta with a small group, then everyone. Launching 100 % on day one is usually too risky.",
+          "Measure it: adoption by department, satisfaction with the tool, productivity, resistance incidents and how fast they are resolved, plus periodic readiness checks.",
+        ],
         callout: {
-          label: "Test the guard, not just the agent",
-          text: "Functional tests check normal requests. Compliance tests check every legal scenario. Adversarial tests try to break the rules on purpose. Scenario tests replay real flows: does the bot escalate when someone asks for their personal data? Then keep logging every decision, data access and escalation in production, because real users find paths no test did.",
+          label: "Healthy doubt",
+          text: "The aim is not zero resistance. Some scepticism is right and points at real failure modes. Give it a channel and turn it into problem-solving.",
+        },
+      },
+      {
+        heading: "A scorecard in four dimensions",
+        body: [
+          "No single number describes an agent. Measure it on four dimensions, weighted for the use case: a legal summariser puts accuracy and compliance first, a retail chatbot puts experience first. Pick KPIs for what the agent does and what its business unit needs, not for what the vendor dashboard happens to show. Raw internals such as token counts only belong if they map to an outcome someone cares about.",
+        ],
+        table: {
+          head: ["Dimension", "Question", "Example KPIs"],
+          rows: [
+            ["Technical", "Is the machinery sound and within bounds?", "Latency per step, tool error rate, uptime, schema errors, hallucinations or guardrail violations"],
+            ["Operational", "Does the work get done?", "Task completion, first-contact resolution, deflection, escalation and abandonment rates"],
+            ["Financial", "Is it worth it?", "Cost per resolution, labour hours saved, infrastructure run-rate"],
+            ["Adoption and trust", "Do people accept it, and is it learning?", "CSAT or NPS, staff override rate, sustained usage, prompt rework rate"],
+          ],
+        },
+        bullets: [
+          "Other cuts of the same idea appear in the course: effectiveness, efficiency, user experience, learning and governance; or effectiveness, efficiency, learning and adaptation, human factors. Whatever the labels, never report money or time saved alone.",
+          "Maple Heights could have tracked three numbers from day one: escalation rate, appointment accuracy (valid bookings versus failed or duplicated) and abandonment (callers who hung up unresolved).",
+        ],
+        callout: {
+          label: "Logs first",
+          text: "KPIs are computed from structured records, not estimated afterwards. Every step should emit one JSON object: session, step, agent, model, tokens, latency, tool called and its status, whether a human overrode it, any validation error. As Amado Lopez puts it, you cannot govern what you cannot trace.",
+        },
+      },
+      {
+        heading: "Close the loop",
+        body: [
+          "A number nobody acts on is decoration. Three loops turn metrics into change. Users flag bad answers through ratings and complaints, reviewed by hand (vital early on). Automated monitors spot patterns, such as a spike in “I do not understand”, and trigger a fix or an escalation. Supervisors read the dashboards and adjust thresholds, success criteria or integrations. Early deployments lean on human oversight, mid-stage ones on rules, and advanced ones may have agents adjusting each other.",
+        ],
+        bullets: [
+          "No ground truth for tone or helpfulness: define a rubric and keep human grading for samples.",
+          "Metric distortion: pushing speed alone hurts accuracy. Pair every speed KPI with a quality KPI.",
+          "Drift: performance decays as inputs and systems change. Compare each week with the last.",
+          "Resistance to evaluation: frame monitoring as managing a new colleague, not doubting the project.",
+          "Start lean with one or two KPIs per agent, mix back-end logs with user feedback, keep a human on high-stakes outputs, and have a dashboard from day one.",
+        ],
+        callout: {
+          label: "Action threshold",
+          text: "Write the trigger next to every KPI. If abandonment rises 15 % in a week, the system needs intervention, not a slide next quarter. And, in Simon Barna's words, never scale an agent you have not measured: you would only industrialise its errors.",
         },
       },
     ],
     takeaways: [
-      "Your agent's legal duties come from its use and its data: classify it under the AI Act and map its GDPR basis before you build.",
-      "Plan erasure and human review into the architecture: pseudonymous vector IDs, per-customer keys, a route to a person for significant decisions.",
-      "Prompts are soft guardrails. Anything that must never happen gets a deterministic check outside the model.",
+      "Pilots stall on messy inputs, legacy integration, missing governance and people, rarely on the model itself.",
+      "Automate steps, not processes, and widen autonomy through Crawl, Walk and Run with numeric gates agreed in advance.",
+      "Score technical, operational, financial and adoption KPIs from structured logs, each with an owner and an action threshold.",
     ],
     check: {
       prompt:
-        "Your support agent's system prompt says “Never include a customer's IBAN in a reply.” A red-team tester gets it to print one in three turns. What do you ship?",
+        "Your 8-week pilot scored 94 % task success with volunteer staff on curated cases. Leadership wants the agent live for every customer next month. What do you propose?",
       options: [
-        { id: "a", text: "Rewrite the rule in capitals and repeat it at the end of the prompt" },
-        { id: "b", text: "Add examples of refusals to the prompt" },
-        { id: "c", text: "A masking step in code on every reply before it is sent, with a logged flag when it fires" },
-        { id: "d", text: "Ask the model to re-read its answer and remove any IBAN" },
-      ],
-      correct: "c",
-      hints: {
-        a: "Louder words are still words. The tester found a path through the prompt once; they will find it again.",
-        b: "Examples improve the odds. They do not turn a probability into a guarantee.",
-        d: "The checker is the same kind of model that leaked the data. It can be steered the same way.",
-      },
-      explanation:
-        "Right. A deterministic egress filter does not read the conversation, so it cannot be talked round. Keep the prompt rule for tone, and log every time the filter fires: that log is your evidence.",
-    },
-    bubble: "I keep watch at the gate. Let's see which rules are walls and which are only signs.",
-  },
-
-  postMortem: {
-    kicker: "Post-mortem · Air Canada, 2024",
-    title: "The chatbot made up a policy. The airline paid for it.",
-    context:
-      "In November 2022 Jake Moffatt's grandmother died. He asked the chatbot on Air Canada's website about bereavement fares. It told him he could book at the normal price and claim the reduced rate afterwards, within 90 days. The airline's own policy page, linked in the same answer, said the opposite: no retroactive claims. Air Canada refused the refund and the case went to British Columbia's Civil Resolution Tribunal.",
-    numbers: [
-      { value: "90 days", label: "the refund window the chatbot invented" },
-      { value: "C$650.88", label: "damages: the difference between the fare paid and the bereavement fare" },
-      { value: "C$812.02", label: "total award, with interest and tribunal fees" },
-      { value: "1", label: "policy page that contradicted the bot, in the same answer" },
-    ],
-    timeline: [
-      { label: "Nov 2022", text: "The chatbot tells the customer he can apply for the bereavement rate after travelling. He books and flies at full fare." },
-      { label: "Claim", text: "He then asks for the reduced rate. Air Canada points to its policy page: bereavement fares cannot be claimed after travel." },
-      { label: "Defence", text: "Before the tribunal, the airline argues it cannot be held liable for what its chatbot said (the tribunal sums this up as treating the bot as a separate legal entity) and that the customer should have checked the policy page." },
-      { label: "Feb 2024", text: "The tribunal rules negligent misrepresentation. The chatbot is part of the airline's website; the airline is responsible for all of it and had no reason to expect customers to double-check one page against another." },
-    ],
-    lessons: [
-      "You cannot disclaim your own agent. What it says on your channel is your company speaking.",
-      "A policy that exists only in the model's head is a soft guardrail. Answers about prices, refunds and eligibility should come from the retrieved policy text, in a fixed structure, or not at all.",
-      "Commitments (refunds, fares, exceptions) are actions with financial weight: route them through a hard check against the rules, and to a person above a threshold.",
-      "Log what the agent told each customer. When a dispute arrives, the transcript is the evidence for both sides.",
-    ],
-    question: {
-      prompt: "You run a similar assistant. Which control would most directly have prevented this case?",
-      options: [
-        { id: "a", text: "A disclaimer under the chat window: “Answers may be inaccurate”" },
-        { id: "b", text: "Policy answers built only from retrieved policy text, validated against a schema of allowed claims, with refund promises handed to an agent" },
-        { id: "c", text: "A stronger system prompt asking the model to be accurate about policies" },
-        { id: "d", text: "A larger model with more general knowledge" },
+        { id: "a", text: "Go live for everyone: 94 % is above target" },
+        { id: "b", text: "A Crawl phase on real traffic: the agent drafts, staff send, every step logged, with numeric gates agreed for moving to Walk" },
+        { id: "c", text: "Extend the sandbox pilot by six months to gather more evidence" },
+        { id: "d", text: "Switch to a larger model first to push the score towards 99 %" },
       ],
       correct: "b",
       hints: {
-        a: "The tribunal did not accept that customers must second-guess the airline's own website. A disclaimer does not make a wrong promise right.",
-        c: "That is still a soft guardrail. It improves the odds, it does not stop an invented 90-day rule.",
-        d: "General knowledge does not know your airline's policy. Grounding and checks do.",
+        a: "94 % on curated cases from volunteers says little about messy traffic, live integrations or reluctant users. That is exactly how the Maple Heights launch went wrong.",
+        c: "More sandbox time measures the same easy conditions. The unknowns are in production, and endless pilots are what purgatory looks like.",
+        d: "The score was measured on the wrong data. A bigger model does not fix stale APIs, keyword-only escalation or staff who route around the tool.",
       },
       explanation:
-        "Yes. Grounding the answer in the real policy, constraining what the bot may claim, and keeping a person on promises of money closes the gap that produced this ruling.",
+        "Right. Crawl meets real data and real users at low risk, produces the baseline telemetry and the gold-standard set, and earns staff trust. Leadership gets a dated path to Walk backed by numbers, not a vague “later”.",
+    },
+    bubble: "Any pilot can fly in a sandbox. Let's get yours out of purgatory.",
+  },
+
+  postMortem: {
+    kicker: "Post-mortem · IBM Watson Health, 2021",
+    title: "A revolution in cancer care that never got past the pilot",
+    context:
+      "IBM teamed up with hospitals to have Watson recommend cancer treatments: the most sensitive decision a clinic makes, handed to a system pitched as revolutionary. In many cases the recommendations were unsafe or incorrect. The project lost its credibility and was shut down in 2021. Set beside a healthcare agent from the same module that did reach production, the contrast is instructive.",
+    numbers: [
+      { value: "2017", label: "STAT reports that Watson, pitched as a revolution in cancer care, is nowhere close" },
+      { value: "Many cases", label: "of unsafe or incorrect treatment recommendations" },
+      { value: "2021", label: "the project, its credibility gone, is shut down" },
+      { value: "100+ FTE", label: "the counter-example: workload absorbed by Cencora's voice agent Eva, four times faster, with human review" },
+    ],
+    timeline: [
+      { label: "The pitch", text: "IBM partners with hospitals so Watson can recommend cancer treatments. The promise is a revolution, aimed straight at clinical decisions." },
+      { label: "In use", text: "In many cases Watson's recommendations are unsafe or incorrect. Advice that is sometimes unsafe cannot be relied on at the bedside." },
+      { label: "September 2017", text: "STAT (Ross and Swetlitz) publishes its investigation: the revolution in cancer care is nowhere close." },
+      { label: "2021", text: "Having lost credibility, the project is shut down." },
+      { label: "The contrast", text: "Cencora's Eva, built by Infinitus, takes on administrative calls (benefits verification, drug-service management), sends uncertain cases to people, and has every call recorded and spot-checked." },
+    ],
+    lessons: [
+      "Scope decides survival. Watson aimed at the highest-stakes judgement first; Eva started with narrow, repetitive admin work. Decompose, and automate the predictable, reversible steps before the risky ones.",
+      "Onboard gradually. Nobody expects a new hire to master everything on day one. A clinical adviser belongs in Crawl, recommending to clinicians who decide, with telemetry proving its quality before it gains any autonomy.",
+      "Governance is a KPI dimension, not a footnote. Unsafe output in healthcare is a guardrail violation, and it has to be counted, with an action threshold, from the first case.",
+      "Trust is the hardest metric to win back. Unsafe advice in a few cases was enough to sink credibility for the whole project, and without credibility there is no adoption.",
+      "A pitch is not a business case. Success has to be defined as a measurable outcome before launch, or the gap between the promise and the numbers shows up in the press instead of on your dashboard.",
+    ],
+    question: {
+      prompt:
+        "Your health system wants an agent that recommends treatment plans to doctors, rolled out across all sites at once. The demo on hand-picked cases was impressive. What do you recommend?",
+      options: [
+        { id: "a", text: "Start with lower-risk steps around the workflow and keep any recommendation in Crawl, with clinicians deciding every case and quality and safety logged against agreed gates" },
+        { id: "b", text: "Roll out everywhere but add a disclaimer that doctors remain responsible" },
+        { id: "c", text: "Run the demo cases again with a larger model to confirm the score" },
+        { id: "d", text: "Announce the project widely to build momentum and secure budget" },
+      ],
+      correct: "a",
+      hints: {
+        b: "A disclaimer moves liability on paper but measures nothing. Unsafe recommendations would still reach every site before anyone sees the pattern.",
+        c: "Hand-picked cases are the sandbox. A bigger model scores them again; it tells you nothing about real patients, real records systems or real clinicians.",
+        d: "Announcing a revolution before the numbers exist is the Watson pattern. When results disappoint, credibility goes with them.",
+      },
+      explanation:
+        "Yes. Decompose, start where errors are cheap and reversible, and keep the high-stakes step under full human control until telemetry shows it is safe. That is how the Cencora agent reached production and the Watson project did not.",
     },
     sources: [
-      "Moffatt v. Air Canada, 2024 BCCRT 149. Civil Resolution Tribunal of British Columbia, decision of February 14, 2024.",
-      "Proctor, J. (2024, February 15). Air Canada found liable for chatbot's bad advice on plane tickets. CBC News.",
+      "Ross, C., & Swetlitz, I. (2017, September 5). IBM pitched its Watson supercomputer as a revolution in cancer care. It's nowhere close. STAT.",
+      "MIT Applied Agentic AI, Module 6, section 2: Last-mile integration, why pilots succeed but deployments stall (IBM Watson Health example).",
+      "MIT Applied Agentic AI, Module 6, section 1: Voice agents (Cencora and Infinitus example).",
     ],
-    bubble: "A friendly answer, a costly promise. Let's look closely.",
+    bubble: "A famous name, a bold promise, no deployment. Let's see what was missing.",
   },
 
   lab: {
-    kicker: "Lab · Your first hard guardrail",
-    title: "Lock the output: strict schema and PII masking",
-    goal: "Put a deterministic gate between a model and the outside world: reject any output that breaks the contract, mask emails, phone numbers and IBANs in what passes, then find the gap your own filter leaves.",
-    duration: "30 minutes",
+    kicker: "Lab · Telemetry and stage gates",
+    title: "Compute your KPIs and decide: Walk or hold?",
+    goal: "Generate step-level JSON telemetry for a small booking agent, turn it into technical, operational, financial and adoption KPIs, check the Crawl to Walk and Walk to Run gates, then break the booking API and watch the circuit breaker and drift alerts fire.",
+    duration: "35 minutes",
     prerequisites: [
-      "Python 3.10 or later",
-      "A terminal and a text editor",
-      "No API key needed: the model outputs are stubs",
+      "Python 3.10 or later, no extra package, no API key",
+      "Your candidate workflow from module 1",
+      "Your cost work from module 1 (model prices, cost of a human-handled case)",
     ],
     steps: [
       {
-        title: "Install Pydantic",
-        body: ["Pydantic validates data against a typed model and refuses anything that does not fit. Version 2 is required."],
-        code: { lang: "shell", text: "pip install \"pydantic>=2\"" },
-      },
-      {
-        title: "Write the gate",
+        title: "Generate the telemetry",
         body: [
-          "Save this as guardrail.py. The model is replaced by five stored outputs, the kind an LLM sends back on a bad day. The gate validates first, then masks. Every failure turns into a hand-over, never a guess.",
+          "Create a new folder and save this as make_log.py. It simulates 60 sessions a week of a booking agent with three steps (look up the customer, check slots, draft the reply) during a Crawl phase: a person reviews every draft. Each line of telemetry.jsonl is one structured record, with the fields from the faculty's telemetry example (session, step, agent, model, tokens, latency, tool and status, validation error, human override) plus a confidence score for the Walk floor. A session_end record carries the outcome, the satisfaction score and the review time.",
         ],
         code: {
           lang: "python",
-          text: `# guardrail.py: hard guardrails around a model's output (schema + PII masking).
-import json
-import re
-from typing import Literal
+          text: `# make_log.py: write a synthetic step-level telemetry log, one JSON object per line.
+# Usage: python make_log.py 1 2      (weeks 1 and 2)   python make_log.py 1 2 3   (adds a bad week)
+import json, random, sys
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
-
-# 1. The contract. Anything outside it is rejected by code, not by the prompt.
-class TicketDecision(BaseModel):
-    model_config = ConfigDict(extra="forbid")      # unknown fields = rejection
-    category: Literal["refund", "delivery", "account", "other"]
-    priority: Literal["low", "normal", "high"]
-    refund_eur: float = Field(ge=0, le=500)        # above 500: a person decides
-    reply: str = Field(min_length=1, max_length=1200)
-
-# 2. Personal data patterns. IBAN first, so its digits are not read as a phone.
-PII_PATTERNS = [
-    ("IBAN", re.compile(r"\\b[A-Z]{2}\\d{2}(?: ?[A-Z0-9]{4}){2,7}(?: ?[A-Z0-9]{1,3})?\\b")),
-    ("EMAIL", re.compile(r"\\b[\\w.+-]+@[\\w-]+(?:\\.[\\w-]+)+\\b")),
-    ("PHONE", re.compile(r"\\+?\\d(?:[ .-]?\\d){8,13}\\b")),
-]
-
-def mask(text: str) -> tuple[str, list[str]]:
-    found = []
-    for label, pattern in PII_PATTERNS:
-        text, n = pattern.subn(f"[{label}]", text)
-        found += [label] * n
-    return text, found
-
-def guard(raw: str) -> dict:
-    """Validate, then mask. Any failure becomes a hand-over, never a guess."""
-    try:
-        decision = TicketDecision.model_validate_json(raw)
-    except ValidationError as err:
-        first = err.errors()[0]
-        where = ".".join(str(p) for p in first["loc"]) or "(whole output)"
-        return {"status": "escalate", "reason": f"{where}: {first['msg']}"}
-    reply, found = mask(decision.reply)
-    return {"status": "ok", "masked": found, "data": decision.model_copy(update={"reply": reply}).model_dump()}
-
-# 3. Stub model outputs: what an LLM might send back on a bad day.
-CASES = {
-    "clean, with PII": json.dumps({
-        "category": "refund", "priority": "high", "refund_eur": 120,
-        "reply": "Refund of 120 EUR approved. We will write to jane.doe@example.com, "
-                 "call +33 6 12 34 56 78 and pay FR76 3000 6000 0112 3456 7890 189.",
-    }),
-    "extra field": json.dumps({
-        "category": "account", "priority": "normal", "refund_eur": 0,
-        "reply": "Done.", "action": "delete_account",
-    }),
-    "over the ceiling": json.dumps({
-        "category": "refund", "priority": "high", "refund_eur": 4800, "reply": "Approved!",
-    }),
-    "invented category": json.dumps({
-        "category": "legal_advice", "priority": "low", "refund_eur": 0, "reply": "You should sue.",
-    }),
-    "not JSON at all": "Sure! Here is the JSON you asked for: {category: refund}",
+random.seed(6)
+SESSIONS_PER_WEEK = 60
+# Per week: chance a tool call fails, chance the reviewer edits the draft, extra latency on check_slots.
+PROFILE = {
+    1: {"tool_fail": 0.06, "override": 0.25, "slow_ms": 0},
+    2: {"tool_fail": 0.02, "override": 0.10, "slow_ms": 0},
+    3: {"tool_fail": 0.15, "override": 0.12, "slow_ms": 2500},  # the booking API degrades under load
 }
+STEPS = [("lookup_customer", "small-model"), ("check_slots", "small-model"), ("draft_reply", "frontier-model")]
 
-if __name__ == "__main__":
-    for name, raw in CASES.items():
-        print(f"--- {name}")
-        print(json.dumps(guard(raw), indent=2, ensure_ascii=False))`,
+def session(week: int, n: int, p: dict):
+    sid, failed = f"w{week}-s{n:03d}", False
+    for i, (tool, model) in enumerate(STEPS, start=1):
+        ok = random.random() > p["tool_fail"]
+        failed = failed or not ok
+        yield {
+            "event": "step", "week": week, "session_id": sid, "step_index": i,
+            "agent_id": "booking-agent", "model_used": model,
+            "tokens": {"input": random.randint(300, 700), "output": random.randint(40, 180), "cached": random.randint(0, 300)},
+            "latency_ms": random.randint(300, 900) + (p["slow_ms"] if tool == "check_slots" else 0),
+            "tool_called": tool, "tool_status": "success" if ok else "error",
+            "confidence": round(0.97 - abs(random.gauss(0, 0.08)) - (0.2 if failed else 0), 2),
+            "validation_error": "schema: missing slot_id" if random.random() < 0.02 else None,
+            "human_override": tool == "draft_reply" and random.random() < p["override"],
+        }
+    if failed:
+        outcome = random.choice(["escalated", "abandoned"])
+    else:
+        outcome = "resolved" if random.random() > 0.05 else "escalated"
+    csat = None if outcome == "abandoned" or random.random() < 0.4 else (random.choice([2, 3]) if failed else random.choice([4, 4, 5, 5, 5]))
+    yield {"event": "session_end", "week": week, "session_id": sid, "outcome": outcome,
+           "csat": csat, "review_s": random.randint(20, 90)}
+
+weeks = [int(w) for w in sys.argv[1:]] or [1, 2]
+with open("telemetry.jsonl", "w", encoding="utf-8") as f:
+    for week in weeks:
+        for n in range(1, SESSIONS_PER_WEEK + 1):
+            for record in session(week, n, PROFILE[week]):
+                print(json.dumps(record), file=f)
+print(f"wrote telemetry.jsonl for weeks {weeks}")`,
         },
       },
       {
-        title: "Run it and read the verdicts",
+        title: "Save the gate checker",
         body: [
-          "The first case passes with [EMAIL], [PHONE] and [IBAN] in place of the data. The other four are escalated with a precise reason: an unknown action field, a refund of 4,800 over the 500 ceiling, a category outside the list, and text that is not JSON.",
-          "Notice what the gate did not need: it never read the conversation, so no argument from the user could change its answer.",
-        ],
-        code: { lang: "shell", text: "python guardrail.py" },
-      },
-      {
-        title: "Find the gap",
-        body: [
-          "Add this case to CASES and run again. The reply passes untouched: the email is spelt out and the phone number has too few digits for the pattern. Regex masking is a floor, not a ceiling.",
-          "Write down two fixes you would add: for instance an entity recogniser such as Microsoft Presidio for names and spelt-out contacts, and a rule that any reply mentioning “(at)” or “dot com” is escalated instead of sent.",
+          "Save this as stage_gate.py in the same folder. It groups the records by week, computes the KPIs in four dimensions, and checks the latest week against two gates. It also has a circuit breaker (any KPI out of its corridor drops the agent back one stage) and the 15 % week-on-week action threshold from the reading.",
         ],
         code: {
           lang: "python",
-          text: `    "obfuscated": json.dumps({
-        "category": "account", "priority": "low", "refund_eur": 0,
-        "reply": "Write to jane(at)example(dot)com or call 12 34 56 78.",
-    }),`,
+          text: `# stage_gate.py: turn step-level telemetry into 4D KPIs, then check the Crawl -> Walk -> Run gates.
+import json, math, sys
+from collections import defaultdict
+
+# Your numbers go here. These are placeholders, not real prices: use your module 1 cost work.
+PRICE_PER_1K = {"small-model": (0.0005, 0.002), "frontier-model": (0.005, 0.02)}  # (input, output) per 1,000 tokens
+REVIEW_COST_PER_HOUR = 30.0   # loaded cost of one hour of human review
+HUMAN_BASELINE = 2.50         # what one case costs today, done fully by a person
+CONFIDENCE_FLOOR = 0.85       # in Walk, anything below this goes to a person
+
+def load(path):
+    steps, ends = defaultdict(list), {}
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            r = json.loads(line)
+            if r["event"] == "step":
+                steps[r["session_id"]].append(r)
+            else:
+                ends[r["session_id"]] = r
+    return steps, ends
+
+def step_cost(s):
+    p_in, p_out = PRICE_PER_1K[s["model_used"]]
+    return s["tokens"]["input"] / 1000 * p_in + s["tokens"]["output"] / 1000 * p_out
+
+def kpis(steps, ends, week):
+    ids = [sid for sid, e in ends.items() if e["week"] == week]
+    all_steps = [s for sid in ids for s in steps[sid]]
+    outcomes = [ends[sid]["outcome"] for sid in ids]
+    csat = [ends[sid]["csat"] for sid in ids if ends[sid]["csat"] is not None]
+    lat = sorted(s["latency_ms"] for s in all_steps)
+    drafts = [s for s in all_steps if s["tool_called"] == "draft_reply"]
+    resolved = outcomes.count("resolved")
+    spend = sum(step_cost(s) for s in all_steps) + sum(ends[sid]["review_s"] for sid in ids) / 3600 * REVIEW_COST_PER_HOUR
+    n = len(ids)
+    return {
+        # Technical: is the machinery sound?
+        "p90_step_latency_ms": lat[math.ceil(0.9 * len(lat)) - 1],
+        "tool_error_rate": sum(s["tool_status"] == "error" for s in all_steps) / len(all_steps),
+        "schema_error_rate": sum(s["validation_error"] is not None for s in all_steps) / len(all_steps),
+        # Operational: does the work get done?
+        "task_completion": resolved / n,
+        "escalation_rate": outcomes.count("escalated") / n,
+        "abandonment_rate": outcomes.count("abandoned") / n,
+        # Financial: is it worth it?
+        "cost_per_resolved": spend / max(resolved, 1),
+        # Adoption and trust: do people accept the output?
+        "override_rate": sum(s["human_override"] for s in drafts) / len(drafts),
+        "low_confidence_share": sum(s["confidence"] < CONFIDENCE_FLOOR for s in drafts) / len(drafts),
+        "csat": sum(csat) / len(csat),
+        "sessions": n,
+    }
+
+# Every rule must hold on the latest week to move up a stage. Agree them before the stage starts.
+GATES = {
+    "Crawl -> Walk": {"tool_error_rate": ("<=", 0.05), "schema_error_rate": ("<=", 0.02),
+                      "task_completion": (">=", 0.80), "p90_step_latency_ms": ("<=", 1500),
+                      "cost_per_resolved": ("<=", HUMAN_BASELINE), "override_rate": ("<=", 0.15),
+                      "csat": (">=", 4.0), "sessions": (">=", 50)},
+    "Walk -> Run": {"tool_error_rate": ("<=", 0.01), "schema_error_rate": ("<=", 0.005),
+                    "task_completion": (">=", 0.92), "abandonment_rate": ("<=", 0.03),
+                    "escalation_rate": ("<=", 0.08), "override_rate": ("<=", 0.05),
+                    "low_confidence_share": ("<=", 0.05), "csat": (">=", 4.3), "sessions": (">=", 500)},
+}
+# Circuit breaker: if any of these leaves its corridor, the agent drops back one stage automatically.
+BREAKER = {"tool_error_rate": 0.10, "abandonment_rate": 0.10, "schema_error_rate": 0.05}
+LOWER_IS_BETTER = ["p90_step_latency_ms", "tool_error_rate", "escalation_rate", "abandonment_rate", "override_rate"]
+
+def failing(values, gate):
+    return [f"{k} = {values[k]:.3f}, needs {op} {lim}" for k, (op, lim) in gate.items()
+            if not (values[k] >= lim if op == ">=" else values[k] <= lim)]
+
+steps, ends = load(sys.argv[1] if len(sys.argv) > 1 else "telemetry.jsonl")
+weeks = sorted({e["week"] for e in ends.values()})
+by_week = {w: kpis(steps, ends, w) for w in weeks}
+
+print(f"{'KPI':22}" + "".join(f"{'week ' + str(w):>10}" for w in weeks))
+for k in by_week[weeks[0]]:
+    print(f"{k:22}" + "".join(f"{by_week[w][k]:>10.3f}" for w in weeks))
+
+latest = by_week[weeks[-1]]
+for name, gate in GATES.items():
+    blockers = failing(latest, gate)
+    print()
+    print(f"{name}: {'GO' if not blockers else 'HOLD'}")
+    for b in blockers:
+        print(f"  blocked by {b}")
+
+tripped = [k for k, limit in BREAKER.items() if latest[k] > limit]
+if tripped:
+    print()
+    print(f"CIRCUIT BREAKER: {', '.join(tripped)} out of corridor. Drop back one stage and page the owner.")
+
+# Action threshold: a KPI that worsens by more than 15 % in one week needs a person, not a meeting next month.
+if len(weeks) > 1:
+    prev = by_week[weeks[-2]]
+    for k in LOWER_IS_BETTER:
+        if prev[k] > 0 and latest[k] > prev[k] * 1.15:
+            print(f"ALERT: {k} rose from {prev[k]:.3f} to {latest[k]:.3f} in one week")`,
         },
       },
       {
-        title: "Place it in your loop",
+        title: "Run it and read the verdict",
         body: [
-          "Open your loop map from module 1. Mark where this gate sits: after Reason, before any reply leaves your system and before any tool call writes data. Note which fields your own workflow would need in its schema, and which ceilings hand over to a person.",
-          "Optional: replace one stub with a real model asked to answer in the same JSON shape. Count how often its output fails the gate over 20 tries.",
+          "Week 2 is far better than week 1: reviewers edit about 8 % of drafts instead of 30 %, and abandonment falls from 13 % to 3 %. Crawl to Walk says GO. Walk to Run says HOLD with seven blockers, including only 60 sessions against 500 required. That is how it should look: a gate you can pass now, and a clear list of work before the next one.",
+        ],
+        code: { lang: "shell", text: "python make_log.py 1 2\npython stage_gate.py" },
+      },
+      {
+        title: "Break the booking API",
+        body: [
+          "Now add a third week in which check_slots slows down and fails more often under load, the same fault that gave Maple Heights its double bookings.",
+          "Read the output. Task completion drops to about 57 %, p90 latency jumps past 3 seconds, the circuit breaker trips on tool errors and abandonment, and the drift check raises alerts. Crawl to Walk is now HOLD: had you promoted the agent after week 2, the breaker would send it straight back. Note which owner each alert should page.",
+        ],
+        code: { lang: "shell", text: "python make_log.py 1 2 3\npython stage_gate.py" },
+      },
+      {
+        title: "Make the gates yours",
+        body: [
+          "Replace PRICE_PER_1K and HUMAN_BASELINE with figures from your module 1 cost work, and REVIEW_COST_PER_HOUR with your own loaded rate. Rename the three steps after your candidate workflow, and set the session minimums to the volume it sees in two weeks.",
+          "For each threshold, write down who agreed it and why. For each KPI that blocks a gate, write one line: likely cause, fix, owner. Module 7 adds what this log cannot give you yet: accuracy against a gold-standard set.",
+        ],
+      },
+      {
+        title: "Decompose (optional)",
+        body: [
+          "Two of the three steps only call a tool through a small model. Score each step of your own workflow on predictability and risk, and mark the ones that could become a plain script once about 95 % of cases follow the same logic. Remove one model call from make_log.py and see what happens to cost per resolved case.",
         ],
       },
     ],
     checklist: [
-      "guardrail.py runs and prints one pass and four escalations",
-      "Each escalation names the exact field and rule that failed",
-      "I reproduced the obfuscated case that slips past the regex",
-      "I listed at least two fixes for that gap",
-      "I marked where the gate sits in my own loop map",
+      "Both scripts run and print KPIs per week",
+      "I can explain why Crawl to Walk says GO and Walk to Run says HOLD after week 2",
+      "I triggered the circuit breaker and the drift alerts with week 3",
+      "My gates use my own prices, baseline cost and volumes",
+      "Each blocking KPI has a cause, a fix and an owner",
     ],
-    bubble: "Code at the gate. It does not argue, and it does not forget.",
+    bubble: "Numbers decide the next stage, not enthusiasm. Run the gate.",
   },
 
   deliverable: {
-    kicker: "Deliverable · Guardrail register",
-    title: "A compliance sheet for your candidate workflow",
+    kicker: "Deliverable · 4D KPI scorecard",
+    title: "The KPI scorecard you put in front of leadership",
     purpose:
-      "One to two pages that say which laws apply to your workflow, how you will honour erasure and human review, and which guardrails sit where in the loop. It builds on your candidate card (module 0), loop map (module 1), architecture (module 3), integration map (module 4) and security memo (module 5), and becomes the governance section of your capstone adoption plan. It is a working document, not legal advice: have it reviewed by legal or your DPO.",
-    fileName: "guardrail-register.md",
-    template: `# Guardrail register
+      "One to two pages for your candidate workflow, following the KPIs for AI assignment: the context, what the agent does, three to five headline KPIs covering the technical, operational, financial and adoption dimensions, and how they show whether the business goal is being met. Add the Crawl, Walk, Run milestones with dated, numeric exit criteria and a short change plan. This scorecard becomes the rollout and KPI sections of your capstone adoption plan in module 8.",
+    fileName: "kpi-scorecard.md",
+    template: `# 4D KPI scorecard
 
-Workflow (from the candidate card):
+Workflow (from your candidate card, module 1):
 Author:
 Date:
-Reviewed by (legal / DPO):
 
-## 1. Data in the loop
-| Data item | Personal? Special category (GDPR Art. 9) or PHI? | Where it comes from | Where it is stored (DB, vector index, logs, backups) |
+## 1. Context
+- Sector:
+- Type of organisation:
+- Department or team:
+- Current maturity stage of this workflow (module 5):
+
+## 2. What the agent does
+In one or two sentences: the step(s) it handles in the workflow, the systems it touches (module 3), and what a person still decides.
+
+>
+
+- Business goal it serves (a number leadership already tracks):
+
+## 3. Headline KPIs (3 to 5, at least one per dimension)
+Definition = a formula over logged fields. Baseline = today, without the agent.
+
+| Dimension | KPI | Definition | Baseline | Target | Data source | Owner | Action threshold |
+|---|---|---|---|---|---|---|---|
+| Technical | | | | | | | |
+| Operational | | | | | | | |
+| Financial | | | | | | | |
+| Adoption and trust | | | | | | | |
+| (optional fifth) | | | | | | | |
+
+Checks: every speed KPI is paired with a quality KPI; no raw internal metric (such as tokens) unless it maps to an outcome; financial KPIs include the cost of human review.
+
+## 4. How the KPIs answer the business question
+- If every KPI hits target, what changes for the business goal, and by how much:
+- Which KPI would tell you first that the agent is not achieving its purpose:
+- Possible distortion (what could improve on paper while the outcome gets worse):
+
+## 5. Telemetry and feedback loops
+- Fields logged at every step:
+- Where logs live, retention, who can read them:
+- User loop (how users flag problems):
+- System loop (which automated alerts, which triggers):
+- Operational loop (who reviews the dashboard, how often, what they can change):
+
+## 6. Crawl, Walk, Run
+| Stage | Dates | What the agent may do | Human role | Exit criteria (numbers) | Fall-back trigger |
+|---|---|---|---|---|---|
+| Crawl | | Draft and recommend only | Review and submit 100 % | | |
+| Walk | | Low-risk, reversible actions | Monitor, sample, take escalations | | |
+| Run | | | Spot-audits, monthly drift review | | |
+
+- Steps that could become plain code once stable:
+- Circuit breaker: which KPI, which corridor, who is paged:
+
+## 7. People
+| Group | Main concern | Response (ADKAR block it serves) | Adoption metric |
 |---|---|---|---|
-| | | | |
+| Frontline users | | | |
+| Their managers | | | |
+| IT and data owners | | | |
+| Legal, risk, compliance | | | |
 
-## 2. EU AI Act
-- Use case in one sentence:
-- Risk tier (unacceptable / high / limited / minimal) and why:
-- Our role (provider or deployer):
-- Transparency duty (do users know they talk to an AI?):
-- GPAI model used, and where its provider documentation lives:
-- Dates checked on:
-
-## 3. GDPR and other laws
-| Purpose | Lawful basis (Art. 6) | Data needed (minimum) | Retention |
-|---|---|---|---|
-| | | | |
-
-- Controller / processors, and data processing agreements signed (Art. 28):
-- Provider retention terms (zero retention?):
-- DPIA needed (Art. 35)? Why:
-- CCPA, HIPAA or sector rules that also apply:
-
-## 4. Rights by design
-- Access request (Art. 15): how we find everything about one person:
-- Erasure (Art. 17), per store:
-
-| Store | How we delete | Time to complete | How we verify |
-|---|---|---|---|
-| Source documents | | | |
-| Vector index (pseudonymous IDs? per-customer keys?) | | | |
-| Logs and traces | | | |
-| Backups | | | |
-| Evaluation sets and fine-tuning data | | | |
-
-- Automated decisions with significant effect (Art. 22): which ones, who reviews, how a person contests:
-
-## 5. Risk and speed per action
-| Action (from the loop map) | Risk | Speed needed | Quadrant | Oversight (manual / automated / hybrid) |
-|---|---|---|---|---|
-| | | | | |
-
-## 6. Guardrails
-| Guardrail | Hard or soft | Position (ingress / prompt / egress / tool / human) | What it blocks | On failure | Tested by | Owner |
-|---|---|---|---|---|---|---|
-| | | | | | | |
-
-## 7. Risks and mitigations
-| Risk | Compliance or operational | Mitigation | Residual risk |
-|---|---|---|---|
-| | | | |
-
-## 8. Open questions for legal
--
+## 8. Decision asked of leadership
+- Decision now:
+- Next review date:
 `,
     checklist: [
-      "The AI Act tier and our role are stated with a reason",
-      "Every purpose has a lawful basis and a retention period",
-      "Erasure is planned for every store, including the vector index and logs",
-      "Every rule with legal or financial weight has a hard guardrail, not only a prompt line",
-      "Each guardrail has a position in the loop, a failure behaviour and an owner",
+      "Context names the sector, organisation type and department",
+      "The agent's purpose fits in one or two sentences",
+      "Three to five headline KPIs cover all four dimensions, not only financial ones",
+      "Every KPI has a baseline, a target, a data source, an owner and an action threshold",
+      "Crawl to Walk and Walk to Run criteria are numbers with dates",
+      "The scorecard explains how the KPIs show whether the business goal is met",
     ],
-    bubble: "Write down every wall and where it stands. I'll check the gates.",
+    bubble: "This is the page leadership will read. Make every number earn its place.",
   },
 };
