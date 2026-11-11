@@ -89,3 +89,4 @@ Checkpoint: the working tree is committed before you start. If it is not, ask.
 - L2: add a decision file and one line in `docs/decisions/INDEX.md`; delete the task file.
 - `docs/PRODUCT.md`, `docs/ARCHITECTURE.md`, `docs/SECURITY.md`: propose changes; edit only after the user confirms.
 - Propose a conventional commit message.
+- Sync to GitHub (user is solo on 2 computers): after any important change or build (feature, new content, restructuring, anything L1/L2 that passed `check`), run `powershell -ExecutionPolicy Bypass -File .\push-to-github.ps1 -NoPause -Message "<conventional commit message>"` as the last step. It commits, pulls `--rebase`, pushes, then verifies local equals `origin`. Report its result; if it fails (conflict, no network), stop and tell the user, never force-push. Skip it for L0 trivial changes and for work that failed `check`.
