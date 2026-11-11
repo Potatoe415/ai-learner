@@ -9,8 +9,8 @@ Rules for agents:
 - Format: `- [ ] <short, verifiable description> (page or component)`.
 
 ## To do
-- [ ] Side menu: remove the "Profile" entry and the profile level display (the profile is moving to a classic profile button at the top right). Keep only the trail name; clicking it goes to the trail's default page. (side menu)
-- [ ] Lesson view (inside a sub-module): make the mascot image a bit smaller so the lesson text has more room. (lesson view)
-- [ ] Home page (first page on arrival): show a header and a grid of trail tiles, each tile with that trail's progress. For now there is a single real trail; add one ghost trail tile, not clickable, labelled "Coming soon" (subject not decided yet). (home page)
+- [x] Side menu: remove the "Profile" entry and the profile level display (the profile is moving to a classic profile button at the top right). Keep only the trail name; clicking it goes to the trail's default page. (side menu)
+- [x] Lesson view (inside a sub-module): make the mascot image a bit smaller so the lesson text has more room. (lesson view)
+- [x] Home page (first page on arrival): show a header and a grid of trail tiles, each tile with that trail's progress. For now there is a single real trail; add one ghost trail tile, not clickable, labelled "Coming soon" (subject not decided yet). (home page)
 
 ## Done

@@ -112,14 +112,9 @@ a.utitle:hover { text-decoration: underline; }
 .snav-mod { overflow: hidden; text-overflow: ellipsis; font-size: 14px; }
 .snav-tag { font-size: 12px; font-weight: 700; }
 .snav-end { flex: none; }
-.snav-rank { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 16px; background: var(--cream); white-space: nowrap; }
-.snav-rank:hover { background: #efe8d8; }
-.snav-rank .snav-txt { font-size: 13px; color: var(--body); gap: 1px; }
-.snav-rank b { font-family: var(--font-display); font-size: 16px; color: var(--ink); }
-.snav-rank .snav-txt > span { display: inline-flex; align-items: center; gap: 4px; }
-.snav-next { color: var(--muted); }
-.snav-lvl { flex: none; width: 32px; height: 32px; border-radius: 9px; border: 2px solid var(--ink); color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 16px; display: inline-flex; align-items: center; justify-content: center; }
-.snav-head { padding: 0 10px; font-family: var(--font-display); font-weight: 800; font-size: 15px; line-height: 1.2; }
+.snav-trail { display: flex; align-items: center; min-height: 44px; padding: 8px 10px; border-radius: 14px; font-family: var(--font-display); font-weight: 800; font-size: 15px; line-height: 1.2; color: var(--ink); }
+.snav-trail:hover { background: var(--cream); }
+.snav-trail.on { background: #f1ede2; }
 .snav-group { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; }
 .snav-zone { padding: 4px 10px 2px; font-weight: 700; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
 .snav-units { margin: 2px 0 6px 26px; padding-left: 14px; border-left: 2px solid #e3ddcf; }
@@ -142,7 +137,7 @@ a.snav-unit:hover { background: var(--cream); }
   .shell.collapsed .snav-top { flex-direction: column; padding: 14px 8px 12px; }
   .shell.collapsed .snav-txt, .shell.collapsed .snav-end { display: none; }
   .shell.collapsed .snav-scroll { padding: 12px 8px 24px; }
-  .shell.collapsed .snav-link, .shell.collapsed .snav-rank { justify-content: center; padding: 6px; }
+  .shell.collapsed .snav-link, .shell.collapsed .snav-trail { justify-content: center; padding: 6px; }
   .shell.collapsed .snav-group { margin-top: 0; padding-top: 6px; border-top: 1px solid #e3ddcf; }
 }
 
@@ -276,3 +271,21 @@ a.snav-unit:hover { background: var(--cream); }
   .celebrate, .celebrate-card, .celebrate-badge { animation: none; }
   .confetti { display: none; }
 }
+
+/* Home page (components/HomeView.tsx): header and trail tiles. */
+.home-head { display: flex; flex-direction: column; gap: 10px; max-width: 760px; }
+.home-head h1 { font-size: clamp(34px, 5vw, 56px); line-height: 1.04; }
+.home-head p { font-size: 18px; line-height: 1.5; color: var(--body); text-wrap: pretty; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: 24px; }
+.tile { background: #fff; border: 2px solid var(--ink); border-radius: 28px; padding: 24px; box-shadow: 0 6px 0 var(--ink); display: flex; flex-direction: column; gap: 12px; color: var(--ink); transition: transform 0.15s ease; }
+a.tile:hover { transform: translateY(-3px); }
+.tile h2 { font-weight: 800; font-size: 26px; line-height: 1.12; letter-spacing: -0.015em; text-wrap: balance; }
+.tile p { margin: 0; font-size: 16px; line-height: 1.5; color: var(--body); text-wrap: pretty; }
+.tile-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.tile-progress { display: flex; flex-direction: column; gap: 8px; margin-top: auto; padding-top: 8px; }
+.tile-points { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: var(--muted); }
+.tile .cta { align-self: flex-start; }
+.tile.ghost { background: transparent; border: 2px dashed #8a92a6; box-shadow: none; color: var(--muted); cursor: default; }
+.tile.ghost h2 { color: var(--muted); }
+.tile-ghost-ic { width: 88px; height: 88px; border-radius: 50%; border: 2px dashed #8a92a6; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 40px; color: #8a92a6; }
+@media (prefers-reduced-motion: reduce) { .tile { transition: none; } }

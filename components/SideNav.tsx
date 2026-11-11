@@ -1,20 +1,19 @@
 "use client";
 
-// App-wide collapsible side menu: brand, trail and profile links, the learner's level and points,
-// and the trail's modules grouped by zone with their units for the current one.
+// App-wide collapsible side menu: brand, the trail name (link to the trail page) and the trail's
+// modules grouped by zone with their units for the current one. The profile is the round button top right.
 // Desktop: expanded or collapsed to an icon rail (choice saved in localStorage). Mobile: a drawer.
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState, type ReactNode } from "react";
 import { Loop, Nimbus } from "./characters";
-import { Check, Chevron, Close, MapIcon, MenuIcon, Star, UserIcon } from "./icons";
+import { Check, Chevron, Close, MapIcon, MenuIcon, UserIcon } from "./icons";
 import { ModuleBadge } from "./badges";
 import { MODULES, TRAIL, ZONES, getZone, unitsOf, type CourseModule } from "@/lib/curriculum";
 import { useProgress } from "@/lib/progress";
 
 const COLLAPSED_KEY = "agent-path:nav-collapsed";
-const fmt = (n: number) => n.toLocaleString("en-US");
 
 /** Module groups as shown in the menu: one per zone. */
 const GROUPS = ZONES.map((z) => ({ key: z.key, label: z.name, color: z.color, modules: MODULES.filter((m) => m.zone === z.key) }));
@@ -33,11 +32,11 @@ function useActive(unit: number | null): Active {
   return { path, module: match ? Number(match[1]) : null, unit };
 }
 
-function NavLink({ href, active, icon, label, collapsed, onNavigate }: { href: string; active: boolean; icon: ReactNode; label: string; collapsed: boolean; onNavigate: () => void }) {
+/** The trail name, linking to the trail's page. Collapsed rail: the map icon. */
+function TrailLink({ active, collapsed, onNavigate }: { active: boolean; collapsed: boolean; onNavigate: () => void }) {
   return (
-    <Link href={href} className={`snav-link ${active ? "on" : ""}`} aria-current={active ? "page" : undefined} title={collapsed ? label : undefined} onClick={onNavigate}>
-      <span className="snav-ic">{icon}</span>
-      <span className="snav-txt">{label}</span>
+    <Link href="/trail" className={`snav-trail ${active ? "on" : ""}`} aria-current={active ? "page" : undefined} title={collapsed ? TRAIL.name : undefined} onClick={onNavigate}>
+      {collapsed ? <span className="snav-ic"><MapIcon /></span> : TRAIL.name}
     </Link>
   );
 }
@@ -93,28 +92,12 @@ interface BodyProps {
 }
 
 function NavBody({ collapsed, onNavigate, unit }: BodyProps & { unit: number | null }) {
-  const p = useProgress();
   const active = useActive(unit);
-  const next = p.nextRank;
 
   return (
     <>
-      <nav aria-label="Main" className="snav-sec">
-        <NavLink href="/" active={active.path === "/"} icon={<MapIcon />} label="Trail" collapsed={collapsed} onNavigate={onNavigate} />
-        <NavLink href="/profile" active={active.path === "/profile"} icon={<UserIcon />} label="Profile" collapsed={collapsed} onNavigate={onNavigate} />
-      </nav>
-
-      <Link href="/profile" className="snav-rank" title={collapsed ? `Level ${p.rank.n} · ${p.rank.name} · ${fmt(p.points)} points` : undefined} onClick={onNavigate}>
-        <span className="snav-lvl" style={{ background: p.rank.color }}>{p.rank.n}</span>
-        <span className="snav-txt">
-          <b>{p.rank.name}</b>
-          <span><Star size={13} /> {fmt(p.points)} points · {p.completedModules.length} / {MODULES.length} badges</span>
-          {next && <span className="snav-next">Next: {next.name}</span>}
-        </span>
-      </Link>
-
       <nav aria-label={`Trail: ${TRAIL.name}`} className="snav-sec">
-        {!collapsed && <span className="snav-head">{TRAIL.name}</span>}
+        <TrailLink active={active.path === "/trail"} collapsed={collapsed} onNavigate={onNavigate} />
         {GROUPS.map((g) => (
           <div key={g.key} className="snav-group">
             {!collapsed && <span className="snav-zone" style={{ color: g.color }}>{g.label}</span>}

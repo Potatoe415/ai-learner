@@ -12,6 +12,9 @@ import { LESSONS, unitContent, type ConceptQuiz, type LessonContent } from "@/li
 import { DeliverableStepView, LabStepView, PostMortemStep, ReadingStep } from "./LessonSteps";
 import { useProgress } from "@/lib/progress";
 
+/** Mascot size in the lesson view: small enough to leave the lesson text most of the width. */
+const LESSON_MASCOT = 140;
+
 function Concept({ quiz, module, unit, onSolved, onDone }: { quiz: ConceptQuiz; module: number; unit: number; onSolved: () => void; onDone: () => void }) {
   const p = useProgress();
   const already = p.isUnitDone(module, unit);
@@ -35,9 +38,9 @@ function Concept({ quiz, module, unit, onSolved, onDone }: { quiz: ConceptQuiz; 
 
   return (
     <>
-      <div className="mascot" style={{ flex: "0 1 240px" }}>
+      <div className="mascot" style={{ flex: "0 1 180px" }}>
         <div className="bubble white" role="status">{bubble}</div>
-        <Loop size={200} mood={mood} />
+        <Loop size={LESSON_MASCOT} mood={mood} />
       </div>
       <div style={{ flex: "1 1 480px", minWidth: 0, display: "flex", flexDirection: "column", gap: 24 }}>
         <section className="card">
@@ -103,7 +106,7 @@ function UnitBody({ content, kind, ...props }: UnitProps) {
 }
 
 const Mascot = ({ who }: { who: Zone["mascot"] }) =>
-  who === "Plug" ? <Plug size={200} /> : who === "Ward" ? <Ward size={200} /> : who === "Cap" ? <Cap size={200} /> : <Loop size={200} />;
+  who === "Plug" ? <Plug size={LESSON_MASCOT} /> : who === "Ward" ? <Ward size={LESSON_MASCOT} /> : who === "Cap" ? <Cap size={LESSON_MASCOT} /> : <Loop size={LESSON_MASCOT} />;
 
 const noop = () => {};
 
@@ -157,7 +160,7 @@ export default function LessonView({ module, startUnit }: { module: number; star
     <div className="page narrow">
       {celebrate && <BadgeCelebration module={module} name={mod.badge.name} onClose={endCelebration} />}
       <header className="row" style={{ gap: 16 }}>
-        <Link href="/" className="close" aria-label="Leave the module and go back to the trail"><Close /></Link>
+        <Link href="/trail" className="close" aria-label="Leave the module and go back to the trail"><Close /></Link>
         <div className="bar">
           <div className="row between" style={{ gap: 8, fontSize: 14, fontWeight: 700 }}>
             <span style={{ color }}>Module {module} · {mod.title}</span>
@@ -177,7 +180,7 @@ export default function LessonView({ module, startUnit }: { module: number; star
             <strong>{mod.badge.name}</strong>
             <span>You are level {p.rank.n} · {p.rank.name}.</span>
           </div>
-          <Link href="/" className="cta dark">Back to the trail <Arrow color="#F7F3EA" /></Link>
+          <Link href="/trail" className="cta dark">Back to the trail <Arrow color="#F7F3EA" /></Link>
         </section>
       )}
 
@@ -193,9 +196,9 @@ export default function LessonView({ module, startUnit }: { module: number; star
           </>
         ) : unitContent(content, kind) ? (
           <>
-            <div className="mascot sticky" style={{ flex: "0 1 240px" }}>
+            <div className="mascot sticky" style={{ flex: "0 1 180px" }}>
               <div className="bubble white">{bubbleOf(content, kind)}</div>
-              {zone.mascot === "Loop" ? <Loop size={200} mood={unitDone ? "cheer" : "think"} /> : <Mascot who={zone.mascot} />}
+              {zone.mascot === "Loop" ? <Loop size={LESSON_MASCOT} mood={unitDone ? "cheer" : "think"} /> : <Mascot who={zone.mascot} />}
             </div>
             <div key={unit} style={{ flex: "1 1 480px", minWidth: 0, display: "flex", flexDirection: "column", gap: 20 }}>
               <UnitBody

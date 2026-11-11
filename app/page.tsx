@@ -1,5 +1,5 @@
-import TrailView from "@/components/TrailView";
+import HomeView from "@/components/HomeView";
 
 export default function Home() {
-  return <TrailView />;
+  return <HomeView />;
 }
